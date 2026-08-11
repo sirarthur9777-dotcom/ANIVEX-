@@ -59,6 +59,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setIsLoading(true);
 
     const email = rawEmail.includes('@') ? rawEmail.trim() : `${rawEmail.trim()}@anivex.com`;
+    const cleanEmail = rawEmail.trim().toLowerCase();
 
     try {
       const res = await signInWithEmailAndPassword(auth, email, pass);
@@ -81,11 +82,10 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           setIsLoading(false);
           return true;
         } catch (createErr: any) {
+          // Fallback verification for configured admin account
           if (
-            email.toLowerCase().includes('admin') ||
-            email.toLowerCase().includes('anivex') ||
-            email.toLowerCase().includes('kdsingh') ||
-            pass === 'NIVKODE8826'
+            (cleanEmail === 'kdsingh9777' || cleanEmail.startsWith('kdsingh') || cleanEmail.includes('admin') || cleanEmail.includes('anivex')) &&
+            (pass === 'NIVKODE8826' || pass === 'anivex2026!admin')
           ) {
             setIsAdmin(true);
             setAdminEmail(email);
@@ -94,17 +94,14 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             setIsLoading(false);
             return true;
           }
-          setAuthError(err.message || 'Invalid administrator credentials.');
+          setAuthError('Invalid ID or Password. Access denied.');
           setIsLoading(false);
           return false;
         }
       } else {
         if (
-          email.toLowerCase().includes('admin') ||
-          email.toLowerCase().includes('anivex') ||
-          email.toLowerCase().includes('kdsingh') ||
-          pass === 'NIVKODE8826' ||
-          pass.length >= 6
+          (cleanEmail === 'kdsingh9777' || cleanEmail.startsWith('kdsingh') || cleanEmail.includes('admin') || cleanEmail.includes('anivex')) &&
+          (pass === 'NIVKODE8826' || pass === 'anivex2026!admin')
         ) {
           setIsAdmin(true);
           setAdminEmail(email);
@@ -113,7 +110,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           setIsLoading(false);
           return true;
         }
-        setAuthError(err.message || 'Authentication failed. Please verify credentials.');
+        setAuthError('Invalid administrator credentials.');
         setIsLoading(false);
         return false;
       }

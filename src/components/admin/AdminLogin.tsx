@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { Lock, Mail, ShieldAlert, ArrowRight, ShieldCheck, KeyRound } from 'lucide-react';
+import { Lock, Mail, ShieldAlert, ArrowRight, KeyRound } from 'lucide-react';
 
 interface AdminLoginProps {
   onSuccess: () => void;
@@ -8,8 +8,8 @@ interface AdminLoginProps {
 
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
   const { login, authError, clearError } = useAdminAuth();
-  const [email, setEmail] = useState('kdsingh9777');
-  const [password, setPassword] = useState('NIVKODE8826');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,18 +18,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
     clearError();
 
     const ok = await login(email, password);
-    setIsSubmitting(false);
-    if (ok) {
-      onSuccess();
-    }
-  };
-
-  const handleDemoFill = async () => {
-    setEmail('kdsingh9777');
-    setPassword('NIVKODE8826');
-    setIsSubmitting(true);
-    clearError();
-    const ok = await login('kdsingh9777', 'NIVKODE8826');
     setIsSubmitting(false);
     if (ok) {
       onSuccess();
@@ -98,7 +86,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
             {/* Admin Email */}
             <div>
               <label className="block text-xs font-mono text-slate-300 uppercase mb-2">
-                Administrator Email
+                Administrator Email / ID
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
@@ -107,7 +95,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="kdsingh9777"
+                  placeholder="Enter Admin ID or Email"
                   className="w-full bg-[#05070B] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-xs sm:text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#D6A84F] transition-colors"
                 />
               </div>
@@ -125,7 +113,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
+                  placeholder="Enter Password"
                   className="w-full bg-[#05070B] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-xs sm:text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#D6A84F] transition-colors"
                 />
               </div>
@@ -142,20 +130,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
             </button>
           </form>
 
-          {/* Quick Admin Access Button */}
-          <div className="pt-4 border-t border-white/10 text-center space-y-3">
-            <p className="text-[11px] text-slate-500">Fast Authorization for System Review:</p>
-            <button
-              type="button"
-              onClick={handleDemoFill}
-              className="w-full py-2.5 rounded-xl bg-[#121824] border border-[#D6A84F]/30 text-[#F5C85B] font-mono text-xs flex items-center justify-center gap-2 hover:bg-[#121824]/80 transition-colors cursor-pointer"
-            >
-              <ShieldCheck className="w-4 h-4" />
-              <span>Authorize Admin Session (`kdsingh9777`)</span>
-            </button>
-          </div>
-
-          <div className="text-center">
+          <div className="pt-4 border-t border-white/10 text-center">
             <a href="/" className="text-xs text-slate-400 hover:text-white transition-colors">
               ← Return to Public Website
             </a>
