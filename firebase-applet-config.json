@@ -1,0 +1,12 @@
+{
+  "apiKey": "AIzaSyDummyKeyForAppletEnvironment001",
+  "authDomain": "applet-project.firebaseapp.com",
+  "projectId": "applet-project",
+  "storageBucket": "applet-project.appspot.com",
+  "messagingSenderId": "1234567890",
+  "appId": "1:1234567890:web:abcdef123456",
+  "firestore": {
+    "region": "us-central1",
+    "databaseId": "(default)"
+  }
+}

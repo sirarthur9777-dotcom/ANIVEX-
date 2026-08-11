@@ -1,0 +1,84 @@
+{
+  "entities": [
+    {
+      "fields": [
+        { "name": "title", "type": "string" },
+        { "name": "description", "type": "string" },
+        { "name": "published", "type": "boolean" },
+        { "name": "displayOrder", "type": "number" }
+      ],
+      "name": "services"
+    },
+    {
+      "fields": [
+        { "name": "name", "type": "string" },
+        { "name": "description", "type": "string" },
+        { "name": "published", "type": "boolean" },
+        { "name": "featured", "type": "boolean" },
+        { "name": "displayOrder", "type": "number" }
+      ],
+      "name": "products"
+    },
+    {
+      "fields": [
+        { "name": "title", "type": "string" },
+        { "name": "description", "type": "string" },
+        { "name": "published", "type": "boolean" },
+        { "name": "displayOrder", "type": "number" }
+      ],
+      "name": "solutions"
+    },
+    {
+      "fields": [
+        { "name": "name", "type": "string" },
+        { "name": "description", "type": "string" },
+        { "name": "published", "type": "boolean" },
+        { "name": "featured", "type": "boolean" },
+        { "name": "status", "type": "string" },
+        { "name": "displayOrder", "type": "number" }
+      ],
+      "name": "projects"
+    },
+    {
+      "fields": [
+        { "name": "fullName", "type": "string" },
+        { "name": "email", "type": "string" },
+        { "name": "phone", "type": "string" },
+        { "name": "company", "type": "string" },
+        { "name": "projectType", "type": "string" },
+        { "name": "budgetRange", "type": "string" },
+        { "name": "description", "type": "string" },
+        { "name": "read", "type": "boolean" },
+        { "name": "status", "type": "string" },
+        { "name": "submittedAt", "type": "string" }
+      ],
+      "name": "contactEnquiries"
+    },
+    {
+      "fields": [
+        { "name": "title", "type": "string" },
+        { "name": "message", "type": "string" },
+        { "name": "type", "type": "string" },
+        { "name": "read", "type": "boolean" },
+        { "name": "createdAt", "type": "string" }
+      ],
+      "name": "notifications"
+    },
+    {
+      "fields": [
+        { "name": "adminEmail", "type": "string" },
+        { "name": "action", "type": "string" },
+        { "name": "targetItem", "type": "string" },
+        { "name": "timestamp", "type": "string" }
+      ],
+      "name": "activityLogs"
+    },
+    {
+      "fields": [
+        { "name": "role", "type": "string" },
+        { "name": "email", "type": "string" }
+      ],
+      "name": "adminUsers"
+    }
+  ]
+}

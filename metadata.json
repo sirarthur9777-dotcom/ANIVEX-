@@ -1,0 +1,6 @@
+{
+  "name": "ANIVEX Solutions",
+  "description": "ANIVEX Solutions builds modern software, AI-powered solutions, websites, mobile applications and digital systems for businesses and organizations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

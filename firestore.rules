@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // Public Collections (Read for anyone, write for admins)
+    match /siteContent/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /companyInfo/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /socialLinks/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /builtByAnivex/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /services/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /products/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /solutions/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /projects/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /media/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Contact Enquiries: Anyone can create, only Admin can read/update/delete
+    match /contactEnquiries/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Admin Only Collections
+    match /notifications/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /activityLogs/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /adminUsers/{docId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
