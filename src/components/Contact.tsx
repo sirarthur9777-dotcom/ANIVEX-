@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Mail, MapPin, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useCms } from '../context/CmsContext';
 
 interface ContactProps {
   preselectedProjectType?: string;
 }
 
 export const Contact: React.FC<ContactProps> = ({ preselectedProjectType }) => {
+  const { submitContactEnquiry } = useCms();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -27,16 +29,9 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType }) => {
     setSubmitError(null);
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setSubmitSuccess(data.message || 'Thank you. Your project inquiry has been successfully transmitted to ANIVEX Solutions.');
+      const res = await submitContactEnquiry(formData);
+      if (res.success) {
+        setSubmitSuccess(res.message);
         setFormData({
           fullName: '',
           email: '',
@@ -47,10 +42,10 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType }) => {
           description: '',
         });
       } else {
-        setSubmitError(data.error || 'Failed to submit inquiry. Please try again.');
+        setSubmitError('Failed to submit inquiry. Please try again.');
       }
     } catch (err) {
-      setSubmitError('Connection error. Please check network connection or email us directly.');
+      setSubmitError('Unable to send inquiry. Please try again or email us directly.');
     } finally {
       setIsSubmitting(false);
     }
