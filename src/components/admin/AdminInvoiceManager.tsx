@@ -895,8 +895,8 @@ export const AdminInvoiceManager: React.FC = () => {
                       </svg>
                     </div>
                     <div>
-                      <span className="font-display font-black text-xl sm:text-2xl tracking-tight text-white">
-                        ANIVEX <span className="text-[#F5C85B]">SOLUTIONS</span>
+                      <span className="font-display font-black text-xl sm:text-2xl tracking-tight text-white uppercase">
+                        {selectedInvoiceForView.billerName || 'ANIVEX SOLUTIONS'}
                       </span>
                       <p className="text-[9px] text-slate-400 font-mono tracking-widest uppercase font-semibold">
                         Software Engineering & Technology Solutions
@@ -905,11 +905,19 @@ export const AdminInvoiceManager: React.FC = () => {
                   </div>
 
                   <div className="text-[11px] text-slate-300 font-mono flex flex-wrap items-center gap-x-3 gap-y-0.5 pt-1">
-                    <span>HQ: Technology Park, India</span>
-                    <span className="text-slate-500">•</span>
-                    <span>Email: <strong className="text-[#F5C85B]">anivexsolution@gmail.com</strong></span>
-                    <span className="text-slate-500">•</span>
-                    <span>Ph: {selectedInvoiceForView.billerPhone || '+91 98765 43210'}</span>
+                    {selectedInvoiceForView.billerAddress && (
+                      <>
+                        <span>HQ: <strong className="text-slate-100">{selectedInvoiceForView.billerAddress}</strong></span>
+                        <span className="text-slate-500">•</span>
+                      </>
+                    )}
+                    <span>Email: <strong className="text-[#F5C85B]">{selectedInvoiceForView.billerEmail || 'anivexsolution@gmail.com'}</strong></span>
+                    {selectedInvoiceForView.billerPhone && (
+                      <>
+                        <span className="text-slate-500">•</span>
+                        <span>Ph: {selectedInvoiceForView.billerPhone}</span>
+                      </>
+                    )}
                     {selectedInvoiceForView.billerTaxId && (
                       <>
                         <span className="text-slate-500">•</span>
