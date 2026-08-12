@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Cpu, Globe, Smartphone, Sparkles, BarChart3, Layout, ArrowRight, Check } from 'lucide-react';
 import { SERVICES } from '../data/companyData';
 import { ServiceItem } from '../types';
+import { useCms } from '../context/CmsContext';
 
 const iconMap: Record<string, React.ReactNode> = {
   Cpu: <Cpu className="w-6 h-6 text-[#F5C85B]" />,
@@ -18,6 +19,19 @@ interface ServicesProps {
 }
 
 export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
+  let cmsServices;
+  try {
+    const cms = useCms();
+    cmsServices = cms.services;
+  } catch (e) {
+    cmsServices = SERVICES.map(s => ({ ...s, displayOrder: 1, published: true }));
+  }
+
+  // Filter published services or fallback to default
+  const activeServices = (cmsServices && cmsServices.length > 0)
+    ? cmsServices.filter(s => s.published !== false)
+    : SERVICES;
+
   const handleServiceClick = (serviceTitle: string) => {
     if (onSelectService) {
       onSelectService(serviceTitle);
@@ -47,9 +61,9 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
           </p>
         </div>
 
-        {/* 6 Service Cards Grid */}
+        {/* Dynamic Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {SERVICES.map((service, idx) => (
+          {activeServices.map((service, idx) => (
             <motion.div
               key={service.id}
               initial={{ opacity: 0, y: 30 }}
@@ -63,10 +77,10 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                 {/* Number & Icon Header */}
                 <div className="flex items-center justify-between mb-6">
                   <span className="font-mono text-xs font-bold text-slate-500 tracking-widest">
-                    //{service.number}
+                    //{service.number || `0${idx + 1}`}
                   </span>
                   <div className="p-3.5 rounded-xl bg-[#0B0F16] border border-white/10 group-hover:border-[#F5C85B] group-hover:scale-110 transition-all duration-300">
-                    {iconMap[service.iconName]}
+                    {iconMap[service.iconName] || <Cpu className="w-6 h-6 text-[#F5C85B]" />}
                   </div>
                 </div>
 
@@ -79,14 +93,16 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                 </p>
 
                 {/* Features Bullet List */}
-                <div className="space-y-2 mb-8 pt-4 border-t border-white/5">
-                  {service.features.map((feat) => (
-                    <div key={feat} className="flex items-center gap-2 text-xs text-slate-400">
-                      <Check className="w-3.5 h-3.5 text-[#F5C85B] shrink-0" />
-                      <span>{feat}</span>
-                    </div>
-                  ))}
-                </div>
+                {service.features && service.features.length > 0 && (
+                  <div className="space-y-2 mb-8 pt-4 border-t border-white/5">
+                    {service.features.map((feat) => (
+                      <div key={feat} className="flex items-center gap-2 text-xs text-slate-400">
+                        <Check className="w-3.5 h-3.5 text-[#F5C85B] shrink-0" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Action Trigger */}

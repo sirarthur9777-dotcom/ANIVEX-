@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, ShieldCheck, Cpu, Sparkles, ChevronDown } from 'lucide-react';
 import { AnivexBrandSymbol } from './AnivexBrandSymbol';
+import { useCms } from '../context/CmsContext';
 
 interface HeroProps {
   onStartProject?: () => void;
@@ -9,6 +10,20 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }) => {
+  let siteContent;
+  try {
+    const cms = useCms();
+    siteContent = cms.siteContent;
+  } catch (e) {
+    siteContent = {
+      heroSubtitle: 'NEXT-GENERATION TECHNOLOGY COMPANY',
+      heroHeading: 'We Build Technology That Moves Businesses Forward.',
+      heroDescription: 'From intelligent software to scalable digital products, ANIVEX Solutions turns ambitious ideas into powerful technology.',
+      primaryButtonText: 'Start a Project',
+      secondaryButtonText: 'Explore Our Solutions',
+    };
+  }
+
   const handleScrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -36,18 +51,17 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }
             {/* Small Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0B0F16] border border-[#D6A84F]/30 text-[11px] font-semibold tracking-wider text-[#F5C85B] uppercase mb-6 shadow-[0_4px_20px_rgba(214,168,79,0.15)]">
               <span className="w-2 h-2 rounded-full bg-[#F5C85B] animate-pulse" />
-              <span>NEXT-GENERATION TECHNOLOGY COMPANY</span>
+              <span>{siteContent?.heroSubtitle || 'NEXT-GENERATION TECHNOLOGY COMPANY'}</span>
             </div>
 
             {/* Main Heading */}
             <h1 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white leading-[1.08] mb-6">
-              We Build Technology That{' '}
-              <span className="text-gold-gradient inline-block">Moves Businesses Forward.</span>
+              {siteContent?.heroHeading || 'We Build Technology That Moves Businesses Forward.'}
             </h1>
 
             {/* Supporting Line */}
             <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl font-normal leading-relaxed mb-8">
-              From intelligent software to scalable digital products, <strong className="text-white font-medium">ANIVEX Solutions</strong> turns ambitious ideas into powerful technology.
+              {siteContent?.heroDescription || 'From intelligent software to scalable digital products, ANIVEX Solutions turns ambitious ideas into powerful technology.'}
             </p>
 
             {/* Dual CTAs */}
@@ -57,7 +71,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }
                 className="group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#D6A84F] via-[#F5C85B] to-[#D6A84F] text-[#05070B] font-bold text-sm tracking-wide transition-all duration-300 hover:shadow-[0_0_28px_rgba(245,200,91,0.5)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                 id="hero-start-project-btn"
               >
-                <span>Start a Project</span>
+                <span>{siteContent?.primaryButtonText || 'Start a Project'}</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
 
@@ -66,7 +80,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }
                 className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#0B0F16]/90 border border-white/15 text-white font-semibold text-sm tracking-wide transition-all duration-300 hover:bg-white/10 hover:border-white/30 cursor-pointer"
                 id="hero-explore-solutions-btn"
               >
-                <span>Explore Our Solutions</span>
+                <span>{siteContent?.secondaryButtonText || 'Explore Our Solutions'}</span>
               </button>
             </div>
 

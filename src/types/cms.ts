@@ -170,3 +170,55 @@ export interface MediaItem {
   category: 'Company Logo' | 'Project' | 'Product' | 'Service' | 'About' | 'Other';
   uploadedAt: string;
 }
+
+export interface InvoiceLineItem {
+  id: string;
+  description: string;
+  category: string;
+  quantity: number;
+  unitPrice: number;
+  amount: number;
+}
+
+export interface InvoiceRecord {
+  id: string;
+  invoiceNumber: string;
+  invoiceDate: string;
+  dueDate: string;
+  status: 'Paid' | 'Pending' | 'Draft' | 'Overdue';
+  currency: 'USD' | 'INR' | 'EUR' | 'GBP';
+  
+  // Biller details
+  billerName: string;
+  billerAddress: string;
+  billerEmail: string;
+  billerPhone: string;
+  billerTaxId?: string;
+
+  // Client details
+  clientName: string;
+  clientCompany: string;
+  clientEmail: string;
+  clientPhone?: string;
+  clientAddress?: string;
+  projectTitle?: string;
+
+  // Items & Financials
+  items: InvoiceLineItem[];
+  subtotal: number;
+  taxRatePercent: number;
+  taxAmount: number;
+  discountAmount: number;
+  totalAmount: number;
+
+  // Payment terms & Bank/UPI details
+  paymentNotes?: string;
+  bankDetails?: string;
+  bankName?: string;
+  accountNumber?: string;
+  ifscCode?: string;
+  upiId?: string;
+  upiQrCodeUrl?: string;
+  createdAt: string;
+}
+

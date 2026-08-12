@@ -3,9 +3,22 @@ import { motion, AnimatePresence } from 'motion/react';
 import { PROJECTS } from '../data/companyData';
 import { ProjectItem } from '../types';
 import { ExternalLink, ShieldCheck, FileText, ArrowRight, X, Layers, PlusCircle } from 'lucide-react';
+import { useCms } from '../context/CmsContext';
 
 export const Projects: React.FC = () => {
-  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+  const [selectedProject, setSelectedProject] = useState<any | null>(null);
+
+  let cmsProjects;
+  try {
+    const cms = useCms();
+    cmsProjects = cms.projects;
+  } catch (e) {
+    cmsProjects = PROJECTS.map(p => ({ ...p, featured: true, displayOrder: 1, published: true }));
+  }
+
+  const activeProjects = (cmsProjects && cmsProjects.length > 0)
+    ? cmsProjects.filter(p => p.published !== false)
+    : PROJECTS;
 
   return (
     <section id="projects" className="py-24 relative bg-[#05070B] overflow-hidden">
@@ -29,7 +42,7 @@ export const Projects: React.FC = () => {
 
         {/* Projects Showcase Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {PROJECTS.map((proj, idx) => (
+          {activeProjects.map((proj, idx) => (
             <motion.div
               key={proj.id}
               initial={{ opacity: 0, y: 30 }}

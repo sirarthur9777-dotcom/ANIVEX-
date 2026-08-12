@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Building2, Rocket, ShieldCheck, UserCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { SOLUTIONS } from '../data/companyData';
 import { SolutionCategory } from '../types';
+import { useCms } from '../context/CmsContext';
 
 const iconMap: Record<string, React.ReactNode> = {
   Building2: <Building2 className="w-6 h-6 text-[#F5C85B]" />,
@@ -16,7 +17,17 @@ interface SolutionsProps {
 }
 
 export const Solutions: React.FC<SolutionsProps> = ({ onSelectSolution }) => {
-  const [activeTab, setActiveTab] = useState<string>(SOLUTIONS[0].id);
+  let cmsSolutions;
+  try {
+    const cms = useCms();
+    cmsSolutions = cms.solutions;
+  } catch (e) {
+    cmsSolutions = SOLUTIONS.map(s => ({ ...s, displayOrder: 1, published: true }));
+  }
+
+  const activeSolutions = (cmsSolutions && cmsSolutions.length > 0)
+    ? cmsSolutions.filter(s => s.published !== false)
+    : SOLUTIONS;
 
   const handleSolutionClick = (title: string) => {
     if (onSelectSolution) {
@@ -47,9 +58,9 @@ export const Solutions: React.FC<SolutionsProps> = ({ onSelectSolution }) => {
           </p>
         </div>
 
-        {/* 4 Cards Grid */}
+        {/* Dynamic Solutions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {SOLUTIONS.map((sol, idx) => (
+          {activeSolutions.map((sol, idx) => (
             <motion.div
               key={sol.id}
               initial={{ opacity: 0, y: 30 }}
@@ -63,7 +74,7 @@ export const Solutions: React.FC<SolutionsProps> = ({ onSelectSolution }) => {
                 {/* Header Icon + Audience Tag */}
                 <div className="flex items-center justify-between mb-6">
                   <div className="p-3.5 rounded-xl bg-[#0B0F16] border border-[#D6A84F]/30 group-hover:border-[#F5C85B] transition-colors">
-                    {iconMap[sol.iconName]}
+                    {iconMap[sol.iconName] || <Building2 className="w-6 h-6 text-[#F5C85B]" />}
                   </div>
                   <span className="text-[11px] font-mono text-slate-400 bg-[#121824] px-3 py-1 rounded-full border border-white/5">
                     {sol.targetAudience}
@@ -84,14 +95,16 @@ export const Solutions: React.FC<SolutionsProps> = ({ onSelectSolution }) => {
                 </p>
 
                 {/* Highlights */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-8 pt-4 border-t border-white/5">
-                  {sol.highlights.map((item) => (
-                    <div key={item} className="flex items-center gap-2 text-xs text-slate-300">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#F5C85B] shrink-0" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
+                {sol.highlights && sol.highlights.length > 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-8 pt-4 border-t border-white/5">
+                    {sol.highlights.map((item) => (
+                      <div key={item} className="flex items-center gap-2 text-xs text-slate-300">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#F5C85B] shrink-0" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Action Trigger */}

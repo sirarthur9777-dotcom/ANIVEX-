@@ -7,14 +7,14 @@ interface ContactProps {
 }
 
 export const Contact: React.FC<ContactProps> = ({ preselectedProjectType }) => {
-  const { submitContactEnquiry } = useCms();
+  const { submitContactEnquiry, companyInfo } = useCms();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     phone: '',
     company: '',
     projectType: preselectedProjectType || 'Website',
-    budgetRange: '$5,000 - $15,000',
+    budgetRange: '₹50,000 - ₹2,00,000',
     description: '',
   });
 
@@ -38,7 +38,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType }) => {
           phone: '',
           company: '',
           projectType: 'Website',
-          budgetRange: '$5,000 - $15,000',
+          budgetRange: '₹50,000 - ₹2,00,000',
           description: '',
         });
       } else {
@@ -81,8 +81,8 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType }) => {
                   </div>
                   <div>
                     <span className="text-xs font-mono text-slate-400 block uppercase">Email Support</span>
-                    <a href="mailto:hello@anivex.com" className="text-sm font-semibold text-white hover:text-[#F5C85B] transition-colors">
-                      hello@anivex.com
+                    <a href={`mailto:${companyInfo.businessEmail || 'anivexsolution@gmail.com'}`} className="text-sm font-semibold text-white hover:text-[#F5C85B] transition-colors">
+                      {companyInfo.businessEmail || 'anivexsolution@gmail.com'}
                     </a>
                   </div>
                 </div>
@@ -221,10 +221,11 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType }) => {
                     onChange={(e) => setFormData({ ...formData, budgetRange: e.target.value })}
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-[#D6A84F] transition-colors"
                   >
-                    <option value="< $5,000">Under $5,000</option>
-                    <option value="$5,000 - $15,000">$5,000 - $15,000</option>
-                    <option value="$15,000 - $50,000">$15,000 - $50,000</option>
-                    <option value="$50,000+">$50,000+</option>
+                    <option value="Under ₹50,000">Under ₹50,000</option>
+                    <option value="₹50,000 - ₹2,00,000">₹50,000 - ₹2,00,000 (₹50K - ₹2 Lakhs)</option>
+                    <option value="₹2,00,000 - ₹10,00,000">₹2,00,000 - ₹10,00,000 (₹2 Lakhs - ₹10 Lakhs)</option>
+                    <option value="₹10,00,000 - ₹50,00,000">₹10,00,000 - ₹50,00,000 (₹10 Lakhs - ₹50 Lakhs)</option>
+                    <option value="₹50,00,000+">₹50,00,000+ (₹50 Lakhs+)</option>
                     <option value="Flexible / To Be Scoped">Flexible / To Be Scoped</option>
                   </select>
                 </div>

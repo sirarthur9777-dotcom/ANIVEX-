@@ -29,6 +29,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
     'social-links': 'Social Channels & Links',
     enquiries: 'Contact Enquiries Dashboard',
     notifications: 'System Notifications',
+    billing: 'Bill & Invoice Generator',
     media: 'Media Asset Library',
     profile: 'Admin Profile & Security',
     'activity-logs': 'Admin Activity Audit Logs',

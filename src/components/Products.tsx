@@ -3,13 +3,26 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, FileText, ArrowRight, ShieldCheck, Check, Layers, ExternalLink, X } from 'lucide-react';
 import { PRODUCTS } from '../data/companyData';
 import { ProductItem } from '../types';
+import { useCms } from '../context/CmsContext';
 
 interface ProductsProps {
   onOpenAiDemo: () => void;
 }
 
 export const Products: React.FC<ProductsProps> = ({ onOpenAiDemo }) => {
-  const [selectedProductModal, setSelectedProductModal] = useState<ProductItem | null>(null);
+  const [selectedProductModal, setSelectedProductModal] = useState<any | null>(null);
+
+  let cmsProducts;
+  try {
+    const cms = useCms();
+    cmsProducts = cms.products;
+  } catch (e) {
+    cmsProducts = PRODUCTS.map(p => ({ ...p, featured: true, displayOrder: 1, published: true }));
+  }
+
+  const activeProducts = (cmsProducts && cmsProducts.length > 0)
+    ? cmsProducts.filter(p => p.published !== false)
+    : PRODUCTS;
 
   return (
     <section id="products" className="py-24 relative bg-[#05070B] overflow-hidden">
@@ -33,7 +46,7 @@ export const Products: React.FC<ProductsProps> = ({ onOpenAiDemo }) => {
 
         {/* Product Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {PRODUCTS.map((prod, idx) => (
+          {activeProducts.map((prod, idx) => (
             <motion.div
               key={prod.id}
               initial={{ opacity: 0, y: 30 }}
@@ -42,7 +55,7 @@ export const Products: React.FC<ProductsProps> = ({ onOpenAiDemo }) => {
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               whileHover={{ y: -8 }}
               className={`group relative p-8 rounded-2xl bg-[#0B0F16] border transition-all duration-300 flex flex-col justify-between shadow-xl ${
-                prod.id === 'anivex-ai'
+                prod.id === 'anivex-ai' || prod.isInteractive
                   ? 'border-[#D6A84F]/50 shadow-[0_10px_30px_rgba(214,168,79,0.1)]'
                   : 'border-white/10 hover:border-[#D6A84F]/40'
               }`}
@@ -51,7 +64,7 @@ export const Products: React.FC<ProductsProps> = ({ onOpenAiDemo }) => {
                 {/* Badge & Status Header */}
                 <div className="flex items-center justify-between mb-6">
                   <span className="px-3 py-1 rounded-full bg-[#121824] border border-[#D6A84F]/30 text-[11px] font-mono text-[#F5C85B]">
-                    {prod.badge}
+                    {prod.badge || 'PRODUCT'}
                   </span>
                   <span className={`text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full border ${
                     prod.status === 'Available'
@@ -78,14 +91,16 @@ export const Products: React.FC<ProductsProps> = ({ onOpenAiDemo }) => {
                 </p>
 
                 {/* Key Features */}
-                <div className="space-y-2 mb-8 pt-4 border-t border-white/5">
-                  {prod.features.map((feat) => (
-                    <div key={feat} className="flex items-center gap-2 text-xs text-slate-400">
-                      <Check className="w-3.5 h-3.5 text-[#F5C85B] shrink-0" />
-                      <span>{feat}</span>
-                    </div>
-                  ))}
-                </div>
+                {prod.features && prod.features.length > 0 && (
+                  <div className="space-y-2 mb-8 pt-4 border-t border-white/5">
+                    {prod.features.map((feat) => (
+                      <div key={feat} className="flex items-center gap-2 text-xs text-slate-400">
+                        <Check className="w-3.5 h-3.5 text-[#F5C85B] shrink-0" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Action Button */}
@@ -96,14 +111,14 @@ export const Products: React.FC<ProductsProps> = ({ onOpenAiDemo }) => {
                     className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#D6A84F] to-[#F5C85B] text-[#05070B] font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg hover:shadow-[0_0_20px_rgba(245,200,91,0.4)] transition-all cursor-pointer"
                   >
                     <Sparkles className="w-4 h-4" />
-                    <span>{prod.actionLabel}</span>
+                    <span>{prod.actionLabel || 'Launch ANIVEX AI'}</span>
                   </button>
                 ) : (
                   <button
                     onClick={() => setSelectedProductModal(prod)}
                     className="w-full py-3 px-4 rounded-xl bg-[#05070B] border border-white/10 hover:border-[#D6A84F] text-white hover:text-[#F5C85B] font-semibold text-xs tracking-wide flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
-                    <span>{prod.actionLabel}</span>
+                    <span>{prod.actionLabel || 'View Product Scoping'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 )}

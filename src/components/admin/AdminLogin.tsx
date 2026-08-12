@@ -3,7 +3,7 @@ import { useAdminAuth } from '../../context/AdminAuthContext';
 import { Lock, Mail, ShieldAlert, ArrowRight, KeyRound } from 'lucide-react';
 
 interface AdminLoginProps {
-  onSuccess: () => void;
+  onSuccess?: () => void;
 }
 
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
@@ -20,7 +20,9 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
     const ok = await login(email, password);
     setIsSubmitting(false);
     if (ok) {
-      onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      }
     }
   };
 

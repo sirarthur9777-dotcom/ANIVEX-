@@ -13,6 +13,7 @@ import {
   Share2,
   Mail,
   Bell,
+  FileText,
   Image,
   UserCheck,
   Activity,
@@ -34,6 +35,7 @@ export type AdminTab =
   | 'social-links'
   | 'enquiries'
   | 'notifications'
+  | 'billing'
   | 'media'
   | 'profile'
   | 'activity-logs'
@@ -84,10 +86,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       ],
     },
     {
-      groupLabel: 'COMMUNICATION',
+      groupLabel: 'COMMUNICATION & BILLING',
       items: [
         { id: 'enquiries', label: 'Contact Enquiries', icon: Mail, badge: unreadEnquiries },
         { id: 'notifications', label: 'Notifications', icon: Bell, badge: unreadNotifs },
+        { id: 'billing', label: 'Bill / Invoice Generator', icon: FileText },
       ],
     },
     {

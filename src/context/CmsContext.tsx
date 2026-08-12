@@ -22,7 +22,8 @@ import {
   ContactEnquiry,
   AdminNotification,
   AdminActivityLog,
-  MediaItem
+  MediaItem,
+  InvoiceRecord
 } from '../types/cms';
 import {
   initialSiteContent,
@@ -36,7 +37,8 @@ import {
   initialContactEnquiries,
   initialNotifications,
   initialActivityLogs,
-  initialMediaItems
+  initialMediaItems,
+  initialInvoices
 } from '../data/initialCmsData';
 
 interface ToastState {
@@ -57,6 +59,7 @@ interface CmsContextType {
   notifications: AdminNotification[];
   activityLogs: AdminActivityLog[];
   mediaItems: MediaItem[];
+  invoices: InvoiceRecord[];
   isLoading: boolean;
   toast: ToastState | null;
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
@@ -114,6 +117,11 @@ interface CmsContextType {
   // Media
   addMedia: (data: Omit<MediaItem, 'id'>) => Promise<void>;
   deleteMedia: (id: string) => Promise<void>;
+
+  // Invoices
+  addInvoice: (data: Omit<InvoiceRecord, 'id' | 'createdAt'>) => Promise<string>;
+  updateInvoice: (id: string, data: Partial<InvoiceRecord>) => Promise<void>;
+  deleteInvoice: (id: string) => Promise<void>;
 
   // Log
   logActivity: (action: string, targetItem: string) => Promise<void>;
@@ -182,6 +190,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return local ? JSON.parse(local) : initialMediaItems;
   });
 
+  const [invoices, setInvoices] = useState<InvoiceRecord[]>(() => {
+    const local = localStorage.getItem('anivex_invoices');
+    return local ? JSON.parse(local) : initialInvoices;
+  });
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [toast, setToast] = useState<ToastState | null>(null);
 
@@ -240,6 +253,10 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem('anivex_media', JSON.stringify(mediaItems));
   }, [mediaItems]);
+
+  useEffect(() => {
+    localStorage.setItem('anivex_invoices', JSON.stringify(invoices));
+  }, [invoices]);
 
   // Firestore Real-Time Subscriptions
   useEffect(() => {
@@ -629,24 +646,25 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setContactEnquiries((prev) => [enquiry, ...prev]);
     setNotifications((prev) => [newNotification, ...prev]);
 
-    // Firestore write
-    try {
-      await setDoc(doc(db, 'contactEnquiries', id), enquiry);
-      await setDoc(doc(db, 'notifications', newNotification.id), newNotification);
-    } catch (e) {
-      console.warn('Firestore contact enquiry write fallback:', e);
-    }
+    // Non-blocking background sync so form submission NEVER hangs
+    Promise.resolve().then(async () => {
+      try {
+        await setDoc(doc(db, 'contactEnquiries', id), enquiry);
+        await setDoc(doc(db, 'notifications', newNotification.id), newNotification);
+      } catch (e) {
+        console.warn('Firestore contact enquiry write fallback:', e);
+      }
 
-    // Call server endpoint for verification and backend email notification log
-    try {
-      await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-    } catch (err) {
-      console.warn('Server contact API call fallback:', err);
-    }
+      try {
+        await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+      } catch (err) {
+        console.warn('Server contact API call fallback:', err);
+      }
+    });
 
     return {
       success: true,
@@ -687,6 +705,52 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       console.warn('Firestore deleteEnquiry fallback:', e);
     }
   };
+
+  // Invoices
+  const addInvoice = async (data: Omit<InvoiceRecord, 'id' | 'createdAt'>) => {
+    const id = `inv-${Date.now()}`;
+    const newInvoice: InvoiceRecord = {
+      id,
+      ...data,
+      createdAt: new Date().toISOString(),
+    };
+    setInvoices((prev) => [newInvoice, ...prev]);
+    showToast(`Invoice ${newInvoice.invoiceNumber} created successfully!`);
+    await logActivity('Created Invoice', newInvoice.invoiceNumber);
+
+    try {
+      await setDoc(doc(db, 'invoices', id), newInvoice);
+    } catch (e) {
+      console.warn('Firestore addInvoice fallback:', e);
+    }
+    return id;
+  };
+
+  const updateInvoice = async (id: string, data: Partial<InvoiceRecord>) => {
+    setInvoices((prev) => prev.map((inv) => (inv.id === id ? { ...inv, ...data } : inv)));
+    showToast('Invoice updated.');
+    await logActivity('Updated Invoice', id);
+
+    try {
+      await updateDoc(doc(db, 'invoices', id), data);
+    } catch (e) {
+      console.warn('Firestore updateInvoice fallback:', e);
+    }
+  };
+
+  const deleteInvoice = async (id: string) => {
+    const inv = invoices.find((i) => i.id === id);
+    setInvoices((prev) => prev.filter((i) => i.id !== id));
+    showToast('Invoice deleted.');
+    await logActivity('Deleted Invoice', inv?.invoiceNumber || id);
+
+    try {
+      await deleteDoc(doc(db, 'invoices', id));
+    } catch (e) {
+      console.warn('Firestore deleteInvoice fallback:', e);
+    }
+  };
+
 
   // Notifications
   const markNotificationRead = async (id: string) => {
@@ -750,6 +814,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         notifications,
         activityLogs,
         mediaItems,
+        invoices,
         isLoading,
         toast,
         showToast,
@@ -779,6 +844,9 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deleteNotification,
         addMedia,
         deleteMedia,
+        addInvoice,
+        updateInvoice,
+        deleteInvoice,
         logActivity,
       }}
     >
