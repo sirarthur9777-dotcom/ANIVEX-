@@ -37,7 +37,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-[#0B0F16]/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-4 flex items-center justify-between">
+    <header className="header no-print print:hidden sticky top-0 z-30 bg-[#0B0F16]/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-4 flex items-center justify-between">
       
       {/* Left: Mobile Menu Trigger & Tab Title */}
       <div className="flex items-center gap-4">

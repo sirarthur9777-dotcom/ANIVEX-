@@ -253,7 +253,9 @@ export const AdminInvoiceManager: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Header */}
+      {/* Dashboard View Section - Hidden during Print */}
+      <div className="space-y-6 print:hidden">
+        {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 rounded-2xl bg-[#0B0F16] border border-white/10">
         <div>
           <div className="flex items-center gap-2">
@@ -419,10 +421,11 @@ export const AdminInvoiceManager: React.FC = () => {
           </table>
         </div>
       </div>
+      </div>
 
       {/* CREATE / EDIT INVOICE MODAL */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto print:hidden">
           <div className="relative w-full max-w-4xl max-h-[90vh] bg-[#0B0F16] border border-[#D6A84F]/40 rounded-2xl shadow-2xl flex flex-col overflow-hidden my-8">
             <div className="p-5 bg-[#05070B] border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-2">

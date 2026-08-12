@@ -121,7 +121,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
       {/* Sidebar Drawer Container */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 w-72 bg-[#0B0F16] border-r border-white/10 z-50 flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 ${
+        className={`sidebar no-print print:hidden fixed top-0 left-0 bottom-0 w-72 bg-[#0B0F16] border-r border-white/10 z-50 flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         }`}
       >

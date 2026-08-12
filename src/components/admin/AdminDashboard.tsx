@@ -80,10 +80,10 @@ export const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#05070B] text-[#D9DCE1] flex selection:bg-[#D6A84F]/30 selection:text-[#F5C85B]">
+    <div className="dashboard min-h-screen bg-[#05070B] text-[#D9DCE1] flex selection:bg-[#D6A84F]/30 selection:text-[#F5C85B] print:bg-white print:p-0">
       
       {/* Toast System Notification Overlay */}
-      {toast && <ToastNotification message={toast.message} type={toast.type} />}
+      {toast && <div className="no-print print:hidden"><ToastNotification message={toast.message} type={toast.type} /></div>}
 
       {/* Persistent Left Admin Sidebar Drawer */}
       <AdminSidebar

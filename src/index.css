@@ -102,13 +102,13 @@
   background: #D6A84F;
 }
 
-/* Printable A4 Tax Invoice Styles */
-@media print {
-  @page {
-    size: A4 portrait;
-    margin: 8mm 10mm;
-  }
+/* Printable A4 Tax Invoice Styles - Strict A4 Print Isolation */
+@page {
+  size: A4 portrait;
+  margin: 10mm;
+}
 
+@media print {
   html, body {
     background-color: #ffffff !important;
     background: #ffffff !important;
@@ -122,28 +122,72 @@
     print-color-adjust: exact !important;
   }
 
-  /* Hide elements marked with print:hidden */
-  .print\:hidden {
+  /* Hide everything in the body by default when printing */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Completely remove non-printable elements from document layout flow */
+  .dashboard,
+  .sidebar,
+  .navbar,
+  .header,
+  .buttons,
+  .no-print,
+  .print\:hidden,
+  button,
+  input,
+  select,
+  textarea {
     display: none !important;
   }
 
-  /* Reset modal fixed overlay to avoid dark backdrop when saving/printing PDF */
-  .fixed.inset-0 {
-    position: static !important;
+  /* Make ONLY the printable invoice element and all its children visible */
+  #printable-invoice,
+  #printable-invoice *,
+  .print-invoice,
+  .print-invoice * {
+    visibility: visible !important;
+  }
+
+  /* Position the printable invoice at top-left of the page, full width */
+  #printable-invoice,
+  .print-invoice {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #ffffff !important;
     background-color: #ffffff !important;
+    color: #05070B !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Modal wrapper backdrop reset during print */
+  .fixed.inset-0 {
+    position: static !important;
+    background: transparent !important;
+    background-color: transparent !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     padding: 0 !important;
     margin: 0 !important;
-    display: block !important;
     box-shadow: none !important;
+    display: block !important;
     width: 100% !important;
     max-width: 100% !important;
-    overflow: visible !important;
   }
 
   #printable-invoice-card {
+    position: static !important;
     background: #ffffff !important;
     box-shadow: none !important;
     border: none !important;
@@ -154,17 +198,13 @@
     max-width: 100% !important;
   }
 
-  #printable-invoice {
-    background: #ffffff !important;
-    color: #05070B !important;
-    padding: 0 !important;
-    margin: 0 auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    box-shadow: none !important;
-    border: none !important;
+  table {
+    page-break-inside: auto !important;
+  }
+
+  tr {
     page-break-inside: avoid !important;
-    break-inside: avoid !important;
+    page-break-after: auto !important;
   }
 }
 
