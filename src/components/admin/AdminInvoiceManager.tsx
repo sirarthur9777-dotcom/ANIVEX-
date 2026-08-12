@@ -12,6 +12,7 @@ import {
   Search,
   ShieldCheck,
   Building2,
+  User,
   CheckCircle2,
   QrCode,
   Sparkles,
@@ -851,167 +852,179 @@ export const AdminInvoiceManager: React.FC = () => {
         </div>
       )}
 
-      {/* VIEW & PRINTABLE BILL MODAL WITH DIGITAL SIGNATURE & INR DESIGN */}
+      {/* VIEW & PRINTABLE BILL MODAL WITH LUXURY EXECUTIVE REDESIGN & INR DESIGN */}
       {selectedInvoiceForView && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
-          <div className="relative w-full max-w-3xl bg-white text-slate-900 rounded-2xl shadow-2xl overflow-hidden my-8 print:m-0 print:shadow-none print:w-full print:max-w-none">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static print:block">
+          <div id="printable-invoice-card" className="relative w-full max-w-3xl bg-white text-slate-900 rounded-2xl shadow-2xl overflow-hidden my-6 print:my-0 print:rounded-none print:shadow-none print:w-full print:max-w-none">
             {/* Modal Control Header (Hidden when printing) */}
-            <div className="p-4 bg-[#05070B] text-white flex items-center justify-between print:hidden border-b border-[#D6A84F]/30">
-              <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-[#F5C85B]" />
-                <span className="font-bold text-sm">Tax Invoice: {selectedInvoiceForView.invoiceNumber}</span>
-                <span className="px-2 py-0.5 rounded bg-[#D6A84F]/20 text-[#F5C85B] text-[10px] font-mono border border-[#D6A84F]/30 font-bold">
+            <div className="p-3.5 px-5 bg-[#05070B] text-white flex items-center justify-between print:hidden border-b border-[#D6A84F]/30">
+              <div className="flex items-center gap-2.5">
+                <div className="w-6 h-6 rounded bg-[#D6A84F]/20 text-[#F5C85B] flex items-center justify-center border border-[#D6A84F]/40">
+                  <FileText className="w-3.5 h-3.5 text-[#F5C85B]" />
+                </div>
+                <div>
+                  <span className="font-bold text-xs sm:text-sm text-white">Tax Invoice Preview: </span>
+                  <span className="font-mono text-xs text-[#F5C85B] font-bold">{selectedInvoiceForView.invoiceNumber}</span>
+                </div>
+                <span className="px-2 py-0.5 rounded bg-[#D6A84F]/20 text-[#F5C85B] text-[10px] font-mono border border-[#D6A84F]/30 font-bold ml-2">
                   {selectedInvoiceForView.currency || 'INR'}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handlePrint}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#D6A84F] to-[#F5C85B] text-[#05070B] font-bold text-xs hover:shadow-[0_0_15px_rgba(245,200,91,0.4)] transition-all cursor-pointer"
-                >
-                  <Printer className="w-4 h-4" />
-                  <span>Print / Save PDF</span>
-                </button>
-                <button
-                  onClick={() => setSelectedInvoiceForView(null)}
-                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+              <button
+                onClick={() => setSelectedInvoiceForView(null)}
+                className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                title="Close Preview"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
-            {/* Printable Document Body */}
-            <div className="p-8 sm:p-12 space-y-8 bg-white" id="printable-invoice">
-              {/* Header Banner */}
-              <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-[#05070B] pb-6 gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-9 h-9 rounded-lg bg-[#05070B] p-1.5 flex items-center justify-center shrink-0 border border-[#D6A84F]">
+            {/* Redesigned Printable Document Body - Single Page A4 Fit */}
+            <div className="p-6 sm:p-8 space-y-4 bg-white text-slate-900" id="printable-invoice">
+              {/* Executive Top Header Band */}
+              <div className="bg-[#05070B] text-white p-4 sm:p-5 rounded-xl border-l-4 border-[#D6A84F] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-lg bg-[#121824] p-1.5 flex items-center justify-center shrink-0 border border-[#D6A84F]">
                       <svg viewBox="0 0 100 100" className="w-full h-full">
                         <path d="M 20,80 L 50,20 L 80,80 M 35,55 L 65,55" fill="none" stroke="#F5C85B" strokeWidth="12" strokeLinecap="round" />
                         <path d="M 30,20 L 70,80" fill="none" stroke="#D9DCE1" strokeWidth="8" strokeLinecap="round" opacity="0.8" />
                       </svg>
                     </div>
                     <div>
-                      <span className="font-display font-black text-2xl tracking-tight text-[#05070B]">
-                        ANIVEX <span className="text-[#D6A84F]">SOLUTIONS</span>
+                      <span className="font-display font-black text-xl sm:text-2xl tracking-tight text-white">
+                        ANIVEX <span className="text-[#F5C85B]">SOLUTIONS</span>
                       </span>
-                      <p className="text-[10px] text-slate-500 font-mono tracking-wider uppercase font-semibold">
-                        Modern Software Engineering & Technology Solutions
+                      <p className="text-[9px] text-slate-400 font-mono tracking-widest uppercase font-semibold">
+                        Software Engineering & Technology Solutions
                       </p>
                     </div>
                   </div>
-                  
-                  <div className="text-xs text-slate-600 space-y-0.5 mt-3 font-normal">
-                    <p className="font-medium text-slate-800">{selectedInvoiceForView.billerAddress || 'Technology Engineering HQ, India'}</p>
-                    <p className="font-mono text-slate-700">Email: <strong className="text-slate-900">{selectedInvoiceForView.billerEmail || 'anivexsolution@gmail.com'}</strong></p>
-                    <p className="font-mono text-slate-700">Phone: {selectedInvoiceForView.billerPhone || '+91 98765 43210'}</p>
+
+                  <div className="text-[11px] text-slate-300 font-mono flex flex-wrap items-center gap-x-3 gap-y-0.5 pt-1">
+                    <span>HQ: Technology Park, India</span>
+                    <span className="text-slate-500">•</span>
+                    <span>Email: <strong className="text-[#F5C85B]">anivexsolution@gmail.com</strong></span>
+                    <span className="text-slate-500">•</span>
+                    <span>Ph: {selectedInvoiceForView.billerPhone || '+91 98765 43210'}</span>
                     {selectedInvoiceForView.billerTaxId && (
-                      <p className="text-[11px] font-mono text-[#D6A84F] font-bold mt-1">
-                        {selectedInvoiceForView.billerTaxId}
-                      </p>
+                      <>
+                        <span className="text-slate-500">•</span>
+                        <span className="text-[#D6A84F] font-bold">{selectedInvoiceForView.billerTaxId}</span>
+                      </>
                     )}
                   </div>
                 </div>
 
-                <div className="text-left sm:text-right">
-                  <div className="inline-block px-3 py-1 rounded bg-[#05070B] text-[#F5C85B] text-xs font-mono font-bold uppercase tracking-widest mb-2 border border-[#D6A84F]/40">
-                    TAX INVOICE
+                <div className="text-left sm:text-right shrink-0">
+                  <div className="inline-block px-2.5 py-0.5 rounded bg-[#D6A84F]/20 text-[#F5C85B] text-[10px] font-mono font-bold uppercase tracking-widest mb-1 border border-[#D6A84F]/40">
+                    OFFICIAL TAX INVOICE
                   </div>
-                  <h1 className="font-mono font-extrabold text-xl text-[#05070B]">{selectedInvoiceForView.invoiceNumber}</h1>
-                  
-                  <div className="mt-3 text-xs text-slate-600 space-y-1 font-mono">
-                    <div>Invoice Date: <strong className="text-slate-900">{selectedInvoiceForView.invoiceDate}</strong></div>
-                    <div>Due Date: <strong className="text-slate-900">{selectedInvoiceForView.dueDate}</strong></div>
-                    <div className="flex items-center justify-start sm:justify-end gap-1.5 mt-1">
-                      <span>Status:</span>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                        selectedInvoiceForView.status === 'Paid'
-                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                          : selectedInvoiceForView.status === 'Pending'
-                          ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                          : 'bg-red-100 text-red-800 border border-red-300'
-                      }`}>
-                        {selectedInvoiceForView.status}
-                      </span>
-                    </div>
+                  <h1 className="font-mono font-extrabold text-lg sm:text-xl text-white">{selectedInvoiceForView.invoiceNumber}</h1>
+                  <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                    Date: <strong className="text-slate-200">{selectedInvoiceForView.invoiceDate}</strong> | Due: <strong className="text-[#F5C85B]">{selectedInvoiceForView.dueDate}</strong>
                   </div>
                 </div>
               </div>
 
-              {/* Client & Project Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-xl border border-slate-200">
-                <div>
-                  <h4 className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
-                    <span>BILLED TO (CLIENT)</span>
-                  </h4>
-                  <div className="text-sm font-bold text-slate-900">{selectedInvoiceForView.clientName}</div>
+              {/* Status & Engagement Meta Bar */}
+              <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 text-[11px] font-mono">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-500 font-semibold uppercase text-[10px]">Payment Status:</span>
+                  <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                    selectedInvoiceForView.status === 'Paid'
+                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                      : selectedInvoiceForView.status === 'Pending'
+                      ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                      : 'bg-red-100 text-red-800 border border-red-300'
+                  }`}>
+                    ● {selectedInvoiceForView.status}
+                  </span>
+                </div>
+                <div className="text-slate-600">
+                  Currency: <strong className="text-slate-900 font-bold">{selectedInvoiceForView.currency || 'INR (₹)'}</strong>
+                </div>
+              </div>
+
+              {/* Client & Project Scope Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Client Card */}
+                <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1">
+                  <div className="flex items-center justify-between border-b border-slate-200 pb-1 mb-1.5">
+                    <span className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                      <User className="w-3 h-3 text-[#D6A84F]" />
+                      <span>BILLED TO (CLIENT)</span>
+                    </span>
+                    <span className="text-[9px] font-mono text-slate-400">CLIENT REF #</span>
+                  </div>
+                  <div className="text-xs sm:text-sm font-bold text-slate-900">{selectedInvoiceForView.clientName}</div>
                   {selectedInvoiceForView.clientCompany && (
-                    <div className="text-xs font-semibold text-slate-700">{selectedInvoiceForView.clientCompany}</div>
+                    <div className="text-[11px] font-semibold text-slate-700">{selectedInvoiceForView.clientCompany}</div>
                   )}
-                  {selectedInvoiceForView.clientEmail && (
-                    <div className="text-xs text-slate-600 font-mono mt-0.5">{selectedInvoiceForView.clientEmail}</div>
-                  )}
-                  {selectedInvoiceForView.clientPhone && (
-                    <div className="text-xs text-slate-600 font-mono">{selectedInvoiceForView.clientPhone}</div>
-                  )}
-                  {selectedInvoiceForView.clientAddress && (
-                    <div className="text-xs text-slate-600 mt-1">{selectedInvoiceForView.clientAddress}</div>
-                  )}
+                  <div className="text-[10px] text-slate-600 font-mono space-y-0.5 pt-0.5">
+                    {selectedInvoiceForView.clientEmail && <div>Email: {selectedInvoiceForView.clientEmail}</div>}
+                    {selectedInvoiceForView.clientPhone && <div>Phone: {selectedInvoiceForView.clientPhone}</div>}
+                    {selectedInvoiceForView.clientAddress && <div className="text-slate-600 font-sans mt-0.5">{selectedInvoiceForView.clientAddress}</div>}
+                  </div>
                 </div>
 
-                <div>
-                  <h4 className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-2">
-                    ENGAGEMENT SCOPE & DETAILS
-                  </h4>
-                  <div className="text-sm font-bold text-slate-900">{selectedInvoiceForView.projectTitle}</div>
-                  <div className="mt-2 text-xs text-slate-600 leading-relaxed font-normal bg-white p-2.5 rounded border border-slate-200">
-                    {selectedInvoiceForView.paymentNotes || 'Standard Enterprise Deliverable Terms apply.'}
+                {/* Scope Card */}
+                <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1">
+                  <div className="flex items-center justify-between border-b border-slate-200 pb-1 mb-1.5">
+                    <span className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                      <Building2 className="w-3 h-3 text-[#D6A84F]" />
+                      <span>PROJECT SCOPE & TERMS</span>
+                    </span>
+                  </div>
+                  <div className="text-xs sm:text-sm font-bold text-slate-900">{selectedInvoiceForView.projectTitle}</div>
+                  <div className="text-[10px] text-slate-600 leading-relaxed font-normal bg-white p-2 rounded border border-slate-200 mt-1">
+                    {selectedInvoiceForView.paymentNotes || 'Standard Enterprise Deliverable Terms apply according to milestone agreement.'}
                   </div>
                 </div>
               </div>
 
-              {/* Items Table */}
-              <div className="border rounded-xl border-slate-300 overflow-hidden">
+              {/* Itemized Deliverables Table */}
+              <div className="border rounded-xl border-slate-300 overflow-hidden shadow-xs">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#05070B] text-white font-mono text-[11px] uppercase border-b border-slate-300">
+                  <thead className="bg-[#05070B] text-white font-mono text-[10px] uppercase border-b border-slate-300">
                     <tr>
-                      <th className="p-3">#</th>
-                      <th className="p-3">Service / Deliverable Description</th>
-                      <th className="p-3">Category</th>
-                      <th className="p-3 text-center">Qty</th>
-                      <th className="p-3 text-right">Rate ({selectedInvoiceForView.currency === 'INR' ? '₹' : selectedInvoiceForView.currency})</th>
-                      <th className="p-3 text-right">Amount ({selectedInvoiceForView.currency === 'INR' ? '₹' : selectedInvoiceForView.currency})</th>
+                      <th className="py-2.5 px-3 w-8">#</th>
+                      <th className="py-2.5 px-3">Service / Deliverable Description</th>
+                      <th className="py-2.5 px-3">Category</th>
+                      <th className="py-2.5 px-3 text-center w-12">Qty</th>
+                      <th className="py-2.5 px-3 text-right w-24">Rate ({selectedInvoiceForView.currency === 'INR' ? '₹' : selectedInvoiceForView.currency})</th>
+                      <th className="py-2.5 px-3 text-right w-28">Amount ({selectedInvoiceForView.currency === 'INR' ? '₹' : selectedInvoiceForView.currency})</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200 text-slate-800">
+                  <tbody className="divide-y divide-slate-200 text-slate-800 text-[11px]">
                     {selectedInvoiceForView.items.map((item, i) => (
-                      <tr key={item.id} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
-                        <td className="p-3 font-mono text-slate-400">{i + 1}</td>
-                        <td className="p-3 font-semibold text-slate-900">{item.description}</td>
-                        <td className="p-3 text-slate-500 font-mono text-[11px]">{item.category}</td>
-                        <td className="p-3 text-center font-mono">{item.quantity}</td>
-                        <td className="p-3 text-right font-mono">{formatCurrency(item.unitPrice, selectedInvoiceForView.currency)}</td>
-                        <td className="p-3 text-right font-mono font-bold text-slate-900">{formatCurrency(item.amount, selectedInvoiceForView.currency)}</td>
+                      <tr key={item.id} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}>
+                        <td className="py-2 px-3 font-mono text-slate-400">{i + 1}</td>
+                        <td className="py-2 px-3 font-semibold text-slate-900">{item.description}</td>
+                        <td className="py-2 px-3 text-slate-500 font-mono text-[10px]">{item.category}</td>
+                        <td className="py-2 px-3 text-center font-mono">{item.quantity}</td>
+                        <td className="py-2 px-3 text-right font-mono">{formatCurrency(item.unitPrice, selectedInvoiceForView.currency)}</td>
+                        <td className="py-2 px-3 text-right font-mono font-bold text-slate-900">{formatCurrency(item.amount, selectedInvoiceForView.currency)}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
 
-              {/* Bank Details & Totals Breakdown */}
-              <div className="flex flex-col md:flex-row justify-between items-start gap-6 pt-2">
-                {/* Left: Bank Wire & UPI Card + QR Code */}
-                <div className="max-w-md w-full space-y-3">
-                  <h4 className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                    <QrCode className="w-3.5 h-3.5 text-[#D6A84F]" />
-                    <span>BANK WIRE & UPI PAYMENT DETAILS</span>
-                  </h4>
+              {/* Payment Details & Total Breakdown */}
+              <div className="flex flex-col md:flex-row justify-between items-start gap-3 pt-1">
+                {/* Left: Scannable UPI & Bank Details Box */}
+                <div className="max-w-md w-full space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                      <QrCode className="w-3 h-3 text-[#D6A84F]" />
+                      <span>DIRECT BANK & UPI PAYMENT PORTAL</span>
+                    </span>
+                  </div>
 
-                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col sm:flex-row gap-3 items-center">
+                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex flex-col sm:flex-row gap-3 items-center">
                     {/* UPI QR Code Container */}
-                    <div className="shrink-0 flex flex-col items-center bg-white p-2 rounded-lg border border-slate-200 shadow-sm text-center">
+                    <div className="shrink-0 flex flex-col items-center bg-white p-1.5 rounded-lg border border-slate-200 shadow-sm text-center">
                       <img
                         src={
                           selectedInvoiceForView.upiQrCodeUrl ||
@@ -1020,26 +1033,26 @@ export const AdminInvoiceManager: React.FC = () => {
                           )}`
                         }
                         alt="UPI Payment QR Code"
-                        className="w-20 h-20 object-contain"
+                        className="w-16 h-16 object-contain"
                       />
-                      <span className="text-[9px] font-mono font-bold text-slate-700 mt-1 uppercase">
-                        SCAN & PAY VIA UPI
+                      <span className="text-[8px] font-mono font-bold text-slate-800 mt-0.5 uppercase">
+                        SCAN TO PAY VIA UPI
                       </span>
                     </div>
 
-                    {/* Text Details */}
-                    <div className="text-xs text-slate-800 font-mono space-y-1 text-left w-full">
+                    {/* Text Bank Details */}
+                    <div className="text-[10px] text-slate-800 font-mono space-y-0.5 text-left w-full">
                       <p className="font-bold text-slate-900">
                         {selectedInvoiceForView.bankName || 'HDFC Bank'} | A/C: {selectedInvoiceForView.accountNumber || '50200012345678'}
                       </p>
-                      <p className="text-[11px] text-slate-600">
+                      <p className="text-slate-600">
                         IFSC: <strong className="text-slate-900">{selectedInvoiceForView.ifscCode || 'HDFC0000123'}</strong>
                       </p>
-                      <div className="pt-1.5 border-t border-slate-200 text-[11px] text-slate-700">
+                      <div className="pt-0.5 border-t border-slate-200 text-slate-700">
                         UPI ID: <strong className="text-[#05070B]">{selectedInvoiceForView.upiId || 'anivexsolution@okaxis'}</strong>
                       </div>
-                      <div className="pt-1">
-                        <span className="inline-block text-[9px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">
+                      <div className="pt-0.5">
+                        <span className="inline-block text-[8px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-300">
                           GPay / PhonePe / Paytm / BHIM / IMPS
                         </span>
                       </div>
@@ -1047,7 +1060,8 @@ export const AdminInvoiceManager: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="w-full md:w-72 space-y-2 text-right text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+                {/* Right: Calculated Totals Box */}
+                <div className="w-full md:w-64 space-y-1 text-right text-[11px] bg-slate-50 p-3 rounded-xl border border-slate-200">
                   <div className="flex justify-between text-slate-600">
                     <span>Subtotal:</span>
                     <span className="font-mono font-bold text-slate-900">{formatCurrency(selectedInvoiceForView.subtotal, selectedInvoiceForView.currency)}</span>
@@ -1062,63 +1076,58 @@ export const AdminInvoiceManager: React.FC = () => {
                       <span className="font-mono font-bold">-{formatCurrency(selectedInvoiceForView.discountAmount, selectedInvoiceForView.currency)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between pt-3 border-t-2 border-slate-900 text-base font-extrabold text-slate-900">
+                  <div className="flex justify-between pt-2 border-t-2 border-slate-900 text-sm font-black text-[#05070B] bg-amber-500/10 p-1.5 rounded mt-1">
                     <span>Total Amount Payable:</span>
-                    <span className="font-mono text-[#05070B]">{formatCurrency(selectedInvoiceForView.totalAmount, selectedInvoiceForView.currency)}</span>
+                    <span className="font-mono font-extrabold text-[#05070B]">{formatCurrency(selectedInvoiceForView.totalAmount, selectedInvoiceForView.currency)}</span>
                   </div>
                 </div>
               </div>
 
-              {/* DIGITAL SIGNATURE SECTION */}
-              <div className="pt-6 border-t-2 border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+              {/* Digital Signature & Verification Seal Grid */}
+              <div className="pt-3 border-t-2 border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
                 {/* Left: Verification Seal */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3 p-3 bg-[#05070B] text-white rounded-xl border border-[#D6A84F]/40 shadow-sm">
-                    <div className="w-9 h-9 rounded-full bg-[#121824] text-[#F5C85B] flex items-center justify-center font-bold shrink-0 border border-[#D6A84F]/50">
-                      <ShieldCheck className="w-5 h-5 text-[#F5C85B]" />
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 p-2 bg-[#05070B] text-white rounded-xl border border-[#D6A84F]/40 shadow-xs">
+                    <div className="w-7 h-7 rounded-full bg-[#121824] text-[#F5C85B] flex items-center justify-center font-bold shrink-0 border border-[#D6A84F]/50">
+                      <ShieldCheck className="w-4 h-4 text-[#F5C85B]" />
                     </div>
                     <div>
-                      <div className="text-[10px] font-bold text-[#F5C85B] uppercase font-mono tracking-wider flex items-center gap-1.5">
+                      <div className="text-[9px] font-bold text-[#F5C85B] uppercase font-mono tracking-wider flex items-center gap-1">
                         <span>DIGITALLY VERIFIED TAX INVOICE</span>
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                       </div>
-                      <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+                      <div className="text-[8px] text-slate-400 font-mono">
                         SHA256 Hash: <span className="text-slate-200 font-bold">ANX-SIG-{selectedInvoiceForView.id.toUpperCase().replace(/[^A-Z0-9]/g, '') || '987A2B'}</span>
-                      </div>
-                      <div className="text-[9px] text-slate-400 font-mono">
-                        Issued & Signed: {selectedInvoiceForView.invoiceDate} | ANIVEX Security System
                       </div>
                     </div>
                   </div>
 
-                  <p className="text-[9px] text-slate-500 font-mono italic">
+                  <p className="text-[8px] text-slate-500 font-mono italic">
                     This is an authentic, legally binding digital bill issued under section 65B of the Indian Evidence Act, 1872. Valid without wet-ink signature.
                   </p>
                 </div>
 
-                {/* Right: Digital Signature Box (Smaller Compact Design) */}
-                <div className="flex flex-col items-start md:items-end space-y-1">
-                  <div className="relative p-2.5 rounded-xl border-2 border-dashed border-[#D6A84F] bg-slate-50 w-full sm:w-52 text-center shadow-sm">
-                    {/* Official Stamp Badge */}
-                    <div className="text-[8px] font-mono font-bold tracking-widest text-[#D6A84F] uppercase border-b border-slate-200 pb-1 mb-1">
+                {/* Right: Digital Signature Box */}
+                <div className="flex flex-col items-start md:items-end space-y-0.5">
+                  <div className="relative p-2 rounded-xl border-2 border-dashed border-[#D6A84F] bg-slate-50 w-full sm:w-48 text-center shadow-xs">
+                    <div className="text-[8px] font-mono font-bold tracking-widest text-[#D6A84F] uppercase border-b border-slate-200 pb-0.5 mb-0.5">
                       AUTHORISED DIGITAL SIGNATURE
                     </div>
 
-                    {/* Compact Vector / Script Signature */}
-                    <div className="my-1 py-0.5 flex justify-center items-center">
-                      <div className="relative font-serif italic text-lg font-bold text-[#05070B] tracking-wider">
-                        <span className="font-serif italic text-base font-extrabold text-[#05070B] drop-shadow-sm font-mono">
+                    <div className="my-0.5 py-0.5 flex justify-center items-center">
+                      <div className="relative font-serif italic text-base font-bold text-[#05070B] tracking-wider">
+                        <span className="font-serif italic text-sm font-extrabold text-[#05070B] drop-shadow-xs font-mono">
                           {signatoryName || 'Krishndas Chauhan'}
                         </span>
-                        <svg className="w-32 h-3 mx-auto -mt-0.5 text-[#D6A84F]" viewBox="0 0 200 30" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <svg className="w-28 h-2.5 mx-auto -mt-0.5 text-[#D6A84F]" viewBox="0 0 200 30" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                           <path d="M 10 15 Q 50 5 90 20 T 170 12 T 190 25" />
                         </svg>
                       </div>
                     </div>
 
-                    <div className="text-[11px] font-bold text-slate-900">{signatoryName || 'Krishndas Chauhan'}</div>
-                    <div className="text-[10px] text-slate-600 font-medium">{signatoryTitle || 'Founder & Managing Director'}</div>
-                    <div className="text-[9px] text-[#D6A84F] font-mono font-bold mt-0.5 uppercase tracking-wider">
+                    <div className="text-[10px] font-bold text-slate-900">{signatoryName || 'Krishndas Chauhan'}</div>
+                    <div className="text-[9px] text-slate-600 font-medium">{signatoryTitle || 'Founder & Managing Director'}</div>
+                    <div className="text-[8px] text-[#D6A84F] font-mono font-bold uppercase tracking-wider mt-0.5">
                       ANIVEX Solutions
                     </div>
                   </div>
@@ -1126,9 +1135,32 @@ export const AdminInvoiceManager: React.FC = () => {
               </div>
 
               {/* Document Footer */}
-              <div className="pt-6 border-t border-slate-200 text-center text-slate-500 text-[11px] font-mono flex flex-col sm:flex-row justify-between items-center gap-2">
-                <div>Thank you for choosing ANIVEX Solutions. Modern Technology & Software Engineering.</div>
+              <div className="pt-2 border-t border-slate-200 text-center text-slate-500 text-[9px] font-mono flex flex-col sm:flex-row justify-between items-center gap-1">
+                <div>Thank you for partnering with ANIVEX Solutions. Enterprise Software Engineering.</div>
                 <div className="font-bold text-slate-700">ANIVEX Solutions © {new Date().getFullYear()}</div>
+              </div>
+            </div>
+
+            {/* Modal Control Footer (Hidden when printing) */}
+            <div className="p-3.5 px-5 bg-[#05070B] text-white flex flex-col sm:flex-row items-center justify-between gap-3 print:hidden border-t border-[#D6A84F]/30">
+              <div className="text-xs text-slate-400 font-mono text-center sm:text-left flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>Ready for single-page A4 Portrait Print or PDF Export</span>
+              </div>
+              <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+                <button
+                  onClick={() => setSelectedInvoiceForView(null)}
+                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition-all cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={handlePrint}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#D6A84F] to-[#F5C85B] text-[#05070B] font-bold text-xs hover:shadow-[0_0_20px_rgba(245,200,91,0.5)] transition-all cursor-pointer"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Print / Save PDF</span>
+                </button>
               </div>
             </div>
           </div>
