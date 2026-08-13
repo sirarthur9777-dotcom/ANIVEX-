@@ -50,17 +50,36 @@ export const AnivexAiModal: React.FC<AnivexAiModalProps> = ({ isOpen, onClose })
     setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
 
-    // Simulate intelligent AI processing
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/anivex-ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: userMsgText }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const botReply = data.reply || data.message;
+        
+        const botMsg: ChatMessage = {
+          id: `bot-${Date.now()}`,
+          sender: 'assistant',
+          text: botReply,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        };
+        setMessages((prev) => [...prev, botMsg]);
+      } else {
+        throw new Error('API response error');
+      }
+    } catch (err) {
+      // Intelligent fallback responses
       let replyText = '';
       const p = userMsgText.toLowerCase();
 
       if (p.includes('policyhub') || p.includes('policy')) {
         replyText = `PolicyHub is ANIVEX Solutions' flagship document governance platform. It features enterprise RBAC, automated workflow verification, immutable audit logs, and instant policy search. Would you like us to demo or scope PolicyHub for your organization?`;
       } else if (p.includes('service') || p.includes('build') || p.includes('capability') || p.includes('what do you do')) {
-        replyText = `ANIVEX Solutions specializes in 6 core engineering domains:\n• Custom Enterprise Software Development\n• AI & Automated Workflow Systems\n• Scalable Web & Cloud Applications\n• Mobile Application Development (iOS & Android)\n• High-Performance UI/UX Design\n• Analytics & Data Visualizations.\n\nWhich area fits your upcoming project?`;
-      } else if (p.includes('founder') || p.includes('karan') || p.includes('team') || p.includes('who created')) {
-        replyText = `ANIVEX Solutions was founded and engineered by Karan Deep Singh. We operate as an elite technology firm focused on delivering high-performance, enterprise-grade software and AI applications.`;
+        replyText = `ANIVEX Solutions specializes in core engineering domains:\n• Custom Enterprise Software Development\n• AI & Automated Workflow Systems\n• Scalable Web & Cloud Applications\n• Mobile Application Development\n• High-Performance UI/UX Design\n• Analytics & Data Visualizations.\n\nWhich area fits your upcoming project?`;
       } else if (p.includes('contact') || p.includes('start') || p.includes('hire') || p.includes('quote') || p.includes('cost') || p.includes('price')) {
         replyText = `Starting a project with ANIVEX is simple! You can fill out our Project Enquiry form directly on this website, specifying your project scope and budget range. Our engineering team will review your requirements and respond within 24 hours.`;
       } else if (p.includes('product') || p.includes('proprietary')) {
@@ -77,8 +96,9 @@ export const AnivexAiModal: React.FC<AnivexAiModalProps> = ({ isOpen, onClose })
       };
 
       setMessages((prev) => [...prev, botMsg]);
+    } finally {
       setLoading(false);
-    }, 400);
+    }
   };
 
   const handleQuickPrompt = (promptText: string) => {

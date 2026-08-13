@@ -14,6 +14,7 @@ import {
   Mail,
   Bell,
   FileText,
+  Landmark,
   Image,
   UserCheck,
   Activity,
@@ -36,6 +37,7 @@ export type AdminTab =
   | 'enquiries'
   | 'notifications'
   | 'billing'
+  | 'payment-settings'
   | 'media'
   | 'profile'
   | 'activity-logs'
@@ -91,6 +93,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         { id: 'enquiries', label: 'Contact Enquiries', icon: Mail, badge: unreadEnquiries },
         { id: 'notifications', label: 'Notifications', icon: Bell, badge: unreadNotifs },
         { id: 'billing', label: 'Bill / Invoice Generator', icon: FileText },
+        { id: 'payment-settings', label: 'Payment Settings', icon: Landmark },
       ],
     },
     {

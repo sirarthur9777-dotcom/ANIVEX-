@@ -18,6 +18,7 @@ import {
   ProjectCMS,
   BuiltByAnivexItem,
   CompanyInfo,
+  PaymentSettings,
   SocialLinks,
   ContactEnquiry,
   AdminNotification,
@@ -33,6 +34,7 @@ import {
   initialProjects,
   initialBuiltByAnivex,
   initialCompanyInfo,
+  initialPaymentSettings,
   initialSocialLinks,
   initialContactEnquiries,
   initialNotifications,
@@ -54,6 +56,7 @@ interface CmsContextType {
   projects: ProjectCMS[];
   builtByAnivex: BuiltByAnivexItem[];
   companyInfo: CompanyInfo;
+  paymentSettings: PaymentSettings;
   socialLinks: SocialLinks;
   contactEnquiries: ContactEnquiry[];
   notifications: AdminNotification[];
@@ -92,8 +95,9 @@ interface CmsContextType {
   updateBuiltByAnivex: (id: string, data: Partial<BuiltByAnivexItem>) => Promise<void>;
   deleteBuiltByAnivex: (id: string) => Promise<void>;
 
-  // Company Info & Socials
+  // Company Info, Payment Settings & Socials
   updateCompanyInfo: (data: CompanyInfo) => Promise<void>;
+  updatePaymentSettings: (data: PaymentSettings) => Promise<void>;
   updateSocialLinks: (data: SocialLinks) => Promise<void>;
 
   // Enquiries
@@ -163,6 +167,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo>(() => {
     const local = localStorage.getItem('anivex_company_info');
     return local ? JSON.parse(local) : initialCompanyInfo;
+  });
+
+  const [paymentSettings, setPaymentSettings] = useState<PaymentSettings>(() => {
+    const local = localStorage.getItem('anivex_payment_settings');
+    return local ? JSON.parse(local) : initialPaymentSettings;
   });
 
   const [socialLinks, setSocialLinks] = useState<SocialLinks>(() => {
@@ -235,6 +244,10 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [companyInfo]);
 
   useEffect(() => {
+    localStorage.setItem('anivex_payment_settings', JSON.stringify(paymentSettings));
+  }, [paymentSettings]);
+
+  useEffect(() => {
     localStorage.setItem('anivex_social_links', JSON.stringify(socialLinks));
   }, [socialLinks]);
 
@@ -261,12 +274,19 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Firestore Real-Time Subscriptions
   useEffect(() => {
     try {
-      // Subscribe to siteContent
-      const unsubContent = onSnapshot(doc(db, 'siteContent', 'main'), (snapshot) => {
+      // Subscribe to companyInfo
+      const unsubCompany = onSnapshot(doc(db, 'companyInfo', 'main'), (snapshot) => {
         if (snapshot.exists()) {
-          setSiteContent(snapshot.data() as SiteContent);
+          setCompanyInfo(snapshot.data() as CompanyInfo);
         }
-      }, (err) => console.warn('Firestore siteContent sync:', err));
+      }, (err) => console.warn('Firestore companyInfo sync:', err));
+
+      // Subscribe to paymentSettings
+      const unsubPayment = onSnapshot(doc(db, 'paymentSettings', 'main'), (snapshot) => {
+        if (snapshot.exists()) {
+          setPaymentSettings(snapshot.data() as PaymentSettings);
+        }
+      }, (err) => console.warn('Firestore paymentSettings sync:', err));
 
       // Subscribe to services
       const unsubServices = onSnapshot(collection(db, 'services'), (snapshot) => {
@@ -329,7 +349,8 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }, (err) => console.warn('Firestore notifications sync:', err));
 
       return () => {
-        unsubContent();
+        unsubCompany();
+        unsubPayment();
         unsubServices();
         unsubProducts();
         unsubSolutions();
@@ -395,7 +416,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     await logActivity('Updated Service', data.title || id);
 
     try {
-      await updateDoc(doc(db, 'services', id), data);
+      await setDoc(doc(db, 'services', id), data, { merge: true });
     } catch (e) {
       console.warn('Firestore updateService fallback:', e);
     }
@@ -435,7 +456,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     await logActivity('Updated Product', data.name || id);
 
     try {
-      await updateDoc(doc(db, 'products', id), data);
+      await setDoc(doc(db, 'products', id), data, { merge: true });
     } catch (e) {
       console.warn('Firestore updateProduct fallback:', e);
     }
@@ -475,7 +496,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     await logActivity('Updated Solution', data.title || id);
 
     try {
-      await updateDoc(doc(db, 'solutions', id), data);
+      await setDoc(doc(db, 'solutions', id), data, { merge: true });
     } catch (e) {
       console.warn('Firestore updateSolution fallback:', e);
     }
@@ -515,7 +536,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     await logActivity('Updated Project', data.name || id);
 
     try {
-      await updateDoc(doc(db, 'projects', id), data);
+      await setDoc(doc(db, 'projects', id), data, { merge: true });
     } catch (e) {
       console.warn('Firestore updateProject fallback:', e);
     }
@@ -555,7 +576,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     await logActivity('Updated Built By Showcase', data.title || id);
 
     try {
-      await updateDoc(doc(db, 'builtByAnivex', id), data);
+      await setDoc(doc(db, 'builtByAnivex', id), data, { merge: true });
     } catch (e) {
       console.warn('Firestore updateBuiltByAnivex fallback:', e);
     }
@@ -574,7 +595,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  // Company Info & Socials
+  // Company Info, Payment Settings & Socials
   const updateCompanyInfo = async (data: CompanyInfo) => {
     setCompanyInfo(data);
     showToast('Company Settings updated successfully!');
@@ -584,6 +605,18 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       await setDoc(doc(db, 'companyInfo', 'main'), data, { merge: true });
     } catch (e) {
       console.warn('Firestore updateCompanyInfo fallback:', e);
+    }
+  };
+
+  const updatePaymentSettings = async (data: PaymentSettings) => {
+    setPaymentSettings(data);
+    showToast('Payment Settings updated & synced live!');
+    await logActivity('Updated Payment Settings', 'UPI & Bank Details');
+
+    try {
+      await setDoc(doc(db, 'paymentSettings', 'main'), data, { merge: true });
+    } catch (e) {
+      console.warn('Firestore updatePaymentSettings fallback:', e);
     }
   };
 
@@ -809,6 +842,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         projects,
         builtByAnivex,
         companyInfo,
+        paymentSettings,
         socialLinks,
         contactEnquiries,
         notifications,
@@ -835,6 +869,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateBuiltByAnivex,
         deleteBuiltByAnivex,
         updateCompanyInfo,
+        updatePaymentSettings,
         updateSocialLinks,
         submitContactEnquiry,
         markEnquiryRead,

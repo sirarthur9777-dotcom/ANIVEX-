@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, MapPin, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Mail, MapPin, Send, CheckCircle2, AlertCircle, QrCode, Landmark, Building2, Smartphone, Copy, Check } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 
 interface ContactProps {
@@ -7,7 +7,9 @@ interface ContactProps {
 }
 
 export const Contact: React.FC<ContactProps> = ({ preselectedProjectType }) => {
-  const { submitContactEnquiry, companyInfo } = useCms();
+  const { submitContactEnquiry, companyInfo, paymentSettings } = useCms();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [copiedUpi, setCopiedUpi] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -98,6 +100,34 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType }) => {
                 </div>
               </div>
             </div>
+
+            {/* Official Payment Card */}
+            {paymentSettings && paymentSettings.enabled !== false && (
+              <div className="p-6 rounded-2xl bg-[#0B0F16] border border-[#D6A84F]/40 space-y-4 shadow-xl">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-[#F5C85B]">
+                    <Landmark className="w-5 h-5" />
+                    <h4 className="text-xs font-mono font-bold uppercase tracking-wider">OFFICIAL PAYMENT OPTIONS</h4>
+                  </div>
+                  <span className="px-2 py-0.5 rounded bg-[#D6A84F]/20 text-[#F5C85B] text-[10px] font-mono font-bold border border-[#D6A84F]/30">
+                    UPI / BANK
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-300">
+                  Clients and partners can settle milestones directly via UPI (GPay/PhonePe/Paytm/BHIM) or Bank Transfer.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => setShowPaymentModal(true)}
+                  className="w-full py-3 px-4 rounded-xl bg-[#121824] border border-[#D6A84F]/50 hover:border-[#F5C85B] text-[#F5C85B] font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#1A2234] transition-all cursor-pointer"
+                >
+                  <QrCode className="w-4 h-4" />
+                  <span>{paymentSettings.paymentButtonText || 'View Payment Details & UPI QR'}</span>
+                </button>
+              </div>
+            )}
 
             <div className="p-6 rounded-2xl bg-[#0B0F16]/50 border border-white/10 space-y-3">
               <h4 className="text-xs font-mono font-bold text-[#F5C85B] uppercase">WHAT TO EXPECT</h4>
@@ -257,6 +287,118 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType }) => {
           </div>
         </div>
       </div>
+
+      {/* PAYMENT DETAILS POPUP MODAL */}
+      {showPaymentModal && paymentSettings && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="relative w-full max-w-md bg-[#0B0F16] border border-[#D6A84F]/40 rounded-3xl p-6 shadow-2xl space-y-6 text-white max-h-[90vh] overflow-y-auto">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-[#121824] border border-[#D6A84F]/40 text-[#F5C85B]">
+                  <Landmark className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-base text-white">ANIVEX Official Payment</h3>
+                  <p className="text-[11px] text-slate-400">Scan QR or Transfer via Bank</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowPaymentModal(false)}
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center text-sm font-mono cursor-pointer transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* UPI QR & Quick Copy */}
+            <div className="bg-[#05070B] p-5 rounded-2xl border border-white/10 flex flex-col items-center text-center space-y-3">
+              <div className="p-3 bg-white rounded-2xl border-2 border-[#D6A84F] shadow-lg">
+                <img
+                  src={paymentSettings.qrCodeUrl || `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`upi://pay?pa=${paymentSettings.upiId}&pn=${encodeURIComponent(paymentSettings.upiName)}&am=&cu=INR`)}`}
+                  alt="UPI QR Code"
+                  className="w-40 h-40 object-contain"
+                />
+              </div>
+
+              <div>
+                <div className="text-xs font-mono font-bold text-slate-300 uppercase">{paymentSettings.upiName}</div>
+                <div className="text-sm font-mono font-extrabold text-[#F5C85B] mt-0.5">{paymentSettings.upiId}</div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(paymentSettings.upiId);
+                  setCopiedUpi(true);
+                  setTimeout(() => setCopiedUpi(false), 2000);
+                }}
+                className="py-1.5 px-3 rounded-full bg-white/10 hover:bg-white/20 text-[#F5C85B] text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                {copiedUpi ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-emerald-400">UPI ID Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Copy UPI ID</span>
+                  </>
+                )}
+              </button>
+
+              <div className="text-[10px] text-slate-400 font-mono uppercase tracking-wider bg-white/5 px-3 py-1 rounded-full">
+                Supported: GPay, PhonePe, Paytm, BHIM, Cred
+              </div>
+            </div>
+
+            {/* Bank Wire Details */}
+            <div className="bg-[#05070B] p-4 rounded-2xl border border-white/10 space-y-2 text-xs font-mono">
+              <div className="text-[10px] font-bold text-[#F5C85B] uppercase border-b border-white/10 pb-1.5 flex items-center justify-between">
+                <span>DIRECT BANK TRANSFER</span>
+                <Building2 className="w-3.5 h-3.5" />
+              </div>
+
+              <div className="flex justify-between text-slate-300">
+                <span className="text-slate-500">Bank:</span>
+                <span className="font-bold text-white">{paymentSettings.bankName}</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span className="text-slate-500">Holder:</span>
+                <span className="font-bold text-white">{paymentSettings.accountHolderName}</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span className="text-slate-500">Account No:</span>
+                <span className="font-bold text-white">{paymentSettings.accountNumber}</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span className="text-slate-500">IFSC Code:</span>
+                <span className="font-bold text-white">{paymentSettings.ifscCode}</span>
+              </div>
+            </div>
+
+            {/* Remarks / Instructions */}
+            {paymentSettings.paymentInstructions && (
+              <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-[11px] text-slate-300 leading-relaxed">
+                <span className="font-bold text-[#F5C85B] block mb-1">Instructions:</span>
+                {paymentSettings.paymentInstructions}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setShowPaymentModal(false)}
+              className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+            >
+              Close
+            </button>
+
+          </div>
+        </div>
+      )}
     </section>
   );
 };

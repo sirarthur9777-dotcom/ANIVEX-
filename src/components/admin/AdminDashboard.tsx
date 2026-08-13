@@ -16,6 +16,7 @@ import { SocialLinksManager } from './SocialLinksManager';
 import { EnquiriesManager } from './EnquiriesManager';
 import { NotificationsManager } from './NotificationsManager';
 import { AdminInvoiceManager } from './AdminInvoiceManager';
+import { PaymentSettingsManager } from './PaymentSettingsManager';
 import { MediaLibraryManager } from './MediaLibraryManager';
 import { AdminProfileManager } from './AdminProfileManager';
 import { ActivityLogsManager } from './ActivityLogsManager';
@@ -66,6 +67,8 @@ export const AdminDashboard: React.FC = () => {
         return <NotificationsManager />;
       case 'billing':
         return <AdminInvoiceManager />;
+      case 'payment-settings':
+        return <PaymentSettingsManager />;
       case 'media':
         return <MediaLibraryManager />;
       case 'profile':

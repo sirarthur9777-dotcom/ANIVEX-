@@ -115,6 +115,20 @@ export interface CompanyInfo {
   logoUrl?: string;
 }
 
+export interface PaymentSettings {
+  upiId: string;
+  upiName: string;
+  qrCodeUrl?: string;
+  bankName: string;
+  accountHolderName: string;
+  accountNumber: string;
+  ifscCode: string;
+  paymentInstructions: string;
+  paymentMethods: string[];
+  paymentButtonText: string;
+  enabled: boolean;
+}
+
 export interface SocialLinks {
   linkedin: { url: string; enabled: boolean };
   instagram: { url: string; enabled: boolean };
@@ -216,9 +230,19 @@ export interface InvoiceRecord {
   bankDetails?: string;
   bankName?: string;
   accountNumber?: string;
+  accountHolderName?: string;
   ifscCode?: string;
   upiId?: string;
   upiQrCodeUrl?: string;
+
+  // Additional Meta & Delivery fields
+  placeOfSupply?: string;
+  clientRef?: string;
+  websiteUrl?: string;
+  deliveryMethod?: string;
+  warrantySupport?: string;
+  supportEmail?: string;
+  supportPhone?: string;
   createdAt: string;
 }
 

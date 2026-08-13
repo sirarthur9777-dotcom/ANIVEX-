@@ -30,6 +30,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
     enquiries: 'Contact Enquiries Dashboard',
     notifications: 'System Notifications',
     billing: 'Bill & Invoice Generator',
+    'payment-settings': 'Payment Panel & Settings',
     media: 'Media Asset Library',
     profile: 'Admin Profile & Security',
     'activity-logs': 'Admin Activity Audit Logs',

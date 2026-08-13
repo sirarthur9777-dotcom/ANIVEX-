@@ -87,7 +87,7 @@ export const Projects: React.FC = () => {
               <div className="p-6 flex-1 flex flex-col justify-between">
                 <div>
                   <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
-                    {proj.description}
+                    {proj.shortDescription || proj.description || proj.overview || proj.fullDescription}
                   </p>
 
                   {/* Tech Stack Pills */}
@@ -163,18 +163,22 @@ export const Projects: React.FC = () => {
                   <div className="grid grid-cols-2 gap-4 text-xs font-mono bg-[#05070B] p-4 rounded-xl border border-white/10">
                     <div>
                       <span className="text-slate-500 block">ENGAGEMENT:</span>
-                      <span className="text-slate-200 font-semibold">{selectedProject.details.clientType}</span>
+                      <span className="text-slate-200 font-semibold">
+                        {selectedProject.clientType || selectedProject.details?.clientType || 'Commercial Enterprise'}
+                      </span>
                     </div>
                     <div>
                       <span className="text-slate-500 block">TIMELINE:</span>
-                      <span className="text-slate-200 font-semibold">{selectedProject.details.timeline}</span>
+                      <span className="text-slate-200 font-semibold">
+                        {selectedProject.timeline || selectedProject.details?.timeline || 'Q3 - Active'}
+                      </span>
                     </div>
                   </div>
 
                   <div>
                     <h4 className="text-xs font-bold text-white mb-2 uppercase tracking-wide">Project Overview</h4>
                     <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                      {selectedProject.details.overview}
+                      {selectedProject.overview || selectedProject.fullDescription || selectedProject.shortDescription || selectedProject.details?.overview || selectedProject.description || 'Custom engineered software platform by ANIVEX Solutions.'}
                     </p>
                   </div>
 

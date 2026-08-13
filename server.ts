@@ -94,7 +94,7 @@ Your tone is intelligent, professional, crisp, helpful, and forward-looking.
 Answer questions about software architecture, project estimations, technical stacks (React, Node, Python, AI, Android, Firebase, Cloud), or how ANIVEX Solutions can help solve business challenges. Keep answers clear and tailored.`;
 
           const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
+            model: "gemini-3.6-flash",
             contents: prompt,
             config: {
               systemInstruction,
@@ -105,7 +105,7 @@ Answer questions about software architecture, project estimations, technical sta
 
           return res.json({
             reply: response.text,
-            source: "gemini-2.5-flash",
+            source: "gemini-3.6-flash",
           });
         } catch (aiErr: any) {
           console.warn("Gemini call fallback triggered:", aiErr.message);

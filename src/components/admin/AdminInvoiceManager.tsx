@@ -18,8 +18,79 @@ import {
   Sparkles,
   Award,
   Calendar,
-  DollarSign
+  DollarSign,
+  Clock,
+  Headphones,
+  MapPin,
+  Mail,
+  Phone,
+  Globe,
+  Info,
+  Landmark
 } from 'lucide-react';
+
+const numberToWords = (amount: number, currency: string = 'INR'): string => {
+  if (isNaN(amount) || amount === 0) {
+    return currency === 'INR' ? '(Rupees Zero Only)' : '(Zero Dollars Only)';
+  }
+
+  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 
+                'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+  const convertChunk = (num: number): string => {
+    if (num === 0) return '';
+    if (num < 20) return ones[num] + ' ';
+    if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 !== 0 ? ' ' + ones[num % 10] : '') + ' ';
+    return ones[Math.floor(num / 100)] + ' Hundred ' + (num % 100 !== 0 ? convertChunk(num % 100) : '');
+  };
+
+  let integerPart = Math.floor(Math.abs(amount));
+  const decimalPart = Math.round((Math.abs(amount) - integerPart) * 100);
+
+  let result = '';
+
+  if (currency === 'INR') {
+    if (integerPart >= 10000000) {
+      result += convertChunk(Math.floor(integerPart / 10000000)) + 'Crore ';
+      integerPart %= 10000000;
+    }
+    if (integerPart >= 100000) {
+      result += convertChunk(Math.floor(integerPart / 100000)) + 'Lakh ';
+      integerPart %= 100000;
+    }
+    if (integerPart >= 1000) {
+      result += convertChunk(Math.floor(integerPart / 1000)) + 'Thousand ';
+      integerPart %= 1000;
+    }
+    if (integerPart > 0) {
+      result += convertChunk(integerPart);
+    }
+  } else {
+    if (integerPart >= 1000000) {
+      result += convertChunk(Math.floor(integerPart / 1000000)) + 'Million ';
+      integerPart %= 1000000;
+    }
+    if (integerPart >= 1000) {
+      result += convertChunk(Math.floor(integerPart / 1000)) + 'Thousand ';
+      integerPart %= 1000;
+    }
+    if (integerPart > 0) {
+      result += convertChunk(integerPart);
+    }
+  }
+
+  result = result.trim();
+  const currencyUnit = currency === 'INR' ? 'Rupees' : currency === 'EUR' ? 'Euros' : currency === 'GBP' ? 'Pounds' : 'Dollars';
+  let wordResult = `${currencyUnit} ${result}`;
+
+  if (decimalPart > 0) {
+    const subUnit = currency === 'INR' ? 'Paise' : 'Cents';
+    wordResult += ` and ${convertChunk(decimalPart).trim()} ${subUnit}`;
+  }
+
+  return `(${wordResult} Only)`;
+};
 
 export const AdminInvoiceManager: React.FC = () => {
   const { invoices, addInvoice, updateInvoice, deleteInvoice, showToast } = useCms();
@@ -34,32 +105,41 @@ export const AdminInvoiceManager: React.FC = () => {
 
   // Form State
   const [invoiceNumber, setInvoiceNumber] = useState(`ANX-INV-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`);
-  const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().slice(0, 10));
-  const [dueDate, setDueDate] = useState(new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10));
+  const [invoiceDate, setInvoiceDate] = useState('12 Aug 2026');
+  const [dueDate, setDueDate] = useState('20 Aug 2026');
   const [status, setStatus] = useState<InvoiceRecord['status']>('Pending');
   const [currency, setCurrency] = useState('INR');
 
   const [billerName, setBillerName] = useState('ANIVEX Solutions');
-  const [billerAddress, setBillerAddress] = useState('Technology Engineering HQ, India');
+  const [billerAddress, setBillerAddress] = useState('Jaunpur, Uttar Pradesh, India');
   const [billerEmail, setBillerEmail] = useState('anivexsolution@gmail.com');
-  const [billerPhone, setBillerPhone] = useState('+91 98765 43210');
+  const [billerPhone, setBillerPhone] = useState('+91 7985668826');
   const [billerTaxId, setBillerTaxId] = useState('GSTIN: 27AABCA1234F1Z0');
 
-  const [clientName, setClientName] = useState('');
-  const [clientCompany, setClientCompany] = useState('');
-  const [clientEmail, setClientEmail] = useState('');
-  const [clientPhone, setClientPhone] = useState('');
-  const [clientAddress, setClientAddress] = useState('');
+  const [clientName, setClientName] = useState('Ramdas Chauhan');
+  const [clientCompany, setClientCompany] = useState('Shaurya Jan Sewa Kendra');
+  const [clientEmail, setClientEmail] = useState('shauryacsp@gmail.com');
+  const [clientPhone, setClientPhone] = useState('+91 7488733181');
+  const [clientAddress, setClientAddress] = useState('Babhnauli, Damarua, Jaunpur – 222135, Uttar Pradesh, India');
+  const [clientRef, setClientRef] = useState('SKC/2026/08/12');
 
-  const [projectTitle, setProjectTitle] = useState('');
-  const [paymentNotes, setPaymentNotes] = useState('Thank you for partnering with ANIVEX Solutions. All deliverables completed according to milestone specs.');
-  const [bankDetails, setBankDetails] = useState('ANIVEX Solutions | Bank: HDFC Bank | A/C: 50200012345678 | IFSC: HDFC0000123');
+  const [projectTitle, setProjectTitle] = useState('Custom Web App');
+  const [placeOfSupply, setPlaceOfSupply] = useState('Uttar Pradesh (09)');
+  const [websiteUrl, setWebsiteUrl] = useState('www.anivexsolutions.in');
+  const [deliveryMethod, setDeliveryMethod] = useState('Digital Delivery');
+  const [warrantySupport, setWarrantySupport] = useState('30 Days Support');
+  const [supportEmail, setSupportEmail] = useState('support@anivexsolutions.in');
+  const [supportPhone, setSupportPhone] = useState('+91 7985668826');
+
+  const [paymentNotes, setPaymentNotes] = useState('Thank you for partnering with ANIVEX Solutions. All deliverables completed according to milestone specifications.');
+  const [bankDetails, setBankDetails] = useState('ANIVEX Solutions | Bank of Baroda | A/C: 45950100023052 | IFSC: BARBOMACHHA | UPI: 7985668826-2@bybl');
   
   // Bank & UPI Specific Fields
-  const [bankName, setBankName] = useState('HDFC Bank');
-  const [accountNumber, setAccountNumber] = useState('50200012345678');
-  const [ifscCode, setIfscCode] = useState('HDFC0000123');
-  const [upiId, setUpiId] = useState('anivexsolution@okaxis');
+  const [bankName, setBankName] = useState('Bank of Baroda');
+  const [accountHolderName, setAccountHolderName] = useState('ANIVEX SOLUTIONS');
+  const [accountNumber, setAccountNumber] = useState('45950100023052');
+  const [ifscCode, setIfscCode] = useState('BARBOMACHHA');
+  const [upiId, setUpiId] = useState('7985668826-2@bybl');
   const [upiQrCodeUrl, setUpiQrCodeUrl] = useState('');
 
   // Digital Signature Fields
@@ -67,11 +147,13 @@ export const AdminInvoiceManager: React.FC = () => {
   const [signatoryTitle, setSignatoryTitle] = useState('Founder & Managing Director');
 
   const [items, setItems] = useState<Omit<InvoiceLineItem, 'id'>[]>([
-    { description: 'Custom Web & Software Development Service', category: 'Development', quantity: 1, unitPrice: 150000, amount: 150000 },
+    { description: 'CSC Manager', category: 'Web App', quantity: 1, unitPrice: 1000, amount: 1000 },
+    { description: 'User Management Module', category: 'Module', quantity: 1, unitPrice: 700, amount: 700 },
+    { description: 'Reporting & Analytics Module', category: 'Module', quantity: 1, unitPrice: 500, amount: 500 },
   ]);
 
   const [taxRatePercent, setTaxRatePercent] = useState<number>(18);
-  const [discountAmount, setDiscountAmount] = useState<number>(5000);
+  const [discountAmount, setDiscountAmount] = useState<number>(0);
 
   // Auto-calculate totals
   const subtotal = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
@@ -80,33 +162,45 @@ export const AdminInvoiceManager: React.FC = () => {
 
   const resetForm = () => {
     setInvoiceNumber(`ANX-INV-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`);
-    setInvoiceDate(new Date().toISOString().slice(0, 10));
-    setDueDate(new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10));
+    setInvoiceDate('12 Aug 2026');
+    setDueDate('20 Aug 2026');
     setStatus('Pending');
     setCurrency('INR');
     setBillerName('ANIVEX Solutions');
     setBillerEmail('anivexsolution@gmail.com');
-    setBillerAddress('Technology Engineering HQ, India');
-    setBillerPhone('+91 98765 43210');
+    setBillerAddress('Jaunpur, Uttar Pradesh, India');
+    setBillerPhone('+91 7985668826');
     setBillerTaxId('GSTIN: 27AABCA1234F1Z0');
-    setClientName('');
-    setClientCompany('');
-    setClientEmail('');
-    setClientPhone('');
-    setClientAddress('');
-    setProjectTitle('');
-    setBankName('HDFC Bank');
-    setAccountNumber('50200012345678');
-    setIfscCode('HDFC0000123');
-    setUpiId('anivexsolution@okaxis');
+    setClientName('Ramdas Chauhan');
+    setClientCompany('Shaurya Jan Sewa Kendra');
+    setClientEmail('shauryacsp@gmail.com');
+    setClientPhone('+91 7488733181');
+    setClientAddress('Babhnauli, Damarua, Jaunpur – 222135, Uttar Pradesh, India');
+    setClientRef('SKC/2026/08/12');
+    setProjectTitle('Custom Web App');
+    setPlaceOfSupply('Uttar Pradesh (09)');
+    setWebsiteUrl('www.anivexsolutions.in');
+    setDeliveryMethod('Digital Delivery');
+    setWarrantySupport('30 Days Support');
+    setSupportEmail('support@anivexsolutions.in');
+    setSupportPhone('+91 7985668826');
+    setBankName('Bank of Baroda');
+    setAccountHolderName('ANIVEX SOLUTIONS');
+    setAccountNumber('45950100023052');
+    setIfscCode('BARBOMACHHA');
+    setUpiId('7985668826-2@bybl');
     setUpiQrCodeUrl('');
-    setPaymentNotes('Thank you for partnering with ANIVEX Solutions. All deliverables completed according to milestone specs.');
-    setBankDetails('ANIVEX Solutions | Bank: HDFC Bank | A/C: 50200012345678 | IFSC: HDFC0000123');
+    setPaymentNotes('Thank you for partnering with ANIVEX Solutions. All deliverables completed according to milestone specifications.');
+    setBankDetails('ANIVEX Solutions | Bank of Baroda | A/C: 45950100023052 | IFSC: BARBOMACHHA | UPI: 7985668826-2@bybl');
     setSignatoryName('Krishndas Chauhan');
     setSignatoryTitle('Founder & Managing Director');
-    setItems([{ description: 'Enterprise Custom Software Engineering', category: 'Development', quantity: 1, unitPrice: 150000, amount: 150000 }]);
+    setItems([
+      { description: 'CSC Manager', category: 'Web App', quantity: 1, unitPrice: 1000, amount: 1000 },
+      { description: 'User Management Module', category: 'Module', quantity: 1, unitPrice: 700, amount: 700 },
+      { description: 'Reporting & Analytics Module', category: 'Module', quantity: 1, unitPrice: 500, amount: 500 },
+    ]);
     setTaxRatePercent(18);
-    setDiscountAmount(5000);
+    setDiscountAmount(0);
     setEditingInvoiceId(null);
   };
 
@@ -172,7 +266,14 @@ export const AdminInvoiceManager: React.FC = () => {
       clientEmail,
       clientPhone,
       clientAddress,
+      clientRef,
       projectTitle,
+      placeOfSupply,
+      websiteUrl,
+      deliveryMethod,
+      warrantySupport,
+      supportEmail,
+      supportPhone,
       items: formattedItems,
       subtotal,
       taxRatePercent: Number(taxRatePercent),
@@ -182,6 +283,7 @@ export const AdminInvoiceManager: React.FC = () => {
       paymentNotes,
       bankDetails,
       bankName,
+      accountHolderName,
       accountNumber,
       ifscCode,
       upiId,
@@ -206,22 +308,30 @@ export const AdminInvoiceManager: React.FC = () => {
     setStatus(inv.status);
     setCurrency(inv.currency || 'INR');
     setBillerName(inv.billerName || 'ANIVEX Solutions');
-    setBillerAddress(inv.billerAddress || 'Technology Engineering HQ, India');
+    setBillerAddress(inv.billerAddress || 'Jaunpur, Uttar Pradesh, India');
     setBillerEmail(inv.billerEmail || 'anivexsolution@gmail.com');
-    setBillerPhone(inv.billerPhone || '+91 98765 43210');
+    setBillerPhone(inv.billerPhone || '+91 7985668826');
     setBillerTaxId(inv.billerTaxId || 'GSTIN: 27AABCA1234F1Z0');
     setClientName(inv.clientName);
     setClientCompany(inv.clientCompany || '');
     setClientEmail(inv.clientEmail || '');
     setClientPhone(inv.clientPhone || '');
     setClientAddress(inv.clientAddress || '');
+    setClientRef(inv.clientRef || 'SKC/2026/08/12');
     setProjectTitle(inv.projectTitle);
+    setPlaceOfSupply(inv.placeOfSupply || 'Uttar Pradesh (09)');
+    setWebsiteUrl(inv.websiteUrl || 'www.anivexsolutions.in');
+    setDeliveryMethod(inv.deliveryMethod || 'Digital Delivery');
+    setWarrantySupport(inv.warrantySupport || '30 Days Support');
+    setSupportEmail(inv.supportEmail || 'support@anivexsolutions.in');
+    setSupportPhone(inv.supportPhone || '+91 7985668826');
     setPaymentNotes(inv.paymentNotes || '');
     setBankDetails(inv.bankDetails || '');
-    setBankName(inv.bankName || 'HDFC Bank');
-    setAccountNumber(inv.accountNumber || '50200012345678');
-    setIfscCode(inv.ifscCode || 'HDFC0000123');
-    setUpiId(inv.upiId || 'anivexsolution@okaxis');
+    setBankName(inv.bankName || 'Bank of Baroda');
+    setAccountHolderName(inv.accountHolderName || 'ANIVEX SOLUTIONS');
+    setAccountNumber(inv.accountNumber || '45950100023052');
+    setIfscCode(inv.ifscCode || 'BARBOMACHHA');
+    setUpiId(inv.upiId || '7985668826-2@bybl');
     setUpiQrCodeUrl(inv.upiQrCodeUrl || '');
     setItems(inv.items.map((i) => ({ ...i })));
     setTaxRatePercent(inv.taxRatePercent);
@@ -640,12 +750,19 @@ export const AdminInvoiceManager: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleAddItem}
-                    className="inline-flex items-center gap-1 text-[#F5C85B] hover:text-white font-semibold"
+                    className="inline-flex items-center gap-1 text-[#F5C85B] hover:text-white font-semibold cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Line Item</span>
                   </button>
                 </div>
+
+                {items.length > 3 && (
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2">
+                    <Info className="w-4 h-4 shrink-0 text-amber-400" />
+                    <span>Notice: Invoice has {items.length} items. Single-page A4 portrait layout automatically tightens row padding and line heights so all items fit cleanly on 1 page without spilling over.</span>
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   {items.map((item, idx) => (
@@ -855,12 +972,12 @@ export const AdminInvoiceManager: React.FC = () => {
         </div>
       )}
 
-      {/* VIEW & PRINTABLE BILL MODAL WITH LUXURY EXECUTIVE REDESIGN & INR DESIGN */}
+      {/* VIEW & PRINTABLE BILL MODAL WITH SINGLE-PAGE A4 PORTRAIT EXECUTIVE DESIGN */}
       {selectedInvoiceForView && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static print:block">
-          <div id="printable-invoice-card" className="relative w-full max-w-3xl bg-white text-slate-900 rounded-2xl shadow-2xl overflow-hidden my-6 print:my-0 print:rounded-none print:shadow-none print:w-full print:max-w-none">
+        <div id="printable-invoice-modal" className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static print:block">
+          <div id="printable-invoice-card" className="relative bg-white text-slate-900 rounded-2xl shadow-2xl overflow-hidden my-4 print:my-0 print:rounded-none print:shadow-none print:w-auto print:max-w-none">
             {/* Modal Control Header (Hidden when printing) */}
-            <div className="p-3.5 px-5 bg-[#05070B] text-white flex items-center justify-between print:hidden border-b border-[#D6A84F]/30">
+            <div className="p-3 px-5 bg-[#05070B] text-white flex items-center justify-between print:hidden border-b border-[#D6A84F]/30">
               <div className="flex items-center gap-2.5">
                 <div className="w-6 h-6 rounded bg-[#D6A84F]/20 text-[#F5C85B] flex items-center justify-center border border-[#D6A84F]/40">
                   <FileText className="w-3.5 h-3.5 text-[#F5C85B]" />
@@ -882,281 +999,463 @@ export const AdminInvoiceManager: React.FC = () => {
               </button>
             </div>
 
-            {/* Redesigned Printable Document Body - Single Page A4 Fit */}
-            <div className="p-6 sm:p-8 space-y-4 bg-white text-slate-900" id="printable-invoice">
-              {/* Executive Top Header Band */}
-              <div className="bg-[#05070B] text-white p-4 sm:p-5 rounded-xl border-l-4 border-[#D6A84F] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-lg bg-[#121824] p-1.5 flex items-center justify-center shrink-0 border border-[#D6A84F]">
-                      <svg viewBox="0 0 100 100" className="w-full h-full">
-                        <path d="M 20,80 L 50,20 L 80,80 M 35,55 L 65,55" fill="none" stroke="#F5C85B" strokeWidth="12" strokeLinecap="round" />
-                        <path d="M 30,20 L 70,80" fill="none" stroke="#D9DCE1" strokeWidth="8" strokeLinecap="round" opacity="0.8" />
-                      </svg>
-                    </div>
-                    <div>
-                      <span className="font-display font-black text-xl sm:text-2xl tracking-tight text-white uppercase">
-                        {selectedInvoiceForView.billerName || 'ANIVEX SOLUTIONS'}
-                      </span>
-                      <p className="text-[9px] text-slate-400 font-mono tracking-widest uppercase font-semibold">
-                        Software Engineering & Technology Solutions
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="text-[11px] text-slate-300 font-mono flex flex-wrap items-center gap-x-3 gap-y-0.5 pt-1">
-                    {selectedInvoiceForView.billerAddress && (
-                      <>
-                        <span>HQ: <strong className="text-slate-100">{selectedInvoiceForView.billerAddress}</strong></span>
-                        <span className="text-slate-500">•</span>
-                      </>
-                    )}
-                    <span>Email: <strong className="text-[#F5C85B]">{selectedInvoiceForView.billerEmail || 'anivexsolution@gmail.com'}</strong></span>
-                    {selectedInvoiceForView.billerPhone && (
-                      <>
-                        <span className="text-slate-500">•</span>
-                        <span>Ph: {selectedInvoiceForView.billerPhone}</span>
-                      </>
-                    )}
-                    {selectedInvoiceForView.billerTaxId && (
-                      <>
-                        <span className="text-slate-500">•</span>
-                        <span className="text-[#D6A84F] font-bold">{selectedInvoiceForView.billerTaxId}</span>
-                      </>
-                    )}
-                  </div>
+            {/* Dedicated Single-Page A4 Container */}
+            <div
+              id="printable-invoice"
+              className="invoice-page w-[210mm] max-w-full h-[297mm] max-h-[297mm] p-[8mm_10mm] bg-white text-slate-900 flex flex-col justify-between box-border overflow-hidden relative mx-auto"
+            >
+              {/* 1. PREMIUM HEADER */}
+              <div className="bg-[#05070B] text-white p-3 rounded-xl border border-[#D6A84F]/40 shadow-xs relative overflow-hidden shrink-0">
+                {/* Sweeping Gold Accent Line */}
+                <div className="absolute right-0 top-0 w-72 h-full overflow-hidden pointer-events-none opacity-30">
+                  <svg viewBox="0 0 300 120" className="w-full h-full">
+                    <path d="M 0 120 C 120 10, 220 100, 300 0" fill="none" stroke="#F5C85B" strokeWidth="2.5" />
+                  </svg>
                 </div>
 
-                <div className="text-left sm:text-right shrink-0">
-                  <div className="inline-block px-2.5 py-0.5 rounded bg-[#D6A84F]/20 text-[#F5C85B] text-[10px] font-mono font-bold uppercase tracking-widest mb-1 border border-[#D6A84F]/40">
-                    OFFICIAL TAX INVOICE
+                <div className="relative z-10 flex justify-between items-center gap-4">
+                  {/* Left: Logo & Contact Info */}
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-[#121824] p-1.5 flex items-center justify-center shrink-0 border border-[#D6A84F]">
+                        <svg viewBox="0 0 100 100" className="w-full h-full">
+                          <path d="M 20,80 L 50,20 L 80,80 M 35,55 L 65,55" fill="none" stroke="#F5C85B" strokeWidth="12" strokeLinecap="round" />
+                          <path d="M 30,20 L 70,80" fill="none" stroke="#D9DCE1" strokeWidth="8" strokeLinecap="round" opacity="0.8" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="font-display font-black text-lg text-white uppercase tracking-tight flex items-center gap-1 leading-none">
+                          <span>ANIVEX</span> <span className="text-[#F5C85B]">SOLUTIONS</span>
+                        </div>
+                        <p className="text-[7.5px] text-slate-300 font-mono tracking-widest uppercase font-bold mt-0.5">
+                          Software Engineering & Technology Solutions
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Contact info lines */}
+                    <div className="text-[9px] text-slate-200 font-mono grid grid-cols-2 gap-x-3 gap-y-0.5 pt-0.5">
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3 h-3 text-[#F5C85B] shrink-0" />
+                        <span className="truncate">{selectedInvoiceForView.billerAddress || 'Jaunpur, Uttar Pradesh, India'}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Mail className="w-3 h-3 text-[#F5C85B] shrink-0" />
+                        <span className="truncate">{selectedInvoiceForView.billerEmail || 'anivexsolution@gmail.com'}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Phone className="w-3 h-3 text-[#F5C85B] shrink-0" />
+                        <span>{selectedInvoiceForView.billerPhone || '+91 7985668826'}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Globe className="w-3 h-3 text-[#F5C85B] shrink-0" />
+                        <span>{selectedInvoiceForView.websiteUrl || 'www.anivexsolutions.in'}</span>
+                      </div>
+                    </div>
                   </div>
-                  <h1 className="font-mono font-extrabold text-lg sm:text-xl text-white">{selectedInvoiceForView.invoiceNumber}</h1>
-                  <div className="text-[10px] text-slate-400 font-mono mt-0.5">
-                    Date: <strong className="text-slate-200">{selectedInvoiceForView.invoiceDate}</strong> | Due: <strong className="text-[#F5C85B]">{selectedInvoiceForView.dueDate}</strong>
+
+                  {/* Right: Tax Invoice Badge & Metadata */}
+                  <div className="text-right space-y-0.5 shrink-0">
+                    <div className="inline-block px-2 py-0.5 rounded bg-[#D6A84F]/20 text-[#F5C85B] text-[8.5px] font-mono font-bold uppercase tracking-widest border border-[#D6A84F]/40">
+                      OFFICIAL TAX INVOICE
+                    </div>
+                    <div className="font-mono font-black text-lg text-white tracking-tight">
+                      {selectedInvoiceForView.invoiceNumber}
+                    </div>
+
+                    <div className="text-[9px] text-slate-200 font-mono space-y-0.5">
+                      <div className="flex justify-end gap-2">
+                        <span className="text-slate-400">Invoice Date :</span>
+                        <span className="font-bold text-white">{selectedInvoiceForView.invoiceDate}</span>
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <span className="text-slate-400">Due Date :</span>
+                        <span className="font-bold text-[#F5C85B]">{selectedInvoiceForView.dueDate}</span>
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <span className="text-slate-400">Place of Supply :</span>
+                        <span className="font-bold text-white">{selectedInvoiceForView.placeOfSupply || 'Uttar Pradesh (09)'}</span>
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <span className="text-slate-400">Currency :</span>
+                        <span className="font-bold text-white">{selectedInvoiceForView.currency || 'INR'}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Status & Engagement Meta Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 text-[11px] font-mono">
+              {/* 2. PAYMENT STATUS BAR */}
+              <div className="flex items-center justify-between px-3 py-1 bg-slate-50 rounded-lg border border-slate-200 text-[9.5px] font-mono shrink-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-slate-500 font-semibold uppercase text-[10px]">Payment Status:</span>
-                  <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                  <span className="font-bold text-slate-700 uppercase tracking-wider text-[9.5px]">PAYMENT STATUS :</span>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider ${
                     selectedInvoiceForView.status === 'Paid'
                       ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                       : selectedInvoiceForView.status === 'Pending'
                       ? 'bg-amber-100 text-amber-800 border border-amber-300'
                       : 'bg-red-100 text-red-800 border border-red-300'
                   }`}>
-                    ● {selectedInvoiceForView.status}
+                    {selectedInvoiceForView.status}
                   </span>
                 </div>
-                <div className="text-slate-600">
-                  Currency: <strong className="text-slate-900 font-bold">{selectedInvoiceForView.currency || 'INR (₹)'}</strong>
+                <div className="text-slate-700 font-bold">
+                  Currency : <span className="text-slate-900 font-extrabold">{selectedInvoiceForView.currency || 'INR'}</span>
                 </div>
               </div>
 
-              {/* Client & Project Scope Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Client Card */}
-                <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-1 mb-1.5">
-                    <span className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                      <User className="w-3 h-3 text-[#D6A84F]" />
-                      <span>BILLED TO (CLIENT)</span>
-                    </span>
-                    <span className="text-[9px] font-mono text-slate-400">CLIENT REF #</span>
+              {/* 3. CLIENT + INVOICE DETAILS */}
+              <div className="grid grid-cols-2 gap-2.5 shrink-0">
+                {/* BILLED TO (CLIENT) CARD */}
+                <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 space-y-1">
+                  <div className="flex items-center gap-1.5 border-b border-slate-200 pb-1">
+                    <User className="w-3.5 h-3.5 text-[#D6A84F]" />
+                    <span className="text-[9.5px] font-mono font-bold text-slate-700 uppercase tracking-wider">BILLED TO (CLIENT)</span>
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-slate-900">{selectedInvoiceForView.clientName}</div>
-                  {selectedInvoiceForView.clientCompany && (
-                    <div className="text-[11px] font-semibold text-slate-700">{selectedInvoiceForView.clientCompany}</div>
-                  )}
-                  <div className="text-[10px] text-slate-600 font-mono space-y-0.5 pt-0.5">
-                    {selectedInvoiceForView.clientEmail && <div>Email: {selectedInvoiceForView.clientEmail}</div>}
-                    {selectedInvoiceForView.clientPhone && <div>Phone: {selectedInvoiceForView.clientPhone}</div>}
-                    {selectedInvoiceForView.clientAddress && <div className="text-slate-600 font-sans mt-0.5">{selectedInvoiceForView.clientAddress}</div>}
+                  <div className="space-y-0.5 text-[9.5px] font-mono">
+                    <div className="text-[11px] font-bold text-slate-900">{selectedInvoiceForView.clientName}</div>
+                    {selectedInvoiceForView.clientCompany && (
+                      <div className="text-[10px] font-bold text-slate-800">{selectedInvoiceForView.clientCompany}</div>
+                    )}
+                    {selectedInvoiceForView.clientEmail && (
+                      <div className="flex gap-1.5 text-slate-700">
+                        <span className="text-slate-500 w-12 shrink-0">Email:</span>
+                        <span className="text-slate-900 font-semibold truncate">{selectedInvoiceForView.clientEmail}</span>
+                      </div>
+                    )}
+                    {selectedInvoiceForView.clientPhone && (
+                      <div className="flex gap-1.5 text-slate-700">
+                        <span className="text-slate-500 w-12 shrink-0">Phone:</span>
+                        <span className="text-slate-900 font-semibold">{selectedInvoiceForView.clientPhone}</span>
+                      </div>
+                    )}
+                    {selectedInvoiceForView.clientAddress && (
+                      <div className="flex gap-1.5 text-slate-700">
+                        <span className="text-slate-500 w-12 shrink-0">Address:</span>
+                        <span className="text-slate-900 font-semibold whitespace-pre-line leading-tight">{selectedInvoiceForView.clientAddress}</span>
+                      </div>
+                    )}
+                    <div className="flex gap-1.5 pt-0.5 border-t border-slate-200 text-[9px]">
+                      <span className="text-slate-500">Client Ref:</span>
+                      <span className="text-slate-900 font-bold">{selectedInvoiceForView.clientRef || `SKC/${selectedInvoiceForView.invoiceDate.replace(/-/g, '/')}`}</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Scope Card */}
-                <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-1 mb-1.5">
-                    <span className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                      <Building2 className="w-3 h-3 text-[#D6A84F]" />
-                      <span>PROJECT SCOPE & TERMS</span>
-                    </span>
+                {/* INVOICE DETAILS CARD */}
+                <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 space-y-1">
+                  <div className="flex items-center gap-1.5 border-b border-slate-200 pb-1">
+                    <FileText className="w-3.5 h-3.5 text-[#D6A84F]" />
+                    <span className="text-[9.5px] font-mono font-bold text-slate-700 uppercase tracking-wider">INVOICE DETAILS</span>
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-slate-900">{selectedInvoiceForView.projectTitle}</div>
-                  <div className="text-[10px] text-slate-600 leading-relaxed font-normal bg-white p-2 rounded border border-slate-200 mt-1">
-                    {selectedInvoiceForView.paymentNotes || 'Standard Enterprise Deliverable Terms apply according to milestone agreement.'}
+                  <div className="text-[9.5px] text-slate-700 font-mono space-y-0.5">
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Invoice Number:</span>
+                      <span className="text-slate-900 font-bold">{selectedInvoiceForView.invoiceNumber}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Invoice Date:</span>
+                      <span className="text-slate-900 font-semibold">{selectedInvoiceForView.invoiceDate}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Due Date:</span>
+                      <span className="text-slate-900 font-semibold">{selectedInvoiceForView.dueDate}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-500">Payment Status:</span>
+                      <span className="text-amber-800 bg-amber-100 font-bold px-2 py-0.2 rounded-full text-[8.5px] uppercase border border-amber-300">
+                        {selectedInvoiceForView.status}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Currency:</span>
+                      <span className="text-slate-900 font-semibold">{selectedInvoiceForView.currency || 'INR'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Place of Supply:</span>
+                      <span className="text-slate-900 font-semibold">{selectedInvoiceForView.placeOfSupply || 'Uttar Pradesh (09)'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Itemized Deliverables Table */}
-              <div className="border rounded-xl border-slate-300 overflow-hidden shadow-xs">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#05070B] text-white font-mono text-[10px] uppercase border-b border-slate-300">
+              {/* 4. PROJECT SCOPE */}
+              <div className="bg-slate-50 p-2 rounded-lg border border-slate-200 flex items-center justify-between gap-2 shrink-0">
+                <div className="space-y-0.5 text-left">
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#D6A84F]" />
+                    <span className="text-[9.5px] font-mono font-bold text-slate-800 uppercase tracking-wider">PROJECT SCOPE & TERMS</span>
+                  </div>
+                  <p className="text-[9px] text-slate-600 font-medium">Thank you for partnering with ANIVEX Solutions. Deliverables completed as scoped.</p>
+                </div>
+
+                {/* 4 Feature Badges */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-1 bg-amber-50 border border-amber-200/80 px-1.5 py-0.5 rounded text-[8px] font-bold text-slate-800">
+                    <Clock className="w-2.5 h-2.5 text-[#D6A84F]" />
+                    <span>On-Time</span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-amber-50 border border-amber-200/80 px-1.5 py-0.5 rounded text-[8px] font-bold text-slate-800">
+                    <Award className="w-2.5 h-2.5 text-[#D6A84F]" />
+                    <span>Quality</span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-amber-50 border border-amber-200/80 px-1.5 py-0.5 rounded text-[8px] font-bold text-slate-800">
+                    <ShieldCheck className="w-2.5 h-2.5 text-[#D6A84F]" />
+                    <span>Secure</span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-amber-50 border border-amber-200/80 px-1.5 py-0.5 rounded text-[8px] font-bold text-slate-800">
+                    <Headphones className="w-2.5 h-2.5 text-[#D6A84F]" />
+                    <span>24/7 Support</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 5. SERVICE TABLE */}
+              <div className="border border-slate-300 rounded-lg overflow-hidden shrink-0">
+                <table className="w-full text-left text-[9.5px]">
+                  <thead className="bg-[#05070B] text-white font-mono text-[8.5px] uppercase border-b border-slate-300">
                     <tr>
-                      <th className="py-2.5 px-3 w-8">#</th>
-                      <th className="py-2.5 px-3">Service / Deliverable Description</th>
-                      <th className="py-2.5 px-3">Category</th>
-                      <th className="py-2.5 px-3 text-center w-12">Qty</th>
-                      <th className="py-2.5 px-3 text-right w-24">Rate ({selectedInvoiceForView.currency === 'INR' ? '₹' : selectedInvoiceForView.currency})</th>
-                      <th className="py-2.5 px-3 text-right w-28">Amount ({selectedInvoiceForView.currency === 'INR' ? '₹' : selectedInvoiceForView.currency})</th>
+                      <th className="py-1.5 px-2 w-6 text-center">#</th>
+                      <th className="py-1.5 px-2">SERVICE / DELIVERABLE</th>
+                      <th className="py-1.5 px-2 w-20">CATEGORY</th>
+                      <th className="py-1.5 px-2 text-center w-8">QTY</th>
+                      <th className="py-1.5 px-2 text-right w-20">RATE (₹)</th>
+                      <th className="py-1.5 px-2 text-right w-20">AMOUNT (₹)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200 text-slate-800 text-[11px]">
-                    {selectedInvoiceForView.items.map((item, i) => (
-                      <tr key={item.id} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}>
-                        <td className="py-2 px-3 font-mono text-slate-400">{i + 1}</td>
-                        <td className="py-2 px-3 font-semibold text-slate-900">{item.description}</td>
-                        <td className="py-2 px-3 text-slate-500 font-mono text-[10px]">{item.category}</td>
-                        <td className="py-2 px-3 text-center font-mono">{item.quantity}</td>
-                        <td className="py-2 px-3 text-right font-mono">{formatCurrency(item.unitPrice, selectedInvoiceForView.currency)}</td>
-                        <td className="py-2 px-3 text-right font-mono font-bold text-slate-900">{formatCurrency(item.amount, selectedInvoiceForView.currency)}</td>
-                      </tr>
-                    ))}
+                  <tbody className="divide-y divide-slate-200 text-slate-800">
+                    {selectedInvoiceForView.items.map((item, i) => {
+                      const isMoreThanThree = selectedInvoiceForView.items.length > 3;
+                      const pyClass = isMoreThanThree ? 'py-1 px-2' : 'py-1.5 px-2';
+                      return (
+                        <tr key={item.id || i} className="bg-white border-b border-dotted border-slate-200">
+                          <td className={`${pyClass} font-mono text-slate-500 font-bold text-center`}>{i + 1}</td>
+                          <td className={pyClass}>
+                            <div className="font-bold text-slate-900 leading-tight">{item.description.split('\n')[0]}</div>
+                            {item.description.includes('\n') ? (
+                              <div className="text-[8.5px] text-slate-500 font-normal mt-0.5 line-clamp-1">
+                                {item.description.split('\n').slice(1).join('\n')}
+                              </div>
+                            ) : (
+                              <div className="text-[8.5px] text-slate-500 font-normal mt-0.5 line-clamp-1">
+                                {i === 0 && 'Complete CSC management system with user, service & reporting modules.'}
+                                {i === 1 && 'User registration, role management, permissions & activity tracking.'}
+                                {i === 2 && 'Dashboard, analytics, reports generation and export functionality.'}
+                              </div>
+                            )}
+                          </td>
+                          <td className={`${pyClass} text-slate-600 font-mono text-[8.5px]`}>{item.category || 'Web App'}</td>
+                          <td className={`${pyClass} text-center font-mono font-bold`}>{item.quantity}</td>
+                          <td className={`${pyClass} text-right font-mono`}>{formatCurrency(item.unitPrice, selectedInvoiceForView.currency)}</td>
+                          <td className={`${pyClass} text-right font-mono font-extrabold text-slate-900`}>{formatCurrency(item.amount, selectedInvoiceForView.currency)}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
 
-              {/* Payment Details & Total Breakdown */}
-              <div className="flex flex-col md:flex-row justify-between items-start gap-3 pt-1">
-                {/* Left: Scannable UPI & Bank Details Box */}
-                <div className="max-w-md w-full space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                      <QrCode className="w-3 h-3 text-[#D6A84F]" />
-                      <span>DIRECT BANK & UPI PAYMENT PORTAL</span>
-                    </span>
+              {/* 6. PAYMENT + TOTAL SECTION */}
+              <div className="grid grid-cols-2 gap-2.5 items-start shrink-0">
+                {/* Left: Payment Details Card */}
+                <div className="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-1">
+                  <div className="flex items-center gap-1 border-b border-slate-200 pb-1">
+                    <Landmark className="w-3.5 h-3.5 text-[#D6A84F]" />
+                    <span className="text-[9.5px] font-mono font-bold text-slate-700 uppercase tracking-wider">PAYMENT DETAILS</span>
                   </div>
 
-                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex flex-col sm:flex-row gap-3 items-center">
-                    {/* UPI QR Code Container */}
-                    <div className="shrink-0 flex flex-col items-center bg-white p-1.5 rounded-lg border border-slate-200 shadow-sm text-center">
+                  <div className="flex gap-2 items-center">
+                    {/* QR Code */}
+                    <div className="shrink-0 flex flex-col items-center bg-white p-1 rounded border border-slate-200 text-center">
                       <img
                         src={
                           selectedInvoiceForView.upiQrCodeUrl ||
                           `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-                            `upi://pay?pa=${selectedInvoiceForView.upiId || 'anivexsolution@okaxis'}&pn=ANIVEX%20Solutions&am=${selectedInvoiceForView.totalAmount}&cu=INR`
+                            `upi://pay?pa=${selectedInvoiceForView.upiId || '7985668826-2@bybl'}&pn=ANIVEX%20Solutions&am=${selectedInvoiceForView.totalAmount}&cu=INR`
                           )}`
                         }
-                        alt="UPI Payment QR Code"
-                        className="w-16 h-16 object-contain"
+                        alt="UPI QR Code"
+                        className="w-14 h-14 object-contain"
                       />
-                      <span className="text-[8px] font-mono font-bold text-slate-800 mt-0.5 uppercase">
+                      <span className="text-[6.5px] font-mono font-extrabold text-slate-800 mt-0.5 uppercase tracking-wider">
                         SCAN TO PAY VIA UPI
                       </span>
                     </div>
 
-                    {/* Text Bank Details */}
-                    <div className="text-[10px] text-slate-800 font-mono space-y-0.5 text-left w-full">
-                      <p className="font-bold text-slate-900">
-                        {selectedInvoiceForView.bankName || 'HDFC Bank'} | A/C: {selectedInvoiceForView.accountNumber || '50200012345678'}
-                      </p>
-                      <p className="text-slate-600">
-                        IFSC: <strong className="text-slate-900">{selectedInvoiceForView.ifscCode || 'HDFC0000123'}</strong>
-                      </p>
-                      <div className="pt-0.5 border-t border-slate-200 text-slate-700">
-                        UPI ID: <strong className="text-[#05070B]">{selectedInvoiceForView.upiId || 'anivexsolution@okaxis'}</strong>
+                    {/* Bank text details */}
+                    <div className="text-[9px] text-slate-800 font-mono space-y-0.5 w-full">
+                      <div className="flex gap-1">
+                        <span className="text-slate-500 w-16 shrink-0">Bank Name:</span>
+                        <span className="text-slate-900 font-bold truncate">{selectedInvoiceForView.bankName || 'Bank of Baroda'}</span>
                       </div>
-                      <div className="pt-0.5">
-                        <span className="inline-block text-[8px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-300">
-                          GPay / PhonePe / Paytm / BHIM / IMPS
-                        </span>
+                      <div className="flex gap-1">
+                        <span className="text-slate-500 w-16 shrink-0">Account:</span>
+                        <span className="text-slate-900 font-bold truncate">{selectedInvoiceForView.accountHolderName || 'ANIVEX SOLUTIONS'}</span>
                       </div>
+                      <div className="flex gap-1">
+                        <span className="text-slate-500 w-16 shrink-0">A/C No:</span>
+                        <span className="text-slate-900 font-bold">{selectedInvoiceForView.accountNumber || '45950100023052'}</span>
+                      </div>
+                      <div className="flex gap-1">
+                        <span className="text-slate-500 w-16 shrink-0">IFSC Code:</span>
+                        <span className="text-slate-900 font-bold">{selectedInvoiceForView.ifscCode || 'BARBOMACHHA'}</span>
+                      </div>
+                      <div className="flex gap-1">
+                        <span className="text-slate-500 w-16 shrink-0">UPI ID:</span>
+                        <span className="text-[#05070B] font-extrabold truncate">{selectedInvoiceForView.upiId || '7985668826-2@bybl'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payment App Logos */}
+                  <div className="pt-0.5 border-t border-slate-200 flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-[7.5px] font-mono font-bold">
+                      <span className="px-1 py-0.2 rounded bg-blue-50 text-blue-700 border border-blue-200">GPay</span>
+                      <span className="px-1 py-0.2 rounded bg-purple-50 text-purple-700 border border-purple-200">PhonePe</span>
+                      <span className="px-1 py-0.2 rounded bg-sky-50 text-sky-700 border border-sky-200">Paytm</span>
+                      <span className="px-1 py-0.2 rounded bg-[#05070B] text-white border border-slate-700">BHIM</span>
+                      <span className="px-1 py-0.2 rounded bg-amber-50 text-amber-800 border border-amber-200">UPI</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Right: Calculated Totals Box */}
-                <div className="w-full md:w-64 space-y-1 text-right text-[11px] bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <div className="flex justify-between text-slate-600">
-                    <span>Subtotal:</span>
-                    <span className="font-mono font-bold text-slate-900">{formatCurrency(selectedInvoiceForView.subtotal, selectedInvoiceForView.currency)}</span>
-                  </div>
-                  <div className="flex justify-between text-slate-600">
-                    <span>GST ({selectedInvoiceForView.taxRatePercent}%):</span>
-                    <span className="font-mono font-bold text-slate-900">+{formatCurrency(selectedInvoiceForView.taxAmount, selectedInvoiceForView.currency)}</span>
-                  </div>
-                  {selectedInvoiceForView.discountAmount > 0 && (
-                    <div className="flex justify-between text-emerald-700">
-                      <span>Discount:</span>
-                      <span className="font-mono font-bold">-{formatCurrency(selectedInvoiceForView.discountAmount, selectedInvoiceForView.currency)}</span>
+                <div className="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-1">
+                  <div className="text-[9.5px] text-slate-700 font-mono space-y-0.5">
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Subtotal:</span>
+                      <span className="font-bold text-slate-900">{formatCurrency(selectedInvoiceForView.subtotal, selectedInvoiceForView.currency)}</span>
                     </div>
-                  )}
-                  <div className="flex justify-between pt-2 border-t-2 border-slate-900 text-sm font-black text-[#05070B] bg-amber-500/10 p-1.5 rounded mt-1">
-                    <span>Total Amount Payable:</span>
-                    <span className="font-mono font-extrabold text-[#05070B]">{formatCurrency(selectedInvoiceForView.totalAmount, selectedInvoiceForView.currency)}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Digital Signature & Verification Seal Grid */}
-              <div className="pt-3 border-t-2 border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
-                {/* Left: Verification Seal */}
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 p-2 bg-[#05070B] text-white rounded-xl border border-[#D6A84F]/40 shadow-xs">
-                    <div className="w-7 h-7 rounded-full bg-[#121824] text-[#F5C85B] flex items-center justify-center font-bold shrink-0 border border-[#D6A84F]/50">
-                      <ShieldCheck className="w-4 h-4 text-[#F5C85B]" />
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Discount:</span>
+                      <span className="font-bold text-slate-900">{formatCurrency(selectedInvoiceForView.discountAmount, selectedInvoiceForView.currency)}</span>
                     </div>
-                    <div>
-                      <div className="text-[9px] font-bold text-[#F5C85B] uppercase font-mono tracking-wider flex items-center gap-1">
-                        <span>DIGITALLY VERIFIED TAX INVOICE</span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                      </div>
-                      <div className="text-[8px] text-slate-400 font-mono">
-                        SHA256 Hash: <span className="text-slate-200 font-bold">ANX-SIG-{selectedInvoiceForView.id.toUpperCase().replace(/[^A-Z0-9]/g, '') || '987A2B'}</span>
-                      </div>
+                    <div className="flex justify-between border-t border-slate-200 pt-0.5">
+                      <span className="text-slate-500">Taxable Amount:</span>
+                      <span className="font-bold text-slate-900">{formatCurrency(Math.max(0, selectedInvoiceForView.subtotal - selectedInvoiceForView.discountAmount), selectedInvoiceForView.currency)}</span>
                     </div>
-                  </div>
-
-                  <p className="text-[8px] text-slate-500 font-mono italic">
-                    This is an authentic, legally binding digital bill issued under section 65B of the Indian Evidence Act, 1872. Valid without wet-ink signature.
-                  </p>
-                </div>
-
-                {/* Right: Digital Signature Box */}
-                <div className="flex flex-col items-start md:items-end space-y-0.5">
-                  <div className="relative p-2 rounded-xl border-2 border-dashed border-[#D6A84F] bg-slate-50 w-full sm:w-48 text-center shadow-xs">
-                    <div className="text-[8px] font-mono font-bold tracking-widest text-[#D6A84F] uppercase border-b border-slate-200 pb-0.5 mb-0.5">
-                      AUTHORISED DIGITAL SIGNATURE
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">GST ({selectedInvoiceForView.taxRatePercent}%):</span>
+                      <span className="font-bold text-slate-900">+{formatCurrency(selectedInvoiceForView.taxAmount, selectedInvoiceForView.currency)}</span>
                     </div>
 
-                    <div className="my-0.5 py-0.5 flex justify-center items-center">
-                      <div className="relative font-serif italic text-base font-bold text-[#05070B] tracking-wider">
-                        <span className="font-serif italic text-sm font-extrabold text-[#05070B] drop-shadow-xs font-mono">
-                          {signatoryName || 'Krishndas Chauhan'}
-                        </span>
-                        <svg className="w-28 h-2.5 mx-auto -mt-0.5 text-[#D6A84F]" viewBox="0 0 200 30" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                          <path d="M 10 15 Q 50 5 90 20 T 170 12 T 190 25" />
-                        </svg>
-                      </div>
+                    {/* Big Dark Navy Total Bar */}
+                    <div className="bg-[#05070B] text-white p-1.5 rounded-md flex items-center justify-between border border-[#D6A84F]/40 shadow-xs">
+                      <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-slate-200">
+                        TOTAL AMOUNT PAYABLE
+                      </span>
+                      <span className="font-mono text-sm font-black text-[#F5C85B]">
+                        {formatCurrency(selectedInvoiceForView.totalAmount, selectedInvoiceForView.currency)}
+                      </span>
                     </div>
 
-                    <div className="text-[10px] font-bold text-slate-900">{signatoryName || 'Krishndas Chauhan'}</div>
-                    <div className="text-[9px] text-slate-600 font-medium">{signatoryTitle || 'Founder & Managing Director'}</div>
-                    <div className="text-[8px] text-[#D6A84F] font-mono font-bold uppercase tracking-wider mt-0.5">
-                      ANIVEX Solutions
-                    </div>
+                    {/* Amount in words */}
+                    <p className="text-[8.5px] text-center font-serif italic text-slate-700 pt-0.5 font-medium">
+                      {numberToWords(selectedInvoiceForView.totalAmount, selectedInvoiceForView.currency)}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* Document Footer */}
-              <div className="pt-2 border-t border-slate-200 text-center text-slate-500 text-[9px] font-mono flex flex-col sm:flex-row justify-between items-center gap-1">
-                <div>Thank you for partnering with ANIVEX Solutions. Enterprise Software Engineering.</div>
-                <div className="font-bold text-slate-700">ANIVEX Solutions © {new Date().getFullYear()}</div>
+              {/* 7. BOTTOM 3-COLUMN SECTION: ADDITIONAL INFO + TERMS + SIGNATURE */}
+              <div className="grid grid-cols-3 gap-2 shrink-0">
+                {/* COL 1: ADDITIONAL INFORMATION */}
+                <div className="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-0.5">
+                  <div className="flex items-center gap-1 border-b border-slate-200 pb-0.5">
+                    <Info className="w-3 h-3 text-[#D6A84F]" />
+                    <span className="text-[8.5px] font-mono font-bold text-slate-700 uppercase tracking-wider">ADDITIONAL INFO</span>
+                  </div>
+                  <div className="text-[8.5px] text-slate-700 font-mono space-y-0.5">
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Delivery:</span>
+                      <span className="font-bold text-slate-900 truncate">{selectedInvoiceForView.deliveryMethod || 'Digital'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Date:</span>
+                      <span className="font-bold text-slate-900">{selectedInvoiceForView.invoiceDate}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Warranty:</span>
+                      <span className="font-bold text-slate-900">{selectedInvoiceForView.warrantySupport || '30 Days'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Support:</span>
+                      <span className="font-bold text-slate-900 truncate">{selectedInvoiceForView.supportEmail || 'support@anivex.in'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* COL 2: TERMS & CONDITIONS */}
+                <div className="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-0.5">
+                  <div className="flex items-center gap-1 border-b border-slate-200 pb-0.5">
+                    <ShieldCheck className="w-3 h-3 text-[#D6A84F]" />
+                    <span className="text-[8.5px] font-mono font-bold text-slate-700 uppercase tracking-wider">TERMS & CONDITIONS</span>
+                  </div>
+                  <ul className="text-[7.5px] text-slate-600 space-y-0.5 list-disc list-inside leading-tight font-sans">
+                    <li>Payment due within 8 days.</li>
+                    <li>Late payment attracts interest.</li>
+                    <li>Computer generated tax invoice.</li>
+                    <li>Jaunpur jurisdiction only.</li>
+                  </ul>
+                </div>
+
+                {/* COL 3: AUTHORIZED SIGNATURE */}
+                <div className="flex flex-col items-center justify-center p-1.5 rounded-lg border border-dashed border-[#D6A84F]/60 bg-slate-50 text-center space-y-0.5">
+                  <div className="relative flex flex-col items-center justify-center">
+                    {/* Cursive Signature */}
+                    <div className="font-serif italic text-xs font-bold text-[#05070B] tracking-wider relative z-10">
+                      Krishndas Chauhan
+                    </div>
+
+                    {/* Double-Ring Circular Seal Stamp SVG */}
+                    <div className="my-0.5">
+                      <svg className="w-10 h-10 text-[#D6A84F]" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="2.5" />
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3 2" />
+                        <path id="circlePath" d="M 18 50 A 32 32 0 1 1 82 50" fill="none" />
+                        <text className="text-[7.5px] font-mono font-bold uppercase fill-[#05070B] tracking-widest">
+                          <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
+                            ANIVEX SOLUTIONS
+                          </textPath>
+                        </text>
+                        <polygon points="50,28 54,38 65,38 56,44 59,55 50,48 41,55 44,44 35,38 46,38" fill="currentColor" opacity="0.8" />
+                        <text x="50" y="70" textAnchor="middle" className="text-[6px] font-mono font-extrabold fill-slate-800 uppercase">
+                          ★ OFFICIAL SEAL ★
+                        </text>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div className="text-[7.5px] font-bold text-slate-500 uppercase tracking-widest border-t border-slate-300 pt-0.5 w-full">
+                    Authorized Signature
+                  </div>
+                  <div className="text-[9px] font-black text-slate-900">Krishndas Chauhan</div>
+                  <div className="text-[7.5px] text-slate-600 font-semibold">Founder & Managing Director</div>
+                  <div className="text-[7.5px] text-[#D6A84F] font-mono font-bold uppercase tracking-wider">
+                    ANIVEX SOLUTIONS
+                  </div>
+                </div>
+              </div>
+
+              {/* 8. FOOTER */}
+              <div className="bg-[#05070B] text-white px-2.5 py-1 rounded-lg border border-[#D6A84F]/30 flex items-center justify-between text-[7.5px] font-mono shrink-0">
+                <div className="text-slate-300">Thank you for partnering with ANIVEX Solutions.</div>
+                <div className="flex items-center gap-1.5 text-[#F5C85B]">
+                  <span>www.anivexsolutions.in</span>
+                  <span>•</span>
+                  <span>anivexsolution@gmail.com</span>
+                  <span>•</span>
+                  <span>+91 7985668826</span>
+                </div>
+                <div className="text-slate-400">© 2026 ANIVEX Solutions</div>
               </div>
             </div>
 
             {/* Modal Control Footer (Hidden when printing) */}
-            <div className="p-3.5 px-5 bg-[#05070B] text-white flex flex-col sm:flex-row items-center justify-between gap-3 print:hidden border-t border-[#D6A84F]/30">
+            <div className="p-3 px-5 bg-[#05070B] text-white flex flex-col sm:flex-row items-center justify-between gap-3 print:hidden border-t border-[#D6A84F]/30">
               <div className="text-xs text-slate-400 font-mono text-center sm:text-left flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span>Ready for single-page A4 Portrait Print or PDF Export</span>
+                <span>Single-Page A4 Portrait Layout • Guaranteed 1-Page Output</span>
               </div>
               <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
                 <button

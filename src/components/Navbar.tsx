@@ -13,6 +13,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAiDemo }) => {
   const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
+    // Initial load hash scroll
+    if (window.location.hash) {
+      const initialId = window.location.hash.substring(1);
+      const element = document.getElementById(initialId);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      }
+    }
+
     const handleScroll = () => {
       if (window.scrollY > 30) {
         setIsScrolled(true);
@@ -20,13 +31,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAiDemo }) => {
         setIsScrolled(false);
       }
 
-      // Simple active link detection based on section top offsets
+      // Active link detection based on section top offsets
       const sections = NAV_LINKS.map(link => link.href.substring(1));
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
         if (el) {
           const rect = el.getBoundingClientRect();
-          if (rect.top <= 120 && rect.bottom >= 120) {
+          if (rect.top <= 140 && rect.bottom >= 140) {
             setActiveSection(sectionId);
             break;
           }
@@ -45,6 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAiDemo }) => {
     const element = document.getElementById(targetId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+      window.history.pushState(null, '', href);
     }
   };
 
