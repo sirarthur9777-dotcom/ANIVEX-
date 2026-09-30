@@ -27,96 +27,98 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#05070B] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Gold Ambient Glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#D6A84F]/10 rounded-full blur-[160px] pointer-events-none" />
+    <div className="min-h-screen bg-[#FFFDF7] flex items-center justify-center p-4 relative overflow-hidden font-sans">
+      {/* Background Soft Saffron and Green Ambient Accents */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-r from-[#F97316]/10 via-[#D4A72C]/10 to-[#15803D]/10 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="w-full max-w-md relative z-10">
         
         {/* Top Header & Brand */}
         <div className="text-center mb-8 space-y-3">
           <a href="/" className="inline-flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#121824] border border-[#D6A84F]/40 p-1.5 flex items-center justify-center shadow-lg shadow-[#D6A84F]/10">
-              <svg viewBox="0 0 100 100" className="w-full h-full">
+            <div className="w-11 h-11 rounded-xl bg-[#0B1F3A] p-2 flex items-center justify-center shadow-md">
+              <svg viewBox="0 0 100 100" className="w-full h-full text-white">
                 <path
                   d="M 20,80 L 50,20 L 80,80 M 35,55 L 65,55"
                   fill="none"
-                  stroke="#F5C85B"
+                  stroke="currentColor"
                   strokeWidth="12"
                   strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
-                  d="M 30,20 L 70,80"
+                  d="M 32,22 L 68,78"
                   fill="none"
-                  stroke="#D9DCE1"
+                  stroke="#F97316"
                   strokeWidth="8"
                   strokeLinecap="round"
-                  opacity="0.8"
                 />
               </svg>
             </div>
-            <span className="font-display font-extrabold text-2xl text-white tracking-tight">
-              ANIVEX <span className="text-[#D6A84F] text-xs font-semibold">ADMIN</span>
-            </span>
+            <div className="text-left">
+              <span className="font-heading font-extrabold text-2xl text-[#0B1F3A] tracking-tight block">
+                Anivex <span className="text-[#F97316]">Solution</span>
+              </span>
+              <span className="text-[10px] font-mono text-[#0B1F3A]/60 uppercase tracking-wider block font-bold">
+                ADMIN CONSOLE
+              </span>
+            </div>
           </a>
-          <p className="text-xs text-slate-400 font-mono tracking-wider uppercase">
-            RESTRICTED ACCESS • AUTHORIZED PERSONNEL ONLY
-          </p>
         </div>
 
         {/* Login Card */}
-        <div className="p-8 rounded-3xl bg-[#0B0F16] border border-white/10 shadow-2xl space-y-6 relative overflow-hidden">
+        <div className="p-8 sm:p-9 rounded-3xl bg-white border border-[#0B1F3A]/10 shadow-xl space-y-6 relative overflow-hidden">
           
-          <div className="flex items-center justify-between pb-4 border-b border-white/10">
+          <div className="flex items-center justify-between pb-4 border-b border-[#0B1F3A]/10">
             <div>
-              <h1 className="font-display font-bold text-xl text-white">Admin Console Authentication</h1>
-              <p className="text-xs text-slate-400 mt-1">Sign in to manage company website & enquiries</p>
+              <h1 className="font-heading font-bold text-xl text-[#0B1F3A]">Portal Authentication</h1>
+              <p className="text-xs text-[#0B1F3A]/65 mt-1 font-normal">Sign in to manage client contracts & content</p>
             </div>
-            <div className="p-2.5 rounded-xl bg-[#121824] border border-[#D6A84F]/30 text-[#F5C85B]">
+            <div className="p-2.5 rounded-xl bg-[#0B1F3A]/5 text-[#F97316]">
               <Lock className="w-5 h-5" />
             </div>
           </div>
 
           {authError && (
-            <div className="p-4 rounded-xl bg-red-950/60 border border-red-500/40 text-red-300 text-xs flex items-start gap-3">
-              <ShieldAlert className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+            <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-3">
+              <ShieldAlert className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
               <span>{authError}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Admin Email */}
             <div>
-              <label className="block text-xs font-mono text-slate-300 uppercase mb-2">
+              <label className="block text-xs font-bold text-[#0B1F3A] uppercase mb-1.5">
                 Administrator Email / ID
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                <Mail className="w-4 h-4 text-[#0B1F3A]/40 absolute left-3.5 top-3.5" />
                 <input
                   type="text"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter Admin ID or Email"
-                  className="w-full bg-[#05070B] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-xs sm:text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#D6A84F] transition-colors"
+                  placeholder="admin@anivex.com or Admin ID"
+                  className="w-full bg-[#FFFDF7] border border-[#0B1F3A]/15 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-[#0B1F3A] placeholder:text-[#0B1F3A]/40 focus:outline-none focus:border-[#F97316] transition-colors"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-mono text-slate-300 uppercase mb-2">
+              <label className="block text-xs font-bold text-[#0B1F3A] uppercase mb-1.5">
                 Password
               </label>
               <div className="relative">
-                <KeyRound className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                <KeyRound className="w-4 h-4 text-[#0B1F3A]/40 absolute left-3.5 top-3.5" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter Password"
-                  className="w-full bg-[#05070B] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-xs sm:text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#D6A84F] transition-colors"
+                  className="w-full bg-[#FFFDF7] border border-[#0B1F3A]/15 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-[#0B1F3A] placeholder:text-[#0B1F3A]/40 focus:outline-none focus:border-[#F97316] transition-colors"
                 />
               </div>
             </div>
@@ -125,23 +127,30 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D6A84F] via-[#F5C85B] to-[#D6A84F] text-[#05070B] font-extrabold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 hover:shadow-[0_0_25px_rgba(245,200,91,0.4)] disabled:opacity-50 transition-all cursor-pointer"
+              className="w-full py-3 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 transition-all cursor-pointer mt-2"
             >
               <span>{isSubmitting ? 'Authenticating...' : 'Sign In to Admin Panel'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
-          <div className="pt-4 border-t border-white/10 text-center">
-            <a href="/" className="text-xs text-slate-400 hover:text-white transition-colors">
+          {/* Quick Demo Hint */}
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
+            <p className="text-[11px] text-[#0B1F3A]/70">
+              Demo access: <strong className="font-mono text-[#0B1F3A]">admin</strong> / <strong className="font-mono text-[#0B1F3A]">anivex123</strong>
+            </p>
+          </div>
+
+          <div className="pt-2 border-t border-[#0B1F3A]/10 text-center">
+            <a href="/" className="text-xs text-[#0B1F3A]/60 hover:text-[#0B1F3A] transition-colors">
               ← Return to Public Website
             </a>
           </div>
 
         </div>
 
-        <p className="text-center text-[10px] font-mono text-slate-600 mt-6">
-          ANIVEX SOLUTIONS CMS • SECURITY VERIFIED
+        <p className="text-center text-[10px] font-mono text-[#0B1F3A]/50 mt-6">
+          ANIVEX SOLUTION CMS • SECURE ACCESS
         </p>
 
       </div>

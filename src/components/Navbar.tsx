@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ArrowRight, Sparkles } from 'lucide-react';
-import { NAV_LINKS } from '../data/companyData';
+import { Menu, X, ArrowRight, MessageCircle } from 'lucide-react';
+import { useCms } from '../context/CmsContext';
 
-interface NavbarProps {
-  onOpenAiDemo?: () => void;
-}
-
-export const Navbar: React.FC<NavbarProps> = ({ onOpenAiDemo }) => {
+export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
+  const { siteContent, companyInfo } = useCms();
+
+  const rawPhone = companyInfo?.phone || '+91 98765 43210';
+  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
+
+  const whatsappUrl = `https://wa.me/${phoneToUse}?text=${encodeURIComponent(
+    'Namaste Anivex Solution! I would like to inquire about your software engineering and digital solutions.'
+  )}`;
 
   useEffect(() => {
-    // Initial load hash scroll
     if (window.location.hash) {
       const initialId = window.location.hash.substring(1);
       const element = document.getElementById(initialId);
@@ -25,19 +29,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAiDemo }) => {
     }
 
     const handleScroll = () => {
-      if (window.scrollY > 30) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 20);
 
-      // Active link detection based on section top offsets
-      const sections = NAV_LINKS.map(link => link.href.substring(1));
+      const sections = ['hero', 'about', 'services', 'products', 'projects', 'why-anivex', 'testimonials', 'faq', 'contact'];
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
         if (el) {
           const rect = el.getBoundingClientRect();
-          if (rect.top <= 140 && rect.bottom >= 140) {
+          if (rect.top <= 120 && rect.bottom >= 120) {
             setActiveSection(sectionId);
             break;
           }
@@ -52,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAiDemo }) => {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    const targetId = href.substring(1);
+    const targetId = href.startsWith('#') ? href.substring(1) : href;
     const element = document.getElementById(targetId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -60,132 +59,129 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAiDemo }) => {
     }
   };
 
+  // Nav items from CMS with fallback
+  const navSettings = siteContent.navbar;
+  const navItems = (navSettings?.items && navSettings.items.length > 0)
+    ? navSettings.items.filter((item) => item.visible).sort((a, b) => a.order - b.order)
+    : [
+        { id: '1', label: 'Home', href: '#hero', visible: true, order: 1 },
+        { id: '2', label: 'About', href: '#about', visible: true, order: 2 },
+        { id: '3', label: 'Services', href: '#services', visible: true, order: 3 },
+        { id: '4', label: 'Products', href: '#products', visible: true, order: 4 },
+        { id: '5', label: 'Projects', href: '#projects', visible: true, order: 5 },
+        { id: '6', label: 'Why Anivex', href: '#why-anivex', visible: true, order: 6 },
+        { id: '7', label: 'FAQ', href: '#faq', visible: true, order: 7 },
+        { id: '8', label: 'Contact', href: '#contact', visible: true, order: 8 },
+      ];
+
+  const brandName = navSettings?.brandName || 'Anivex Solution';
+  const ctaText = navSettings?.ctaText || 'Start a Project →';
+  const ctaLink = navSettings?.ctaLink || '#contact';
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-[#05070B]/85 backdrop-blur-md border-b border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] py-3.5'
-          : 'bg-transparent py-6'
+          ? 'bg-[#FFFDF7]/95 backdrop-blur-md border-b border-[#0B1F3A]/10 shadow-sm py-3'
+          : 'bg-[#FFFDF7]/80 backdrop-blur-sm border-b border-[#0B1F3A]/5 py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Brand Logo Area */}
+        {/* Zone 1: Single text element wordmark */}
         <a
           href="#hero"
           onClick={(e) => handleNavClick(e, '#hero')}
           className="flex items-center gap-2.5 group cursor-pointer"
           id="nav-logo"
         >
-          {/* Logo Icon Mark */}
-          <div className="relative w-9 h-9 rounded-lg bg-gradient-to-br from-[#121824] to-[#0B0F16] border border-[#D6A84F]/30 p-1.5 flex items-center justify-center transition-all duration-300 group-hover:border-[#F5C85B] group-hover:shadow-[0_0_15px_rgba(214,168,79,0.3)]">
-            <svg viewBox="0 0 100 100" className="w-full h-full">
+          {/* Subtle Indian geometric emblem */}
+          <div className="w-8 h-8 rounded-lg bg-[#0B1F3A] flex items-center justify-center p-1.5 shadow-sm group-hover:bg-[#F97316] transition-colors">
+            <svg viewBox="0 0 100 100" className="w-full h-full text-white">
               <path
                 d="M 20,80 L 50,20 L 80,80 M 35,55 L 65,55"
                 fill="none"
-                stroke="url(#navGoldGrad)"
+                stroke="currentColor"
                 strokeWidth="12"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
               <path
-                d="M 30,20 L 70,80"
+                d="M 32,22 L 68,78"
                 fill="none"
-                stroke="#D9DCE1"
+                stroke="#D4A72C"
                 strokeWidth="8"
                 strokeLinecap="round"
-                opacity="0.85"
               />
-              <defs>
-                <linearGradient id="navGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#F5C85B" />
-                  <stop offset="100%" stopColor="#D6A84F" />
-                </linearGradient>
-              </defs>
             </svg>
           </div>
 
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5 leading-none">
-              <span className="font-display font-extrabold text-xl tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-[#F5C85B] transition-all">
-                ANIVEX
-              </span>
-              <span className="font-display font-semibold text-xs tracking-widest text-[#D6A84F] uppercase">
-                SOLUTIONS
-              </span>
-            </div>
-            <span className="text-[9px] tracking-widest text-slate-400 font-mono uppercase mt-0.5">
-              NEXT-GEN TECH
-            </span>
-          </div>
+          <span className="font-heading font-extrabold text-lg sm:text-xl tracking-tight text-[#0B1F3A] group-hover:text-[#F97316] transition-colors">
+            {brandName}
+          </span>
         </a>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 glass-panel px-4 py-1.5 rounded-full border border-white/10" id="desktop-nav">
-          {NAV_LINKS.map((link) => {
+        {/* Zone 2: Clean text navigation links with subtle hover effect */}
+        <nav className="hidden lg:flex items-center gap-6" id="desktop-nav">
+          {navItems.map((link) => {
             const isActive = activeSection === link.href.substring(1);
             return (
               <a
-                key={link.label}
+                key={link.id || link.label}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className={`relative px-3.5 py-1.5 text-xs font-medium tracking-wide rounded-full transition-all duration-200 ${
+                className={`text-sm font-medium transition-colors whitespace-nowrap relative py-1 ${
                   isActive
-                    ? 'text-white font-semibold'
-                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    ? 'text-[#F97316] font-semibold'
+                    : 'text-[#0B1F3A]/80 hover:text-[#0B1F3A]'
                 }`}
               >
+                <span>{link.label}</span>
                 {isActive && (
-                  <motion.div
-                    layoutId="activeNavBg"
-                    className="absolute inset-0 bg-gradient-to-r from-[#D6A84F]/20 to-[#F5C85B]/10 rounded-full border border-[#D6A84F]/40"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#F97316] rounded-full" />
                 )}
-                <span className="relative z-10">{link.label}</span>
               </a>
             );
           })}
         </nav>
 
-        {/* Right CTA Actions */}
-        <div className="hidden lg:flex items-center gap-3">
-          {onOpenAiDemo && (
-            <button
-              onClick={onOpenAiDemo}
-              className="px-3 py-2 rounded-full bg-[#0B0F16] border border-[#D6A84F]/30 hover:border-[#F5C85B] text-xs font-medium text-[#F5C85B] flex items-center gap-1.5 transition-all hover:shadow-[0_0_12px_rgba(214,168,79,0.25)] cursor-pointer"
-              title="Try ANIVEX AI Assistant"
-            >
-              <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#F5C85B]" />
-              <span>ANIVEX AI</span>
-            </button>
-          )}
+        {/* Zone 3: Primary actions */}
+        <div className="hidden sm:flex items-center gap-3">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden xl:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#15803D] bg-[#15803D]/10 hover:bg-[#15803D]/20 transition-colors"
+            title="Chat on WhatsApp"
+          >
+            <MessageCircle className="w-4 h-4 fill-current text-[#15803D]" />
+            <span>WhatsApp</span>
+          </a>
 
           <a
-            href="#contact"
-            onClick={(e) => handleNavClick(e, '#contact')}
-            className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#D6A84F] to-[#F5C85B] text-[#05070B] text-xs font-bold tracking-wide transition-all duration-300 hover:shadow-[0_0_20px_rgba(245,200,91,0.4)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-            id="nav-lets-talk-btn"
+            href={ctaLink}
+            onClick={(e) => handleNavClick(e, ctaLink)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold tracking-wide transition-all shadow-sm hover:shadow-md cursor-pointer whitespace-nowrap"
+            id="nav-cta-btn"
           >
-            <span>Let's Talk</span>
-            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            <span>{ctaText}</span>
           </a>
         </div>
 
         {/* Mobile Hamburger Toggle */}
         <div className="flex items-center gap-2 lg:hidden">
-          {onOpenAiDemo && (
-            <button
-              onClick={onOpenAiDemo}
-              className="p-2 rounded-full bg-[#0B0F16] border border-[#D6A84F]/40 text-[#F5C85B] text-xs font-medium flex items-center justify-center"
-              aria-label="ANIVEX AI"
-            >
-              <Sparkles className="w-4 h-4" />
-            </button>
-          )}
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded-lg bg-[#15803D]/10 text-[#15803D] text-xs font-medium flex items-center justify-center sm:hidden"
+            aria-label="WhatsApp Contact"
+          >
+            <MessageCircle className="w-4 h-4 fill-current" />
+          </a>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2.5 rounded-xl bg-[#0B0F16] border border-white/10 text-white hover:text-[#F5C85B] transition-colors cursor-pointer"
+            className="p-2 rounded-lg bg-[#0B1F3A]/5 text-[#0B1F3A] hover:bg-[#0B1F3A]/10 transition-colors cursor-pointer"
             aria-label="Toggle navigation menu"
             id="mobile-menu-toggle"
           >
@@ -194,37 +190,47 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAiDemo }) => {
         </div>
       </div>
 
-      {/* Mobile Animated Dropdown Drawer */}
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="lg:hidden bg-[#05070B]/95 backdrop-blur-xl border-b border-white/10 overflow-hidden px-4 py-6"
+            transition={{ duration: 0.2 }}
+            className="lg:hidden bg-[#FFFDF7] border-b border-[#0B1F3A]/10 overflow-hidden px-4 py-4 shadow-lg"
             id="mobile-menu-drawer"
           >
-            <div className="flex flex-col gap-3">
-              {NAV_LINKS.map((link) => (
+            <div className="flex flex-col gap-1">
+              {navItems.map((link) => (
                 <a
-                  key={link.label}
+                  key={link.id || link.label}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-200 hover:text-white hover:bg-white/5 transition-colors border-l-2 border-transparent hover:border-[#D6A84F]"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-[#0B1F3A] hover:bg-[#0B1F3A]/5 hover:text-[#F97316] transition-colors"
                 >
                   {link.label}
                 </a>
               ))}
 
-              <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+              <div className="pt-3 mt-2 border-t border-[#0B1F3A]/10 flex flex-col gap-2">
                 <a
-                  href="#contact"
-                  onClick={(e) => handleNavClick(e, '#contact')}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#D6A84F] to-[#F5C85B] text-[#05070B] text-xs font-bold text-center flex items-center justify-center gap-2 shadow-lg"
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 rounded-lg bg-[#15803D] text-white text-xs font-bold text-center flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <span>Let's Talk</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4 fill-current" />
+                  <span>WhatsApp Inquiry (+91)</span>
+                </a>
+
+                <a
+                  href={ctaLink}
+                  onClick={(e) => handleNavClick(e, ctaLink)}
+                  className="w-full py-2.5 rounded-lg bg-[#F97316] text-white text-xs font-bold text-center flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <span>{ctaText}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </a>
               </div>
             </div>

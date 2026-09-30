@@ -25,11 +25,16 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
     solutions: 'Solutions & Verticals Manager',
     projects: 'Projects Manager',
     about: 'About & Founder Management',
+    testimonials: 'Client Testimonials CMS',
+    faqs: 'Frequently Asked Questions CMS',
+    clients: 'Clients Directory & Contacts',
+    contracts: 'Client Service Agreements (PDF / Print)',
+    quotations: 'Formal Quotations & Scope Estimates (PDF / Print)',
     'company-info': 'Company Information Settings',
     'social-links': 'Social Channels & Links',
     enquiries: 'Contact Enquiries Dashboard',
     notifications: 'System Notifications',
-    billing: 'Bill & Invoice Generator',
+    billing: 'Bill & Tax Invoice Generator',
     'payment-settings': 'Payment Panel & Settings',
     media: 'Media Asset Library',
     profile: 'Admin Profile & Security',
@@ -38,39 +43,39 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
   };
 
   return (
-    <header className="header no-print print:hidden sticky top-0 z-30 bg-[#0B0F16]/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-4 flex items-center justify-between">
+    <header className="header no-print print:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#0B1F3A]/10 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xs">
       
       {/* Left: Mobile Menu Trigger & Tab Title */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3.5">
         <button
           onClick={onOpenMobileMenu}
-          className="p-2 rounded-xl bg-[#121824] border border-white/10 text-white lg:hidden cursor-pointer"
+          className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0B1F3A] lg:hidden cursor-pointer"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         <div>
-          <h1 className="font-display font-bold text-lg sm:text-xl text-white tracking-tight">
+          <h1 className="font-heading font-extrabold text-lg sm:text-xl text-[#0B1F3A] tracking-tight">
             {tabTitles[activeTab] || 'Admin Console'}
           </h1>
-          <p className="text-[11px] font-mono text-slate-400 hidden sm:block">
-            ANIVEX SOLUTIONS CMS • REAL-TIME FIRESTORE SYNC
+          <p className="text-[11px] font-mono text-[#0B1F3A]/60 hidden sm:block">
+            ANIVEX SOLUTION CMS • REAL-TIME FIRESTORE SYNC
           </p>
         </div>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-3 sm:gap-4">
+      <div className="flex items-center gap-3">
         
         {/* Notifications Icon Button */}
         <button
           onClick={() => setActiveTab('notifications')}
-          className="relative p-2.5 rounded-xl bg-[#121824] border border-white/10 text-slate-300 hover:text-white hover:border-[#D6A84F]/40 transition-colors cursor-pointer"
+          className="relative p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0B1F3A] transition-colors cursor-pointer"
           title="Notifications"
         >
           <Bell className="w-4 h-4" />
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#D6A84F] text-[#05070B] font-bold text-[10px] flex items-center justify-center animate-pulse">
+            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#F97316] text-white font-bold text-[10px] flex items-center justify-center animate-pulse">
               {unreadCount}
             </span>
           )}
@@ -81,10 +86,10 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           href="/"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#05070B] border border-white/10 hover:border-[#D6A84F]/40 text-xs font-semibold text-white transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0B1F3A] hover:bg-[#0B1F3A]/90 text-xs font-semibold text-white transition-all cursor-pointer shadow-xs"
         >
           <span>Live Site</span>
-          <ExternalLink className="w-3.5 h-3.5 text-[#F5C85B]" />
+          <ExternalLink className="w-3.5 h-3.5 text-[#F97316]" />
         </a>
 
       </div>

@@ -1,31 +1,83 @@
 import React from 'react';
-import { Code, Sparkles, Smartphone, Zap, Cloud } from 'lucide-react';
-import { TRUST_ITEMS } from '../data/companyData';
-
-const iconMap: Record<string, React.ReactNode> = {
-  Code: <Code className="w-4 h-4 text-[#F5C85B]" />,
-  Sparkles: <Sparkles className="w-4 h-4 text-[#F5C85B]" />,
-  Smartphone: <Smartphone className="w-4 h-4 text-[#F5C85B]" />,
-  Zap: <Zap className="w-4 h-4 text-[#F5C85B]" />,
-  Cloud: <Cloud className="w-4 h-4 text-[#F5C85B]" />,
-};
+import { Code2, Layers, ShieldCheck, Award, CheckCircle2, HeartHandshake } from 'lucide-react';
+import { useCms } from '../context/CmsContext';
 
 export const TrustStrip: React.FC = () => {
+  const { siteContent } = useCms();
+
+  const trustStats = siteContent.trustStats && siteContent.trustStats.length > 0
+    ? siteContent.trustStats.filter((t) => t.enabled !== false).sort((a, b) => a.order - b.order)
+    : [
+        {
+          id: 'trust-1',
+          title: 'Custom Engineering',
+          label: 'Direct Delivery',
+          description: 'No bloated templates or cookie-cutter solutions',
+          iconName: 'Code2',
+        },
+        {
+          id: 'trust-2',
+          title: '100% Code Transfer',
+          label: 'Intellectual Property',
+          description: 'Full repository & deployment ownership handed to you',
+          iconName: 'ShieldCheck',
+        },
+        {
+          id: 'trust-3',
+          title: 'GST Compliant',
+          label: 'Indian Entity',
+          description: 'Official tax invoices, contracts & formal agreements',
+          iconName: 'Award',
+        },
+        {
+          id: 'trust-4',
+          title: 'Dedicated Support',
+          label: 'Studio Model',
+          description: 'Direct communication with lead engineers & founder',
+          iconName: 'HeartHandshake',
+        },
+      ];
+
+  const getIcon = (iconName: string) => {
+    switch (iconName?.toLowerCase()) {
+      case 'hearthandshake':
+      case 'heart':
+        return <HeartHandshake className="w-5 h-5 text-[#F97316]" />;
+      case 'shieldcheck':
+      case 'shield':
+        return <ShieldCheck className="w-5 h-5 text-[#15803D]" />;
+      case 'award':
+        return <Award className="w-5 h-5 text-[#D4A72C]" />;
+      case 'code2':
+      case 'code':
+      default:
+        return <Code2 className="w-5 h-5 text-[#0B1F3A]" />;
+    }
+  };
+
   return (
-    <section id="trust-strip" className="relative z-20 py-8 bg-[#0B0F16] border-y border-white/10 overflow-hidden">
+    <section id="trust-strip" className="relative z-20 py-8 bg-white border-y border-[#0B1F3A]/8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-center justify-between gap-6 md:gap-8">
-          {TRUST_ITEMS.map((item, idx) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {trustStats.map((item) => (
             <div
-              key={item.label}
-              className="flex items-center gap-3 px-4 py-2 rounded-xl bg-[#05070B]/60 border border-white/5 hover:border-[#D6A84F]/30 transition-all duration-300"
+              key={item.id}
+              className="flex items-start gap-4 p-4 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6 hover:border-[#F97316]/30 transition-all card-warm-hover"
             >
-              <div className="p-2 rounded-lg bg-[#121824] border border-[#D6A84F]/20">
-                {iconMap[item.icon] || <Code className="w-4 h-4 text-[#F5C85B]" />}
+              <div className="p-2.5 rounded-lg bg-white border border-[#0B1F3A]/8 shadow-xs shrink-0">
+                {getIcon(item.iconName)}
               </div>
-              <span className="text-xs font-semibold tracking-wider text-slate-200 uppercase font-display">
-                {item.label}
-              </span>
+              <div className="min-w-0">
+                <span className="text-[11px] font-bold text-[#F97316] uppercase tracking-wider block">
+                  {item.label}
+                </span>
+                <h4 className="text-base font-extrabold text-[#0B1F3A] tracking-tight mt-0.5">
+                  {item.title}
+                </h4>
+                <p className="text-xs text-[#0B1F3A]/65 mt-1 leading-snug">
+                  {item.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>

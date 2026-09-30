@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, ShieldCheck, Cpu, Sparkles, ChevronDown } from 'lucide-react';
-import { AnivexBrandSymbol } from './AnivexBrandSymbol';
+import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Building, Globe } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { HeroTechVisual } from './TechVisualMockups';
 
 interface HeroProps {
   onStartProject?: () => void;
@@ -10,114 +10,125 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }) => {
-  let siteContent;
-  try {
-    const cms = useCms();
-    siteContent = cms.siteContent;
-  } catch (e) {
-    siteContent = {
-      heroSubtitle: 'NEXT-GENERATION TECHNOLOGY COMPANY',
-      heroHeading: 'We Build Technology That Moves Businesses Forward.',
-      heroDescription: 'From intelligent software to scalable digital products, ANIVEX Solutions turns ambitious ideas into powerful technology.',
-      primaryButtonText: 'Start a Project',
-      secondaryButtonText: 'Explore Our Solutions',
-    };
+  const { siteContent } = useCms();
+
+  if (siteContent.heroVisible === false) {
+    return null;
   }
 
-  const handleScrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  const badge = siteContent.heroBadge || "MODERN INDIAN TECHNOLOGY";
+  const heading = siteContent.heroHeading || "Technology Built for India's Next Generation of Businesses.";
+  const description = siteContent.heroDescription || "Anivex Solution builds modern websites, enterprise software, ERP systems, mobile applications and intelligent digital solutions for growing businesses.";
+  const primaryBtnText = siteContent.primaryButtonText || "Start Your Project →";
+  const primaryBtnLink = siteContent.primaryButtonLink || "#contact";
+  const secondaryBtnText = siteContent.secondaryButtonText || "Explore Solutions";
+  const secondaryBtnLink = siteContent.secondaryButtonLink || "#services";
+
+  const handleScroll = (href: string) => {
+    const id = href.startsWith('#') ? href.substring(1) : href;
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
     <section
       id="hero"
-      className="relative min-h-screen pt-28 pb-16 md:pt-36 md:pb-24 flex items-center justify-center bg-radial-gradient bg-tech-grid overflow-hidden"
+      className="relative pt-32 pb-20 md:pt-40 md:pb-28 bg-[#FFFDF7] overflow-hidden indian-pattern-bg"
     >
-      {/* Background Ambient Glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-[#D6A84F]/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/3 -right-20 w-[400px] h-[400px] bg-blue-900/10 rounded-full blur-[160px] pointer-events-none" />
+      {/* Subtle Warm Saffron and Green Ambient Light */}
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-r from-[#F97316]/5 via-[#D4A72C]/5 to-[#15803D]/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
-          {/* Left Column: Hero Copy & Actions */}
+          {/* Left Column: Editorial Value Proposition */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-7 flex flex-col items-start text-left"
           >
-            {/* Small Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0B0F16] border border-[#D6A84F]/30 text-[11px] font-semibold tracking-wider text-[#F5C85B] uppercase mb-6 shadow-[0_4px_20px_rgba(214,168,79,0.15)]">
-              <span className="w-2 h-2 rounded-full bg-[#F5C85B] animate-pulse" />
-              <span>{siteContent?.heroSubtitle || 'NEXT-GENERATION TECHNOLOGY COMPANY'}</span>
+            {/* Subtle Indian Tech Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-6">
+              <span className="w-2 h-2 rounded-full bg-[#F97316]" />
+              <span className="tracking-wide uppercase text-[11px] font-bold">{badge}</span>
+              <span className="text-[#0B1F3A]/30">|</span>
+              <span className="text-[#15803D] font-medium">Built in India</span>
             </div>
 
-            {/* Main Heading */}
-            <h1 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white leading-[1.08] mb-6">
-              {siteContent?.heroHeading || 'We Build Technology That Moves Businesses Forward.'}
+            {/* Main Headline */}
+            <h1 className="font-heading font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-[54px] tracking-tight text-[#0B1F3A] leading-[1.12] mb-6">
+              {heading}
             </h1>
 
-            {/* Supporting Line */}
-            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl font-normal leading-relaxed mb-8">
-              {siteContent?.heroDescription || 'From intelligent software to scalable digital products, ANIVEX Solutions turns ambitious ideas into powerful technology.'}
+            {/* Supporting Copy */}
+            <p className="text-base sm:text-lg text-[#0B1F3A]/75 font-normal leading-relaxed max-w-2xl mb-8">
+              {description}
             </p>
 
-            {/* Dual CTAs */}
+            {/* Action CTAs */}
             <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
               <button
-                onClick={onStartProject || (() => handleScrollTo('contact'))}
-                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#D6A84F] via-[#F5C85B] to-[#D6A84F] text-[#05070B] font-bold text-sm tracking-wide transition-all duration-300 hover:shadow-[0_0_28px_rgba(245,200,91,0.5)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                id="hero-start-project-btn"
+                type="button"
+                onClick={onStartProject || (() => handleScroll(primaryBtnLink))}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-bold text-sm tracking-wide transition-all shadow-sm hover:shadow-md cursor-pointer whitespace-nowrap"
+                id="hero-primary-btn"
               >
-                <span>{siteContent?.primaryButtonText || 'Start a Project'}</span>
-                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                <span>{primaryBtnText}</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
 
               <button
-                onClick={onExploreSolutions || (() => handleScrollTo('solutions'))}
-                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#0B0F16]/90 border border-white/15 text-white font-semibold text-sm tracking-wide transition-all duration-300 hover:bg-white/10 hover:border-white/30 cursor-pointer"
-                id="hero-explore-solutions-btn"
+                type="button"
+                onClick={onExploreSolutions || (() => handleScroll(secondaryBtnLink))}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-[#0B1F3A] font-semibold text-sm border border-[#0B1F3A]/15 transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                id="hero-secondary-btn"
               >
-                <span>{siteContent?.secondaryButtonText || 'Explore Our Solutions'}</span>
+                <span>{secondaryBtnText}</span>
               </button>
             </div>
 
-            {/* Micro Value Indicators */}
-            <div className="mt-12 pt-8 border-t border-white/10 grid grid-cols-3 gap-6 text-left w-full max-w-xl">
-              <div>
-                <div className="font-display font-bold text-xl text-white">100%</div>
-                <div className="text-xs text-slate-400 mt-0.5">Custom Software</div>
+            {/* Trust highlights */}
+            <div className="mt-10 pt-6 border-t border-[#0B1F3A]/10 grid grid-cols-2 sm:grid-cols-3 gap-6 w-full">
+              <div className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-5 h-5 text-[#15803D] shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-xs font-bold text-[#0B1F3A]">Enterprise Quality</h4>
+                  <p className="text-[11px] text-[#0B1F3A]/60 mt-0.5">Production-grade architecture</p>
+                </div>
               </div>
-              <div>
-                <div className="font-display font-bold text-xl text-[#F5C85B]">AI-Driven</div>
-                <div className="text-xs text-slate-400 mt-0.5">Automated Workflows</div>
+              <div className="flex items-start gap-2.5">
+                <ShieldCheck className="w-5 h-5 text-[#F97316] shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-xs font-bold text-[#0B1F3A]">GST Compliant</h4>
+                  <p className="text-[11px] text-[#0B1F3A]/60 mt-0.5">Official invoices & contracts</p>
+                </div>
               </div>
-              <div>
-                <div className="font-display font-bold text-xl text-white">Scalable</div>
-                <div className="text-xs text-slate-400 mt-0.5">Enterprise Systems</div>
+              <div className="flex items-start gap-2.5 col-span-2 sm:col-span-1">
+                <Globe className="w-5 h-5 text-[#D4A72C] shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-xs font-bold text-[#0B1F3A]">Direct Engineering</h4>
+                  <p className="text-[11px] text-[#0B1F3A]/60 mt-0.5">Transparent communication</p>
+                </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Right Column: Abstract Brand Symbol Graphic */}
+          {/* Right Column: Premium High-Fidelity Technology & Indian Business Visual (Zero AI-Slop) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5 flex items-center justify-center relative mt-6 lg:mt-0"
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5 relative"
           >
-            <AnivexBrandSymbol size={380} />
+            <HeroTechVisual />
+            {/* Subtle decorative Indian geometric accent line */}
+            <div className="absolute -bottom-3 left-8 right-8 h-1 rounded-full saffron-green-accent opacity-80" />
           </motion.div>
 
         </div>
-      </div>
-
-      {/* Subtle Scroll Down Indicator */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-60 hover:opacity-100 transition-opacity cursor-pointer" onClick={() => handleScrollTo('trust-strip')}>
-        <span className="text-[10px] tracking-widest font-mono text-slate-400 uppercase mb-1">SCROLL</span>
-        <ChevronDown className="w-4 h-4 text-[#F5C85B] animate-bounce" />
       </div>
     </section>
   );

@@ -28,11 +28,17 @@ export const ServicesManager: React.FC<ServicesManagerProps> = ({ initialOpenAdd
   const [formData, setFormData] = useState<Omit<ServiceCMS, 'id'>>({
     number: `0${services.length + 1}`,
     title: '',
+    slug: '',
     description: '',
     fullDescription: '',
     iconName: 'Cpu',
+    coverImage: '',
     features: ['Custom Integration', 'Scalable Architecture'],
     technologies: ['React', 'Node.js', 'TypeScript'],
+    cta: 'Discuss Service →',
+    ctaUrl: '#contact',
+    seoTitle: '',
+    seoDescription: '',
     displayOrder: services.length + 1,
     published: true,
   });
@@ -46,11 +52,17 @@ export const ServicesManager: React.FC<ServicesManagerProps> = ({ initialOpenAdd
     setFormData({
       number: `0${services.length + 1}`,
       title: '',
+      slug: '',
       description: '',
       fullDescription: '',
       iconName: 'Cpu',
+      coverImage: '',
       features: ['Custom Integration', 'Scalable Architecture'],
       technologies: ['React', 'Node.js', 'TypeScript'],
+      cta: 'Discuss Service →',
+      ctaUrl: '#contact',
+      seoTitle: '',
+      seoDescription: '',
       displayOrder: services.length + 1,
       published: true,
     });
@@ -62,15 +74,30 @@ export const ServicesManager: React.FC<ServicesManagerProps> = ({ initialOpenAdd
     setFormData({
       number: srv.number,
       title: srv.title,
+      slug: srv.slug || '',
       description: srv.description,
       fullDescription: srv.fullDescription || '',
       iconName: srv.iconName || 'Cpu',
+      coverImage: srv.coverImage || '',
       features: [...srv.features],
       technologies: srv.technologies ? [...srv.technologies] : [],
+      cta: srv.cta || 'Discuss Service →',
+      ctaUrl: srv.ctaUrl || '#contact',
+      seoTitle: srv.seoTitle || '',
+      seoDescription: srv.seoDescription || '',
       displayOrder: srv.displayOrder,
       published: srv.published,
     });
     setIsModalOpen(true);
+  };
+
+  const handleMove = async (index: number, direction: 'up' | 'down') => {
+    const targetIdx = direction === 'up' ? index - 1 : index + 1;
+    if (targetIdx < 0 || targetIdx >= services.length) return;
+    const current = services[index];
+    const target = services[targetIdx];
+    await updateService(current.id, { displayOrder: target.displayOrder });
+    await updateService(target.id, { displayOrder: current.displayOrder });
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -140,7 +167,7 @@ export const ServicesManager: React.FC<ServicesManagerProps> = ({ initialOpenAdd
 
       {/* Services List Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {services.map((srv) => (
+        {services.map((srv, idx) => (
           <div
             key={srv.id}
             className={`p-6 rounded-2xl bg-[#0B0F16] border transition-all space-y-4 shadow-xl ${
@@ -156,6 +183,25 @@ export const ServicesManager: React.FC<ServicesManagerProps> = ({ initialOpenAdd
               </div>
 
               <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 mr-1 border-r border-white/10 pr-2">
+                  <button
+                    disabled={idx === 0}
+                    onClick={() => handleMove(idx, 'up')}
+                    className="p-1 text-slate-400 hover:text-white disabled:opacity-30 cursor-pointer"
+                    title="Move Up"
+                  >
+                    <MoveUp className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    disabled={idx === services.length - 1}
+                    onClick={() => handleMove(idx, 'down')}
+                    className="p-1 text-slate-400 hover:text-white disabled:opacity-30 cursor-pointer"
+                    title="Move Down"
+                  >
+                    <MoveDown className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
                 <button
                   onClick={() => handleTogglePublish(srv)}
                   className={`p-2 rounded-xl border text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer ${
@@ -275,6 +321,30 @@ export const ServicesManager: React.FC<ServicesManagerProps> = ({ initialOpenAdd
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 uppercase mb-2">Slug (URL identifier)</label>
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                    placeholder="e.g. web-development"
+                    className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 uppercase mb-2">Cover Image URL</label>
+                  <input
+                    type="text"
+                    value={formData.coverImage}
+                    onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                    placeholder="https://... or /src/assets/..."
+                    className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-mono text-slate-300 uppercase mb-2">Short Description *</label>
                 <textarea
@@ -312,6 +382,7 @@ export const ServicesManager: React.FC<ServicesManagerProps> = ({ initialOpenAdd
                     <option value="Sparkles">Sparkles (AI & Automation)</option>
                     <option value="BarChart3">BarChart3 (ERP & Dashboards)</option>
                     <option value="Layout">Layout (UI/UX Design)</option>
+                    <option value="Cloud">Cloud (Cloud Solutions)</option>
                   </select>
                 </div>
 
@@ -321,6 +392,87 @@ export const ServicesManager: React.FC<ServicesManagerProps> = ({ initialOpenAdd
                     type="number"
                     value={formData.displayOrder}
                     onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 1 })}
+                    className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                </div>
+              </div>
+
+              {/* Technologies Editor */}
+              <div>
+                <label className="block text-xs font-mono text-slate-300 uppercase mb-2">Technologies Used</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={techInput}
+                    onChange={(e) => setTechInput(e.target.value)}
+                    placeholder="e.g. React, Node.js, Python..."
+                    className="flex-1 bg-[#05070B] border border-white/10 rounded-xl px-4 py-2 text-xs text-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddTech}
+                    className="px-4 py-2 rounded-xl bg-[#121824] border border-[#D6A84F]/30 text-[#F5C85B] text-xs font-semibold cursor-pointer"
+                  >
+                    Add Tech
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {formData.technologies?.map((tech, idx) => (
+                    <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#121824] border border-white/10 text-xs text-slate-200">
+                      <span>{tech}</span>
+                      <button type="button" onClick={() => handleRemoveTech(idx)} className="text-slate-400 hover:text-red-400">
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTA & CTA URL */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 uppercase mb-2">CTA Button Text</label>
+                  <input
+                    type="text"
+                    value={formData.cta}
+                    onChange={(e) => setFormData({ ...formData, cta: e.target.value })}
+                    placeholder="e.g. Discuss Service →"
+                    className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 uppercase mb-2">CTA URL</label>
+                  <input
+                    type="text"
+                    value={formData.ctaUrl}
+                    onChange={(e) => setFormData({ ...formData, ctaUrl: e.target.value })}
+                    placeholder="#contact"
+                    className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                </div>
+              </div>
+
+              {/* SEO Title & Description */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 uppercase mb-2">SEO Meta Title</label>
+                  <input
+                    type="text"
+                    value={formData.seoTitle}
+                    onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+                    placeholder="e.g. Custom Web Development in India"
+                    className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 uppercase mb-2">SEO Meta Description</label>
+                  <input
+                    type="text"
+                    value={formData.seoDescription}
+                    onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+                    placeholder="e.g. High-performance enterprise web apps..."
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
                   />
                 </div>

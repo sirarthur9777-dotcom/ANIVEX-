@@ -9,7 +9,7 @@ export const AboutFounderManager: React.FC = () => {
     aboutHeading: siteContent.aboutHeading || 'Technology With Purpose.',
     aboutDescription:
       siteContent.aboutDescription ||
-      'ANIVEX Solutions helps businesses transform ideas into reliable digital products and intelligent technology solutions.',
+      'Anivex Solution helps businesses transform ideas into reliable digital products and intelligent technology solutions.',
     aboutStory:
       siteContent.aboutStory ||
       'We combine disciplined software engineering, modern human-centered design, and emerging technology stacks to create scalable, high-performance systems.',
@@ -23,7 +23,7 @@ export const AboutFounderManager: React.FC = () => {
     founderRole: siteContent.founderRole || 'Founder',
     founderDescription:
       siteContent.founderDescription ||
-      'Krishndas Chauhan is the Founder of ANIVEX Solutions, focused on building modern software products, digital platforms, and technology-driven solutions for businesses.',
+      'Krishndas Chauhan is the Founder of Anivex Solution, focused on building modern software products, digital platforms, and technology-driven solutions for businesses.',
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -108,7 +108,7 @@ export const AboutFounderManager: React.FC = () => {
               rows={4}
               value={formData.founderDescription}
               onChange={(e) => setFormData({ ...formData, founderDescription: e.target.value })}
-              placeholder="Krishndas Chauhan is the Founder of ANIVEX Solutions, focused on building modern software products, digital platforms, and technology-driven solutions for businesses."
+              placeholder="Krishndas Chauhan is the Founder of Anivex Solution, focused on building modern software products, digital platforms, and technology-driven solutions for businesses."
               className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-3 text-xs sm:text-sm text-slate-200 focus:border-[#D6A84F] focus:outline-none leading-relaxed"
             />
           </div>

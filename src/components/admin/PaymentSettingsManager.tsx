@@ -7,10 +7,10 @@ export const PaymentSettingsManager: React.FC = () => {
 
   const [formData, setFormData] = useState({
     upiId: paymentSettings.upiId || '7985668826-2@bybl',
-    upiName: paymentSettings.upiName || 'ANIVEX SOLUTIONS',
+    upiName: paymentSettings.upiName || 'Anivex Solution',
     qrCodeUrl: paymentSettings.qrCodeUrl || '',
     bankName: paymentSettings.bankName || 'Bank of Baroda',
-    accountHolderName: paymentSettings.accountHolderName || 'ANIVEX SOLUTIONS',
+    accountHolderName: paymentSettings.accountHolderName || 'Anivex Solution',
     accountNumber: paymentSettings.accountNumber || '45950100023052',
     ifscCode: paymentSettings.ifscCode || 'BARBOMACHHA',
     paymentInstructions: paymentSettings.paymentInstructions || 'Scan the UPI QR code using any payment app or transfer directly to our Bank of Baroda account.',
@@ -21,10 +21,10 @@ export const PaymentSettingsManager: React.FC = () => {
   useEffect(() => {
     setFormData({
       upiId: paymentSettings.upiId || '7985668826-2@bybl',
-      upiName: paymentSettings.upiName || 'ANIVEX SOLUTIONS',
+      upiName: paymentSettings.upiName || 'Anivex Solution',
       qrCodeUrl: paymentSettings.qrCodeUrl || '',
       bankName: paymentSettings.bankName || 'Bank of Baroda',
-      accountHolderName: paymentSettings.accountHolderName || 'ANIVEX SOLUTIONS',
+      accountHolderName: paymentSettings.accountHolderName || 'Anivex Solution',
       accountNumber: paymentSettings.accountNumber || '45950100023052',
       ifscCode: paymentSettings.ifscCode || 'BARBOMACHHA',
       paymentInstructions: paymentSettings.paymentInstructions || 'Scan the UPI QR code using any payment app or transfer directly to our Bank of Baroda account.',
@@ -101,7 +101,7 @@ export const PaymentSettingsManager: React.FC = () => {
                     required
                     value={formData.upiName}
                     onChange={(e) => setFormData({ ...formData, upiName: e.target.value })}
-                    placeholder="ANIVEX SOLUTIONS"
+                    placeholder="Anivex Solution"
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl p-3 text-white focus:border-[#D6A84F] focus:outline-none"
                   />
                 </div>
@@ -154,7 +154,7 @@ export const PaymentSettingsManager: React.FC = () => {
                     required
                     value={formData.accountHolderName}
                     onChange={(e) => setFormData({ ...formData, accountHolderName: e.target.value })}
-                    placeholder="ANIVEX SOLUTIONS"
+                    placeholder="Anivex Solution"
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl p-3 text-white focus:border-[#D6A84F] focus:outline-none"
                   />
                 </div>
@@ -242,7 +242,7 @@ export const PaymentSettingsManager: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <div className="text-xs font-mono font-bold text-white uppercase tracking-wider">{formData.upiName || 'ANIVEX SOLUTIONS'}</div>
+                  <div className="text-xs font-mono font-bold text-white uppercase tracking-wider">{formData.upiName || 'Anivex Solution'}</div>
                   <div className="text-sm font-mono font-extrabold text-[#F5C85B] mt-0.5">{formData.upiId || '7985668826-2@bybl'}</div>
                 </div>
                 <div className="text-[10px] text-slate-400 font-mono uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/5">

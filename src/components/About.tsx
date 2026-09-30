@@ -1,140 +1,147 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ABOUT_STATS } from '../data/companyData';
-import { Compass, Palette, Code2, Rocket, ShieldCheck } from 'lucide-react';
+import { Target, Compass, Award, ArrowRight, ShieldCheck, HeartHandshake, CheckCircle } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
-
-const icons = [
-  <Compass className="w-5 h-5 text-[#F5C85B]" />,
-  <Palette className="w-5 h-5 text-[#F5C85B]" />,
-  <Code2 className="w-5 h-5 text-[#F5C85B]" />,
-  <Rocket className="w-5 h-5 text-[#F5C85B]" />,
-];
+import { AboutStudioVisual } from './TechVisualMockups';
 
 export const About: React.FC = () => {
-  let siteContent;
-  try {
-    const cms = useCms();
-    siteContent = cms.siteContent;
-  } catch (e) {
-    siteContent = {
-      aboutHeading: 'Technology With Purpose.',
-      aboutDescription: 'ANIVEX Solutions helps businesses transform ideas into reliable digital products and intelligent technology solutions.',
-      aboutStory: 'We combine disciplined software engineering, modern human-centered design, and emerging technology stacks to create scalable, high-performance systems that solve real-world operational problems.',
-      founderName: 'Krishndas Chauhan',
-      founderRole: 'Founder',
-      founderDescription: 'Krishndas Chauhan is the Founder of ANIVEX Solutions, focused on building modern software products, digital platforms, and technology-driven solutions for businesses.',
-    };
-  }
+  const { siteContent } = useCms();
 
-  const founderName = siteContent?.founderName || 'Krishndas Chauhan';
-  const founderRole = siteContent?.founderRole || 'Founder';
-  const founderDesc =
-    siteContent?.founderDescription ||
-    'Krishndas Chauhan is the Founder of ANIVEX Solutions, focused on building modern software products, digital platforms, and technology-driven solutions for businesses.';
+  const aboutHeading = siteContent.aboutHeading || "Technology With Purpose.";
+  const aboutDescription = siteContent.aboutDescription || "Anivex Solution helps businesses transform ideas into reliable digital products and intelligent technology solutions.";
+  const companyStory = siteContent.aboutStory || "Founded with a mission to deliver world-class digital craftsmanship for Indian and global enterprises, Anivex Solution blends disciplined engineering with intuitive human-centric design. We eliminate technical bloat to create resilient, scalable digital engines.";
+  const mission = siteContent.mission || "To engineer scalable, resilient, and human-centric software solutions that empower Indian businesses, startups, and institutions to excel in the digital economy.";
+  const vision = siteContent.vision || "To be recognized as India's premier high-trust technology engineering firm, synonymous with disciplined delivery, architectural elegance, and tangible business results.";
+  const founderName = siteContent.founderName || "Krishndas Chauhan";
+  const founderRole = siteContent.founderRole || "Founder & Lead Architect";
+  const founderDesc = siteContent.founderDescription || "Krishndas Chauhan is the Founder of Anivex Solution, dedicated to architecting high-performance digital products, enterprise systems, and scalable technology for forward-looking enterprises.";
+  const companyImg = siteContent.companyImage || "/src/assets/images/about_indian_tech_office_1790750532643.jpg";
+
+  const values = siteContent.values || [
+    { title: "Business First", description: "Every line of code must create real operational efficiency or revenue growth." },
+    { title: "Architectural Rigor", description: "We build on modern, maintainable stacks that scale effortlessly." },
+    { title: "Radical Transparency", description: "Direct communication, realistic timelines, and zero deceptive practices." },
+    { title: "Indian Innovation", description: "World-class engineering standards with deep empathy for Indian business operations." }
+  ];
+
+  const handleScrollToContact = () => {
+    const el = document.getElementById('contact');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <section id="about" className="py-24 relative bg-[#05070B] overflow-hidden">
-      {/* Background Subtle Lines */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#D6A84F]/5 rounded-full blur-[120px] pointer-events-none" />
-
+    <section id="about" className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
-          
-          {/* Heading Side */}
-          <div className="lg:col-span-5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B0F16] border border-[#D6A84F]/30 text-[10px] font-mono tracking-wider text-[#F5C85B] uppercase mb-4">
-              ABOUT ANIVEX
-            </div>
-            <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight mb-6">
-              {siteContent?.aboutHeading || 'Technology With '}
-              {!siteContent?.aboutHeading.includes('Purpose') && <span className="text-gold-gradient">Purpose.</span>}
-            </h2>
-            <div className="w-16 h-1 bg-gradient-to-r from-[#F5C85B] to-transparent rounded-full mb-6" />
+        
+        {/* Section Header */}
+        <div className="flex flex-col items-center text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
+            <span className="uppercase tracking-wider text-[11px] font-bold">ABOUT ANIVEX SOLUTION</span>
           </div>
 
-          {/* Copy Side */}
-          <div className="lg:col-span-7 text-slate-300 text-base sm:text-lg leading-relaxed space-y-4">
-            <p className="font-normal text-slate-200">
-              <strong className="text-white font-semibold">ANIVEX Solutions</strong> {siteContent?.aboutDescription || 'helps businesses transform ideas into reliable digital products and intelligent technology solutions.'}
+          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] tracking-tight mb-4">
+            {aboutHeading}
+          </h2>
+
+          <p className="text-base sm:text-lg text-[#0B1F3A]/70 max-w-2xl font-normal leading-relaxed">
+            {aboutDescription}
+          </p>
+        </div>
+
+        {/* Company Story & Office Visual Frame (Zero AI-Slop) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-16">
+          {/* Left: High-Impact Visual */}
+          <div className="lg:col-span-6 relative">
+            <AboutStudioVisual />
+            {/* Subtle decorative line */}
+            <div className="absolute -bottom-2 left-6 right-6 h-1 rounded-full saffron-green-accent opacity-75" />
+          </div>
+
+          {/* Right: Story Narrative */}
+          <div className="lg:col-span-6 flex flex-col justify-center">
+            <h3 className="font-heading font-bold text-2xl text-[#0B1F3A] mb-4">
+              Building for India's Future
+            </h3>
+            <p className="text-sm sm:text-base text-[#0B1F3A]/80 leading-relaxed mb-6 font-normal">
+              {companyStory}
             </p>
-            <p className="text-slate-400">
-              {siteContent?.aboutStory || 'We combine disciplined software engineering, modern human-centered design, and emerging technology stacks to create scalable, high-performance systems that solve real-world operational problems.'}
-            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-white border border-[#0B1F3A]/8">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Target className="w-4 h-4 text-[#F97316]" />
+                  <h4 className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider">Mission</h4>
+                </div>
+                <p className="text-xs text-[#0B1F3A]/75 leading-relaxed">
+                  {mission}
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-white border border-[#0B1F3A]/8">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Compass className="w-4 h-4 text-[#15803D]" />
+                  <h4 className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider">Vision</h4>
+                </div>
+                <p className="text-xs text-[#0B1F3A]/75 leading-relaxed">
+                  {vision}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Founder Spotlight Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16 p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-[#0B0F16] via-[#121824] to-[#0B0F16] border border-[#D6A84F]/40 shadow-2xl relative overflow-hidden group"
-        >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#D6A84F]/10 rounded-full blur-3xl pointer-events-none" />
+        {/* 4 Core Values Grid */}
+        <div className="mb-16">
+          <h3 className="font-heading font-bold text-xl text-[#0B1F3A] text-center mb-8">
+            Our Core Values
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {values.map((v, i) => (
+              <div key={i} className="card-warm rounded-xl p-5 bg-white">
+                <div className="w-8 h-8 rounded-lg bg-[#0B1F3A]/5 flex items-center justify-center text-[#F97316] font-bold text-xs mb-3">
+                  0{i + 1}
+                </div>
+                <h4 className="font-heading font-bold text-base text-[#0B1F3A] mb-1.5">
+                  {v.title}
+                </h4>
+                <p className="text-xs text-[#0B1F3A]/70 leading-relaxed">
+                  {v.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
 
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-8 relative z-10">
-            {/* Founder Avatar / Monogram Badge */}
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-[#D6A84F] via-[#F5C85B] to-[#D6A84F] text-[#05070B] font-extrabold text-2xl sm:text-3xl flex items-center justify-center font-mono shadow-[0_10px_30px_rgba(214,168,79,0.3)] shrink-0 group-hover:scale-105 transition-transform">
+        {/* Founder Spotlight Card */}
+        <div className="p-7 sm:p-9 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+            <div className="w-16 h-16 rounded-xl bg-[#0B1F3A] text-[#D4A72C] font-heading font-extrabold text-xl flex items-center justify-center shrink-0 shadow-xs">
               KC
             </div>
-
-            {/* Founder Details */}
-            <div className="space-y-2 max-w-3xl">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05070B] border border-[#D6A84F]/30 text-[10px] font-mono font-bold text-[#F5C85B] uppercase tracking-wider">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#F5C85B]" />
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#F97316] uppercase tracking-wider mb-1">
+                <ShieldCheck className="w-3.5 h-3.5" />
                 <span>{founderRole}</span>
               </div>
-
-              <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-white tracking-tight">
+              <h3 className="font-heading font-bold text-xl text-[#0B1F3A]">
                 {founderName}
               </h3>
-
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-normal pt-1">
+              <p className="text-xs sm:text-sm text-[#0B1F3A]/70 leading-relaxed max-w-2xl mt-1">
                 {founderDesc}
               </p>
             </div>
           </div>
-        </motion.div>
 
-        {/* 4 Process Milestone Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {ABOUT_STATS.map((stat, idx) => (
-            <motion.div
-              key={stat.number}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              whileHover={{ y: -6 }}
-              className="group relative p-6 rounded-2xl bg-[#0B0F16] border border-white/10 hover:border-[#D6A84F]/40 transition-all duration-300 shadow-lg hover:shadow-[0_10px_30px_rgba(214,168,79,0.1)] flex flex-col justify-between"
-            >
-              {/* Card Header: Number + Icon */}
-              <div className="flex items-center justify-between mb-8">
-                <span className="font-display font-extrabold text-3xl text-gold-gradient">
-                  {stat.number}
-                </span>
-                <div className="p-3 rounded-xl bg-[#121824] border border-[#D6A84F]/20 group-hover:border-[#F5C85B]/50 transition-colors">
-                  {icons[idx]}
-                </div>
-              </div>
-
-              {/* Card Body */}
-              <div>
-                <h3 className="font-display font-bold text-xl text-white mb-2 group-hover:text-[#F5C85B] transition-colors">
-                  {stat.label}
-                </h3>
-                <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                  {stat.desc}
-                </p>
-              </div>
-
-              {/* Bottom Subtle Accent Bar */}
-              <div className="mt-6 w-full h-0.5 bg-white/5 group-hover:bg-gradient-to-r group-hover:from-[#D6A84F] group-hover:to-transparent transition-all duration-300" />
-            </motion.div>
-          ))}
+          <button
+            type="button"
+            onClick={handleScrollToContact}
+            className="px-5 py-2.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold whitespace-nowrap transition-colors shadow-xs"
+          >
+            Start a Conversation →
+          </button>
         </div>
+
       </div>
     </section>
   );

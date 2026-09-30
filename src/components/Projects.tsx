@@ -1,203 +1,279 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PROJECTS } from '../data/companyData';
-import { ProjectItem } from '../types';
-import { ExternalLink, ShieldCheck, FileText, ArrowRight, X, Layers, PlusCircle } from 'lucide-react';
+import { ArrowRight, Check, X, Calendar, User, ExternalLink, Sparkles } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { ProjectCMS } from '../types/cms';
+import { PolicyHubVisual, VyaparDeskVisual, OpsGridVisual } from './TechVisualMockups';
 
 export const Projects: React.FC = () => {
-  const [selectedProject, setSelectedProject] = useState<any | null>(null);
+  const { projects } = useCms();
+  const [selectedProject, setSelectedProject] = useState<ProjectCMS | null>(null);
 
-  let cmsProjects;
-  try {
-    const cms = useCms();
-    cmsProjects = cms.projects;
-  } catch (e) {
-    cmsProjects = PROJECTS.map(p => ({ ...p, featured: true, displayOrder: 1, published: true }));
-  }
+  const fallbackProjects: ProjectCMS[] = [
+    {
+      id: 'policyhub-project',
+      name: 'PolicyHub Governance Engine',
+      client: 'Enterprise Corporate Client',
+      category: 'SaaS Platform & Enterprise Product',
+      projectType: 'SaaS Product',
+      shortDescription: 'Enterprise document governance platform uniting granular permissions, version control, and instant semantic search.',
+      fullDescription: 'Engineered to eliminate corporate document clutter and regulatory compliance friction. We designed an automated document lifecycle pipeline, audit trail system, and vector-grounded search that indexes thousands of enterprise contracts in sub-seconds.',
+      techStack: ['React', 'TypeScript', 'Node.js', 'Firebase', 'Vector DB'],
+      features: ['Granular Authorization', 'Semantic Document Search', 'Automated Versioning', 'Audit Trail Compliance'],
+      featured: true,
+      imageBg: 'from-slate-900 to-[#0B1F3A]',
+      projectUrl: 'https://anivex.com/products/policyhub',
+      stats: 'Enterprise Ready',
+      status: 'Featured',
+      clientType: 'Anivex Flagship Product',
+      timeline: '2025 – Active',
+      completionDate: 'June 2025',
+      overview: 'Engineered from the ground up to solve corporate document clutter, PolicyHub integrates fine-grained permission control, automated document lifecycle management, and instant semantic search.',
+      displayOrder: 1,
+      published: true,
+    },
+    {
+      id: 'nexus-erp',
+      name: 'Anivex VyaparDesk ERP',
+      client: 'Apex Retail & Logistics India',
+      category: 'Custom ERP & Business Automation',
+      projectType: 'ERP / Business Software',
+      shortDescription: 'Unified operational dashboard designed for multi-branch inventory tracking, workforce allocation, and automated GST invoices.',
+      fullDescription: 'Replaced manual spreadsheets and fragmented paper billings with a real-time web portal that processes stock updates across 5 regional warehouses, generates compliant GST tax invoices, and reconciles daily financial accounts.',
+      techStack: ['Next.js', 'TypeScript', 'Express', 'PostgreSQL', 'Tailwind CSS'],
+      features: ['Multi-Branch Inventory Sync', 'GST Tax Invoicing', 'Role-Based Permissions', 'Automated Ledgers'],
+      featured: true,
+      imageBg: 'from-slate-900 to-[#0B1F3A]',
+      projectUrl: '#contact',
+      stats: '5 Branches Deployed',
+      status: 'Completed',
+      clientType: 'Commercial Enterprise System',
+      timeline: '4 Months Development',
+      completionDate: 'April 2025',
+      overview: 'Replaced 5 legacy spreadsheets with a real-time web portal that processes stock updates and generates automated compliance reports.',
+      displayOrder: 2,
+      published: true,
+    },
+    {
+      id: 'aura-health-app',
+      name: 'Aura Mobile Companion',
+      client: 'HealthCare Plus India',
+      category: 'Mobile Application (Android)',
+      projectType: 'Mobile App',
+      shortDescription: 'Cross-platform mobile application featuring offline biometric sync, health metric visualizers, and instant appointment booking.',
+      fullDescription: 'Built with offline-first synchronization to ensure patient medical summaries and lab reports remain accessible even in low-connectivity rural clinic settings. Includes biometric login and instant WhatsApp notification integration.',
+      techStack: ['Android', 'Kotlin', 'Firebase', 'REST APIs'],
+      features: ['Biometric Authentication', 'Offline-First Sync', 'Vitals Visualizer', 'Push Appointment Reminders'],
+      featured: false,
+      imageBg: 'from-slate-900 to-[#0B1F3A]',
+      projectUrl: '#contact',
+      stats: 'Android & iOS App',
+      status: 'Active',
+      clientType: 'Healthcare Provider',
+      timeline: '3 Months Development',
+      completionDate: 'February 2025',
+      overview: 'Built with offline-first synchronization to ensure patient medical summaries remain available even in low-connectivity environments.',
+      displayOrder: 3,
+      published: true,
+    },
+  ];
 
-  const activeProjects = (cmsProjects && cmsProjects.length > 0)
-    ? cmsProjects.filter(p => p.published !== false)
-    : PROJECTS;
+  const activeProjects = (projects && projects.length > 0)
+    ? projects.filter((p) => p.published !== false).sort((a, b) => a.displayOrder - b.displayOrder)
+    : fallbackProjects;
 
   return (
-    <section id="projects" className="py-24 relative bg-[#05070B] overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#D6A84F]/5 rounded-full blur-[140px] pointer-events-none" />
-
+    <section id="projects" className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0B0F16] border border-[#D6A84F]/30 text-[10px] font-mono tracking-wider text-[#F5C85B] uppercase mb-4">
-            FEATURED ENGINEERING
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />
+            <span className="uppercase tracking-wider text-[11px] font-bold">PROVEN DELIVERIES</span>
           </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight mb-4">
-            Featured <span className="text-gold-gradient">Projects & Products</span>
+
+          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] tracking-tight mb-4">
+            Recent Work & Case Studies
           </h2>
-          <p className="text-slate-400 max-w-2xl text-sm sm:text-base font-normal">
-            Explore software solutions, custom enterprise platforms, and proprietary technology products engineered by ANIVEX Solutions.
+
+          <p className="text-base sm:text-lg text-[#0B1F3A]/70 max-w-2xl font-normal leading-relaxed">
+            Real software, web applications, and digital systems delivered with disciplined craftsmanship for Indian and global businesses.
           </p>
         </div>
 
-        {/* Projects Showcase Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {activeProjects.map((proj, idx) => (
-            <motion.div
-              key={proj.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              whileHover={{ y: -8 }}
-              className={`group relative rounded-2xl bg-[#0B0F16] border transition-all duration-300 overflow-hidden flex flex-col justify-between shadow-xl ${
-                proj.featured
-                  ? 'border-[#D6A84F]/60 shadow-[0_15px_35px_rgba(214,168,79,0.15)]'
-                  : 'border-white/10 hover:border-[#D6A84F]/40'
-              }`}
-            >
-              {/* Stylized Mockup Preview Header */}
-              <div className={`relative h-48 w-full bg-gradient-to-br ${proj.imageBg} p-6 flex flex-col justify-between border-b border-white/10 overflow-hidden`}>
-                <div className="flex items-center justify-between relative z-10">
-                  <span className="px-3 py-1 rounded-full bg-[#05070B]/80 backdrop-blur-md border border-[#D6A84F]/30 text-[10px] font-mono text-[#F5C85B]">
-                    {proj.category}
-                  </span>
-                  {proj.featured && (
-                    <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#D6A84F] to-[#F5C85B] text-[#05070B] text-[10px] font-bold uppercase tracking-wider">
-                      FEATURED
-                    </span>
-                  )}
-                </div>
+        {/* Case Study Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {activeProjects.map((project, index) => {
+            const projectImg = project.image || project.imageUrl || '/src/assets/images/hero_indian_tech_business_1790750492543.jpg';
 
-                {/* Abstract UI Representation */}
-                <div className="relative z-10 flex items-end justify-between">
-                  <div className="font-display font-extrabold text-2xl text-white tracking-tight group-hover:text-[#F5C85B] transition-colors">
-                    {proj.name}
-                  </div>
-                  <span className="text-[11px] font-mono text-slate-400 bg-[#05070B]/70 px-2.5 py-1 rounded-md border border-white/10">
-                    {proj.stats}
-                  </span>
-                </div>
-
-                {/* Background Tech Vector Pattern */}
-                <div className="absolute -bottom-8 -right-8 w-36 h-36 rounded-full border border-white/10 pointer-events-none opacity-40 group-hover:scale-125 transition-transform duration-700" />
-              </div>
-
-              {/* Project Details Body */}
-              <div className="p-6 flex-1 flex flex-col justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
-                    {proj.shortDescription || proj.description || proj.overview || proj.fullDescription}
-                  </p>
-
-                  {/* Tech Stack Pills */}
-                  <div className="flex flex-wrap gap-1.5 mb-6">
-                    {proj.techStack.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-2.5 py-1 rounded-md bg-[#05070B] border border-white/10 text-[10px] font-mono text-slate-400"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* View Case Study Button */}
-                <button
-                  onClick={() => setSelectedProject(proj)}
-                  className="w-full py-3 rounded-xl bg-[#05070B] border border-white/10 hover:border-[#D6A84F] text-white hover:text-[#F5C85B] text-xs font-bold tracking-wide flex items-center justify-center gap-2 transition-all cursor-pointer"
-                >
-                  <span>View Case Details</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Future Projects Clean Placeholder Structure */}
-        <div className="mt-12 p-8 rounded-2xl bg-[#0B0F16]/50 border border-dashed border-white/15 text-center flex flex-col items-center justify-center">
-          <div className="p-3 rounded-xl bg-[#121824] border border-[#D6A84F]/20 text-[#F5C85B] mb-3">
-            <PlusCircle className="w-6 h-6" />
-          </div>
-          <h3 className="font-display font-bold text-lg text-white mb-1">More Projects In Pipeline</h3>
-          <p className="text-xs text-slate-400 max-w-md mb-4">
-            ANIVEX Solutions continuously engineers new enterprise products and custom solutions across fintech, healthcare, logistics, and AI document processing.
-          </p>
-          <a
-            href="#contact"
-            className="text-xs font-bold text-[#F5C85B] hover:underline inline-flex items-center gap-1.5"
-          >
-            <span>Propose a Custom Project</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </a>
-        </div>
-
-        {/* Project Case Details Modal */}
-        <AnimatePresence>
-          {selectedProject && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#05070B]/85 backdrop-blur-md">
+            return (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="relative w-full max-w-2xl p-6 sm:p-8 rounded-2xl bg-[#0B0F16] border border-[#D6A84F]/40 shadow-2xl overflow-hidden"
+                key={project.id}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.35, delay: index * 0.05 }}
+                className="card-warm card-warm-hover rounded-2xl overflow-hidden bg-white flex flex-col justify-between"
               >
-                <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
-                  <div>
-                    <span className="text-[10px] font-mono uppercase text-[#F5C85B] tracking-wider">
-                      {selectedProject.category}
-                    </span>
-                    <h3 className="font-display font-bold text-2xl text-white">{selectedProject.name}</h3>
+                <div>
+                  {/* Project Technical UI Mockup Preview (Zero AI-Slop) */}
+                  <div className="relative aspect-[16/10] bg-slate-900 overflow-hidden border-b border-[#0B1F3A]/6">
+                    {project.id === 'policyhub-project' ? (
+                      <PolicyHubVisual />
+                    ) : project.id === 'nexus-erp' ? (
+                      <VyaparDeskVisual />
+                    ) : project.id === 'aura-health-app' ? (
+                      <OpsGridVisual />
+                    ) : project.image && !project.image.includes('_') ? (
+                      <img
+                        src={project.image}
+                        alt={project.name}
+                        className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-300"
+                        referrerPolicy="no-referrer"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <OpsGridVisual />
+                    )}
+
+                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-[#0B1F3A]/90 backdrop-blur-xs text-white text-[11px] font-semibold">
+                      {project.category}
+                    </div>
+
+                    {project.featured && (
+                      <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-[#F97316] text-white text-[10px] font-bold uppercase tracking-wider">
+                        Featured
+                      </div>
+                    )}
                   </div>
+
+                  {/* Body Content */}
+                  <div className="p-6">
+                    {/* Metadata line (Zero-Pill clean typography) */}
+                    <div className="flex items-center gap-2 text-xs text-[#0B1F3A]/60 mb-2">
+                      <span>{project.client || 'Enterprise Client'}</span>
+                      <span aria-hidden="true">·</span>
+                      <span>{project.completionDate || '2025'}</span>
+                    </div>
+
+                    <h3 className="font-heading font-bold text-xl text-[#0B1F3A] mb-3">
+                      {project.name}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-[#0B1F3A]/70 leading-relaxed mb-6 font-normal">
+                      {project.shortDescription || project.fullDescription || project.overview}
+                    </p>
+
+                    {/* Tech stack tags */}
+                    {project.techStack && project.techStack.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-6">
+                        {project.techStack.slice(0, 4).map((tech, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-0.5 rounded-md bg-[#FFFDF7] border border-[#0B1F3A]/8 text-[11px] font-medium text-[#0B1F3A]/80"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer Action */}
+                <div className="px-6 pb-6 pt-2 border-t border-[#0B1F3A]/6">
                   <button
-                    onClick={() => setSelectedProject(null)}
-                    className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white cursor-pointer"
+                    type="button"
+                    onClick={() => setSelectedProject(project)}
+                    className="w-full py-2.5 px-4 rounded-xl bg-white border border-[#0B1F3A]/15 hover:border-[#F97316] hover:bg-[#F97316] text-[#0B1F3A] hover:text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
                   >
-                    <X className="w-5 h-5" />
+                    <span>View Case Study</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
+              </motion.div>
+            );
+          })}
+        </div>
 
-                <div className="space-y-4 mb-6">
-                  <div className="grid grid-cols-2 gap-4 text-xs font-mono bg-[#05070B] p-4 rounded-xl border border-white/10">
-                    <div>
-                      <span className="text-slate-500 block">ENGAGEMENT:</span>
-                      <span className="text-slate-200 font-semibold">
-                        {selectedProject.clientType || selectedProject.details?.clientType || 'Commercial Enterprise'}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-slate-500 block">TIMELINE:</span>
-                      <span className="text-slate-200 font-semibold">
-                        {selectedProject.timeline || selectedProject.details?.timeline || 'Q3 - Active'}
-                      </span>
+        {/* Case Study Modal */}
+        <AnimatePresence>
+          {selectedProject && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1F3A]/60 backdrop-blur-xs">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                className="relative w-full max-w-2xl p-6 sm:p-8 rounded-2xl bg-[#FFFDF7] border border-[#0B1F3A]/10 shadow-2xl max-h-[90vh] overflow-y-auto"
+              >
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className="absolute top-4 right-4 p-2 rounded-lg text-[#0B1F3A]/60 hover:text-[#0B1F3A] hover:bg-[#0B1F3A]/5 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 text-xs text-[#F97316] font-bold uppercase tracking-wider mb-1">
+                    <span>{selectedProject.category}</span>
+                    <span>·</span>
+                    <span>{selectedProject.completionDate || '2025'}</span>
+                  </div>
+                  <h3 className="font-heading font-extrabold text-2xl sm:text-3xl text-[#0B1F3A]">
+                    {selectedProject.name}
+                  </h3>
+                  <p className="text-xs text-[#0B1F3A]/60 mt-1 flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-[#15803D]" />
+                    <span>Client: {selectedProject.client || selectedProject.clientType || 'Enterprise Client'}</span>
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white border border-[#0B1F3A]/8 mb-6">
+                  <h4 className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider mb-2">
+                    Executive Summary
+                  </h4>
+                  <p className="text-sm text-[#0B1F3A]/80 leading-relaxed">
+                    {selectedProject.fullDescription || selectedProject.overview || selectedProject.shortDescription}
+                  </p>
+                </div>
+
+                {selectedProject.features && selectedProject.features.length > 0 && (
+                  <div className="mb-6">
+                    <h4 className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider mb-2">
+                      Key Deliverables & Capabilities
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {selectedProject.features.map((feat, i) => (
+                        <div key={i} className="flex items-center gap-2 p-2.5 rounded-lg bg-white border border-[#0B1F3A]/8 text-xs text-[#0B1F3A]/85">
+                          <Check className="w-3.5 h-3.5 text-[#15803D] shrink-0" />
+                          <span>{feat}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
+                )}
 
-                  <div>
-                    <h4 className="text-xs font-bold text-white mb-2 uppercase tracking-wide">Project Overview</h4>
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                      {selectedProject.overview || selectedProject.fullDescription || selectedProject.shortDescription || selectedProject.details?.overview || selectedProject.description || 'Custom engineered software platform by ANIVEX Solutions.'}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h4 className="text-xs font-bold text-white mb-2 uppercase tracking-wide">Technology Architecture</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProject.techStack.map(t => (
-                        <span key={t} className="px-3 py-1 rounded-md bg-[#121824] text-[#F5C85B] text-xs font-mono border border-[#D6A84F]/20">
-                          {t}
+                {selectedProject.techStack && selectedProject.techStack.length > 0 && (
+                  <div className="mb-6">
+                    <h4 className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider mb-2">
+                      Engineered With
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedProject.techStack.map((tech, i) => (
+                        <span key={i} className="px-2.5 py-1 rounded-md bg-white border border-[#0B1F3A]/8 text-xs font-medium text-[#0B1F3A]">
+                          {tech}
                         </span>
                       ))}
                     </div>
                   </div>
-                </div>
+                )}
 
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#0B1F3A]/8">
                   <button
+                    type="button"
                     onClick={() => setSelectedProject(null)}
-                    className="px-5 py-2 rounded-xl bg-white/10 text-white text-xs font-semibold hover:bg-white/20 transition-colors cursor-pointer"
+                    className="px-4 py-2 rounded-lg text-xs font-semibold text-[#0B1F3A]/70 hover:text-[#0B1F3A]"
                   >
                     Close
                   </button>
@@ -208,10 +284,9 @@ export const Projects: React.FC = () => {
                       const el = document.getElementById('contact');
                       if (el) el.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#D6A84F] to-[#F5C85B] text-[#05070B] font-bold text-xs flex items-center gap-2 cursor-pointer"
+                    className="px-5 py-2.5 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold tracking-wide shadow-xs transition-colors"
                   >
-                    <span>Build Similar Project</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    Build Something Similar →
                   </a>
                 </div>
               </motion.div>

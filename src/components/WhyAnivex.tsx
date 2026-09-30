@@ -1,66 +1,124 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { WHY_ANIVEX_CARDS } from '../data/companyData';
-import { Target, Layers, Sparkles, Shield, Clock } from 'lucide-react';
-
-const icons: Record<string, React.ReactNode> = {
-  Target: <Target className="w-6 h-6 text-[#F5C85B]" />,
-  Layers: <Layers className="w-6 h-6 text-[#F5C85B]" />,
-  Sparkles: <Sparkles className="w-6 h-6 text-[#F5C85B]" />,
-  Shield: <Shield className="w-6 h-6 text-[#F5C85B]" />,
-  Clock: <Clock className="w-6 h-6 text-[#F5C85B]" />,
-};
+import { TrendingUp, Cpu, Layers, HeartHandshake, ShieldCheck, Award } from 'lucide-react';
+import { useCms } from '../context/CmsContext';
 
 export const WhyAnivex: React.FC = () => {
-  return (
-    <section id="why-anivex" className="py-24 relative bg-[#0B0F16] border-t border-white/10 overflow-hidden">
-      {/* Background Accent Grid */}
-      <div className="absolute inset-0 bg-tech-grid opacity-20 pointer-events-none" />
+  const { siteContent } = useCms();
+  const whySettings = siteContent.whyAnivex;
 
+  if (whySettings?.enabled === false) {
+    return null;
+  }
+
+  const heading = whySettings?.heading || 'Why Anivex Solution';
+  const description = whySettings?.description || 'We believe technology should serve real business goals — reducing overhead, accelerating growth, and delivering long-term competitive advantage.';
+
+  const features = (whySettings?.features && whySettings.features.length > 0)
+    ? [...whySettings.features].sort((a, b) => a.order - b.order)
+    : [
+        {
+          id: 'why-1',
+          number: '01',
+          title: 'Business First',
+          description: 'Technology built around actual business requirements, daily workflows, and bottom-line growth.',
+          iconName: 'TrendingUp',
+          order: 1,
+        },
+        {
+          id: 'why-2',
+          number: '02',
+          title: 'Modern Technology',
+          description: 'Modern development stack (React, Node.js, TypeScript, Cloud) with clean, scalable architecture.',
+          iconName: 'Cpu',
+          order: 2,
+        },
+        {
+          id: 'why-3',
+          number: '03',
+          title: 'Custom Solutions',
+          description: 'No unnecessary one-size-fits-all templates or bloated plugins. Built purposefully from the ground up.',
+          iconName: 'Layers',
+          order: 3,
+        },
+        {
+          id: 'why-4',
+          number: '04',
+          title: 'Long-Term Support',
+          description: 'Solutions designed for future growth with continuous updates, security audits, and dedicated support.',
+          iconName: 'HeartHandshake',
+          order: 4,
+        },
+      ];
+
+  const getIcon = (iconName: string) => {
+    switch (iconName?.toLowerCase()) {
+      case 'cpu':
+        return <Cpu className="w-5 h-5 text-[#F97316]" />;
+      case 'layers':
+        return <Layers className="w-5 h-5 text-[#15803D]" />;
+      case 'hearthandshake':
+      case 'support':
+        return <HeartHandshake className="w-5 h-5 text-[#D4A72C]" />;
+      case 'trendingup':
+      default:
+        return <TrendingUp className="w-5 h-5 text-[#0B1F3A]" />;
+    }
+  };
+
+  return (
+    <section id="why-anivex" className="py-24 bg-white relative border-t border-[#0B1F3A]/8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#05070B] border border-[#D6A84F]/30 text-[10px] font-mono tracking-wider text-[#F5C85B] uppercase mb-4">
-            THE ANIVEX ADVANTAGE
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />
+            <span className="uppercase tracking-wider text-[11px] font-bold">OUR PRINCIPLES</span>
           </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight mb-4">
-            Why <span className="text-gold-gradient">ANIVEX?</span>
+
+          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] tracking-tight mb-4">
+            {heading}
           </h2>
-          <p className="text-slate-400 max-w-2xl text-sm sm:text-base font-normal">
-            Five core engineering principles that distinguish our software engineering, product strategy, and long-term client engagements.
+
+          <p className="text-base sm:text-lg text-[#0B1F3A]/70 max-w-2xl font-normal leading-relaxed">
+            {description}
           </p>
         </div>
 
-        {/* 5 Premium Cards Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {WHY_ANIVEX_CARDS.map((card, idx) => (
+        {/* Editorial Feature List / Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {features.map((item, index) => (
             <motion.div
-              key={card.title}
-              initial={{ opacity: 0, y: 30 }}
+              key={item.id}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.08 }}
-              whileHover={{ y: -6 }}
-              className={`p-8 rounded-2xl bg-[#05070B] border border-white/10 hover:border-[#D6A84F]/50 transition-all duration-300 shadow-xl flex flex-col justify-between ${
-                idx === 0 ? 'md:col-span-2 lg:col-span-1 bg-gradient-to-br from-[#0B0F16] via-[#05070B] to-[#121824] border-[#D6A84F]/40' : ''
-              }`}
+              transition={{ duration: 0.35, delay: index * 0.05 }}
+              className="card-warm card-warm-hover rounded-2xl p-7 bg-[#FFFDF7] flex flex-col justify-between"
             >
               <div>
-                <div className="p-3.5 rounded-xl bg-[#0B0F16] border border-[#D6A84F]/30 w-fit mb-6">
-                  {icons[card.iconName]}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="p-3 rounded-xl bg-white border border-[#0B1F3A]/8 shadow-2xs">
+                    {getIcon(item.iconName)}
+                  </div>
+                  <span className="font-heading font-extrabold text-sm text-[#F97316]">
+                    {item.number || `0${index + 1}`}
+                  </span>
                 </div>
-                <h3 className="font-display font-bold text-xl text-white mb-3 hover:text-[#F5C85B] transition-colors">
-                  {card.title}
+
+                <h3 className="font-heading font-bold text-lg text-[#0B1F3A] mb-2.5">
+                  {item.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-                  {card.description}
+
+                <p className="text-xs sm:text-sm text-[#0B1F3A]/70 leading-relaxed font-normal">
+                  {item.description}
                 </p>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-slate-500">
-                <span>ANIVEX PRINCIPLE 0{idx + 1}</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#F5C85B]" />
+              <div className="mt-6 pt-4 border-t border-[#0B1F3A]/6 flex items-center justify-between text-[11px] text-[#0B1F3A]/50 font-medium">
+                <span>Disciplined Engineering</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
               </div>
             </motion.div>
           ))}

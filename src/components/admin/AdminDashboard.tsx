@@ -11,6 +11,8 @@ import { ProductsManager } from './ProductsManager';
 import { SolutionsManager } from './SolutionsManager';
 import { ProjectsManager } from './ProjectsManager';
 import { AboutFounderManager } from './AboutFounderManager';
+import { TestimonialsManager } from './TestimonialsManager';
+import { FaqsManager } from './FaqsManager';
 import { CompanyInfoManager } from './CompanyInfoManager';
 import { SocialLinksManager } from './SocialLinksManager';
 import { EnquiriesManager } from './EnquiriesManager';
@@ -21,6 +23,9 @@ import { MediaLibraryManager } from './MediaLibraryManager';
 import { AdminProfileManager } from './AdminProfileManager';
 import { ActivityLogsManager } from './ActivityLogsManager';
 import { AdminSettingsManager } from './AdminSettingsManager';
+import { ClientsManager } from './ClientsManager';
+import { ContractsManager } from './ContractsManager';
+import { QuotationsManager } from './QuotationsManager';
 
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
@@ -45,6 +50,12 @@ export const AdminDashboard: React.FC = () => {
             onOpenSolutionModal={handleOpenSolutionAdd}
           />
         );
+      case 'clients':
+        return <ClientsManager onNavigateToTab={setActiveTab} />;
+      case 'contracts':
+        return <ContractsManager />;
+      case 'quotations':
+        return <QuotationsManager />;
       case 'home':
         return <HomePageManager />;
       case 'services':
@@ -57,6 +68,10 @@ export const AdminDashboard: React.FC = () => {
         return <ProjectsManager />;
       case 'about':
         return <AboutFounderManager />;
+      case 'testimonials':
+        return <TestimonialsManager />;
+      case 'faqs':
+        return <FaqsManager />;
       case 'company-info':
         return <CompanyInfoManager />;
       case 'social-links':
@@ -83,7 +98,7 @@ export const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="dashboard min-h-screen bg-[#05070B] text-[#D9DCE1] flex selection:bg-[#D6A84F]/30 selection:text-[#F5C85B] print:bg-white print:p-0">
+    <div className="dashboard min-h-screen bg-[#F8F9FA] text-[#0B1F3A] flex selection:bg-[#F97316]/20 selection:text-[#F97316] print:bg-white print:p-0">
       
       {/* Toast System Notification Overlay */}
       {toast && <div className="no-print print:hidden"><ToastNotification message={toast.message} type={toast.type} /></div>}

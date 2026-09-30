@@ -110,7 +110,7 @@ export const AdminInvoiceManager: React.FC = () => {
   const [status, setStatus] = useState<InvoiceRecord['status']>('Pending');
   const [currency, setCurrency] = useState('INR');
 
-  const [billerName, setBillerName] = useState('ANIVEX Solutions');
+  const [billerName, setBillerName] = useState('Anivex Solution');
   const [billerAddress, setBillerAddress] = useState('Jaunpur, Uttar Pradesh, India');
   const [billerEmail, setBillerEmail] = useState('anivexsolution@gmail.com');
   const [billerPhone, setBillerPhone] = useState('+91 7985668826');
@@ -125,18 +125,18 @@ export const AdminInvoiceManager: React.FC = () => {
 
   const [projectTitle, setProjectTitle] = useState('Custom Web App');
   const [placeOfSupply, setPlaceOfSupply] = useState('Uttar Pradesh (09)');
-  const [websiteUrl, setWebsiteUrl] = useState('www.anivexsolutions.in');
+  const [websiteUrl, setWebsiteUrl] = useState('www.anivexsolution.in');
   const [deliveryMethod, setDeliveryMethod] = useState('Digital Delivery');
   const [warrantySupport, setWarrantySupport] = useState('30 Days Support');
-  const [supportEmail, setSupportEmail] = useState('support@anivexsolutions.in');
+  const [supportEmail, setSupportEmail] = useState('support@anivexsolution.in');
   const [supportPhone, setSupportPhone] = useState('+91 7985668826');
 
-  const [paymentNotes, setPaymentNotes] = useState('Thank you for partnering with ANIVEX Solutions. All deliverables completed according to milestone specifications.');
-  const [bankDetails, setBankDetails] = useState('ANIVEX Solutions | Bank of Baroda | A/C: 45950100023052 | IFSC: BARBOMACHHA | UPI: 7985668826-2@bybl');
+  const [paymentNotes, setPaymentNotes] = useState('Thank you for partnering with Anivex Solution. All deliverables completed according to milestone specifications.');
+  const [bankDetails, setBankDetails] = useState('Anivex Solution | Bank of Baroda | A/C: 45950100023052 | IFSC: BARBOMACHHA | UPI: 7985668826-2@bybl');
   
   // Bank & UPI Specific Fields
   const [bankName, setBankName] = useState('Bank of Baroda');
-  const [accountHolderName, setAccountHolderName] = useState('ANIVEX SOLUTIONS');
+  const [accountHolderName, setAccountHolderName] = useState('Anivex Solution');
   const [accountNumber, setAccountNumber] = useState('45950100023052');
   const [ifscCode, setIfscCode] = useState('BARBOMACHHA');
   const [upiId, setUpiId] = useState('7985668826-2@bybl');
@@ -166,7 +166,7 @@ export const AdminInvoiceManager: React.FC = () => {
     setDueDate('20 Aug 2026');
     setStatus('Pending');
     setCurrency('INR');
-    setBillerName('ANIVEX Solutions');
+    setBillerName('Anivex Solution');
     setBillerEmail('anivexsolution@gmail.com');
     setBillerAddress('Jaunpur, Uttar Pradesh, India');
     setBillerPhone('+91 7985668826');
@@ -179,19 +179,19 @@ export const AdminInvoiceManager: React.FC = () => {
     setClientRef('SKC/2026/08/12');
     setProjectTitle('Custom Web App');
     setPlaceOfSupply('Uttar Pradesh (09)');
-    setWebsiteUrl('www.anivexsolutions.in');
+    setWebsiteUrl('www.anivexsolution.in');
     setDeliveryMethod('Digital Delivery');
     setWarrantySupport('30 Days Support');
-    setSupportEmail('support@anivexsolutions.in');
+    setSupportEmail('support@anivexsolution.in');
     setSupportPhone('+91 7985668826');
     setBankName('Bank of Baroda');
-    setAccountHolderName('ANIVEX SOLUTIONS');
+    setAccountHolderName('Anivex Solution');
     setAccountNumber('45950100023052');
     setIfscCode('BARBOMACHHA');
     setUpiId('7985668826-2@bybl');
     setUpiQrCodeUrl('');
-    setPaymentNotes('Thank you for partnering with ANIVEX Solutions. All deliverables completed according to milestone specifications.');
-    setBankDetails('ANIVEX Solutions | Bank of Baroda | A/C: 45950100023052 | IFSC: BARBOMACHHA | UPI: 7985668826-2@bybl');
+    setPaymentNotes('Thank you for partnering with Anivex Solution. All deliverables completed according to milestone specifications.');
+    setBankDetails('Anivex Solution | Bank of Baroda | A/C: 45950100023052 | IFSC: BARBOMACHHA | UPI: 7985668826-2@bybl');
     setSignatoryName('Krishndas Chauhan');
     setSignatoryTitle('Founder & Managing Director');
     setItems([
@@ -307,7 +307,7 @@ export const AdminInvoiceManager: React.FC = () => {
     setDueDate(inv.dueDate);
     setStatus(inv.status);
     setCurrency(inv.currency || 'INR');
-    setBillerName(inv.billerName || 'ANIVEX Solutions');
+    setBillerName(inv.billerName || 'Anivex Solution');
     setBillerAddress(inv.billerAddress || 'Jaunpur, Uttar Pradesh, India');
     setBillerEmail(inv.billerEmail || 'anivexsolution@gmail.com');
     setBillerPhone(inv.billerPhone || '+91 7985668826');
@@ -320,15 +320,15 @@ export const AdminInvoiceManager: React.FC = () => {
     setClientRef(inv.clientRef || 'SKC/2026/08/12');
     setProjectTitle(inv.projectTitle);
     setPlaceOfSupply(inv.placeOfSupply || 'Uttar Pradesh (09)');
-    setWebsiteUrl(inv.websiteUrl || 'www.anivexsolutions.in');
+    setWebsiteUrl(inv.websiteUrl || 'www.anivexsolution.in');
     setDeliveryMethod(inv.deliveryMethod || 'Digital Delivery');
     setWarrantySupport(inv.warrantySupport || '30 Days Support');
-    setSupportEmail(inv.supportEmail || 'support@anivexsolutions.in');
+    setSupportEmail(inv.supportEmail || 'support@anivexsolution.in');
     setSupportPhone(inv.supportPhone || '+91 7985668826');
     setPaymentNotes(inv.paymentNotes || '');
     setBankDetails(inv.bankDetails || '');
     setBankName(inv.bankName || 'Bank of Baroda');
-    setAccountHolderName(inv.accountHolderName || 'ANIVEX SOLUTIONS');
+    setAccountHolderName(inv.accountHolderName || 'Anivex Solution');
     setAccountNumber(inv.accountNumber || '45950100023052');
     setIfscCode(inv.ifscCode || 'BARBOMACHHA');
     setUpiId(inv.upiId || '7985668826-2@bybl');
@@ -618,7 +618,7 @@ export const AdminInvoiceManager: React.FC = () => {
                 <div className="p-4 rounded-xl bg-[#05070B] border border-white/5 space-y-3">
                   <h4 className="font-bold text-[#F5C85B] uppercase font-mono flex items-center gap-2">
                     <Building2 className="w-4 h-4" />
-                    <span>From (ANIVEX Solutions)</span>
+                    <span>From (Anivex Solution)</span>
                   </h4>
                   <div>
                     <label className="block text-slate-400 mb-1">Company Name</label>
@@ -1025,7 +1025,7 @@ export const AdminInvoiceManager: React.FC = () => {
                       </div>
                       <div>
                         <div className="font-display font-black text-lg text-white uppercase tracking-tight flex items-center gap-1 leading-none">
-                          <span>ANIVEX</span> <span className="text-[#F5C85B]">SOLUTIONS</span>
+                          <span>ANIVEX</span> <span className="text-[#F5C85B]">SOLUTION</span>
                         </div>
                         <p className="text-[7.5px] text-slate-300 font-mono tracking-widest uppercase font-bold mt-0.5">
                           Software Engineering & Technology Solutions
@@ -1049,7 +1049,7 @@ export const AdminInvoiceManager: React.FC = () => {
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Globe className="w-3 h-3 text-[#F5C85B] shrink-0" />
-                        <span>{selectedInvoiceForView.websiteUrl || 'www.anivexsolutions.in'}</span>
+                        <span>{selectedInvoiceForView.websiteUrl || 'www.anivexsolution.in'}</span>
                       </div>
                     </div>
                   </div>
@@ -1186,7 +1186,7 @@ export const AdminInvoiceManager: React.FC = () => {
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#D6A84F]" />
                     <span className="text-[9.5px] font-mono font-bold text-slate-800 uppercase tracking-wider">PROJECT SCOPE & TERMS</span>
                   </div>
-                  <p className="text-[9px] text-slate-600 font-medium">Thank you for partnering with ANIVEX Solutions. Deliverables completed as scoped.</p>
+                  <p className="text-[9px] text-slate-600 font-medium">Thank you for partnering with Anivex Solution. Deliverables completed as scoped.</p>
                 </div>
 
                 {/* 4 Feature Badges */}
@@ -1271,7 +1271,7 @@ export const AdminInvoiceManager: React.FC = () => {
                         src={
                           selectedInvoiceForView.upiQrCodeUrl ||
                           `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-                            `upi://pay?pa=${selectedInvoiceForView.upiId || '7985668826-2@bybl'}&pn=ANIVEX%20Solutions&am=${selectedInvoiceForView.totalAmount}&cu=INR`
+                            `upi://pay?pa=${selectedInvoiceForView.upiId || '7985668826-2@bybl'}&pn=Anivex%20Solution&am=${selectedInvoiceForView.totalAmount}&cu=INR`
                           )}`
                         }
                         alt="UPI QR Code"
@@ -1290,7 +1290,7 @@ export const AdminInvoiceManager: React.FC = () => {
                       </div>
                       <div className="flex gap-1">
                         <span className="text-slate-500 w-16 shrink-0">Account:</span>
-                        <span className="text-slate-900 font-bold truncate">{selectedInvoiceForView.accountHolderName || 'ANIVEX SOLUTIONS'}</span>
+                        <span className="text-slate-900 font-bold truncate">{selectedInvoiceForView.accountHolderName || 'Anivex Solution'}</span>
                       </div>
                       <div className="flex gap-1">
                         <span className="text-slate-500 w-16 shrink-0">A/C No:</span>
@@ -1415,7 +1415,7 @@ export const AdminInvoiceManager: React.FC = () => {
                         <path id="circlePath" d="M 18 50 A 32 32 0 1 1 82 50" fill="none" />
                         <text className="text-[7.5px] font-mono font-bold uppercase fill-[#05070B] tracking-widest">
                           <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
-                            ANIVEX SOLUTIONS
+                            ANIVEX SOLUTION
                           </textPath>
                         </text>
                         <polygon points="50,28 54,38 65,38 56,44 59,55 50,48 41,55 44,44 35,38 46,38" fill="currentColor" opacity="0.8" />
@@ -1432,22 +1432,22 @@ export const AdminInvoiceManager: React.FC = () => {
                   <div className="text-[9px] font-black text-slate-900">Krishndas Chauhan</div>
                   <div className="text-[7.5px] text-slate-600 font-semibold">Founder & Managing Director</div>
                   <div className="text-[7.5px] text-[#D6A84F] font-mono font-bold uppercase tracking-wider">
-                    ANIVEX SOLUTIONS
+                    ANIVEX SOLUTION
                   </div>
                 </div>
               </div>
 
               {/* 8. FOOTER */}
               <div className="bg-[#05070B] text-white px-2.5 py-1 rounded-lg border border-[#D6A84F]/30 flex items-center justify-between text-[7.5px] font-mono shrink-0">
-                <div className="text-slate-300">Thank you for partnering with ANIVEX Solutions.</div>
+                <div className="text-slate-300">Thank you for partnering with Anivex Solution.</div>
                 <div className="flex items-center gap-1.5 text-[#F5C85B]">
-                  <span>www.anivexsolutions.in</span>
+                  <span>www.anivexsolution.in</span>
                   <span>•</span>
                   <span>anivexsolution@gmail.com</span>
                   <span>•</span>
                   <span>+91 7985668826</span>
                 </div>
-                <div className="text-slate-400">© 2026 ANIVEX Solutions</div>
+                <div className="text-slate-400">© 2026 Anivex Solution</div>
               </div>
             </div>
 

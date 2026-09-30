@@ -1,40 +1,120 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { Cpu, Globe, Smartphone, Sparkles, BarChart3, Layout, ArrowRight, Check } from 'lucide-react';
-import { SERVICES } from '../data/companyData';
-import { ServiceItem } from '../types';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Globe, Smartphone, BarChart3, Sparkles, Layout, Cloud, ArrowRight, Check, X } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
-
-const iconMap: Record<string, React.ReactNode> = {
-  Cpu: <Cpu className="w-6 h-6 text-[#F5C85B]" />,
-  Globe: <Globe className="w-6 h-6 text-[#F5C85B]" />,
-  Smartphone: <Smartphone className="w-6 h-6 text-[#F5C85B]" />,
-  Sparkles: <Sparkles className="w-6 h-6 text-[#F5C85B]" />,
-  BarChart3: <BarChart3 className="w-6 h-6 text-[#F5C85B]" />,
-  Layout: <Layout className="w-6 h-6 text-[#F5C85B]" />,
-};
+import { ServiceCMS } from '../types/cms';
 
 interface ServicesProps {
   onSelectService?: (serviceTitle: string) => void;
 }
 
 export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
-  let cmsServices;
-  try {
-    const cms = useCms();
-    cmsServices = cms.services;
-  } catch (e) {
-    cmsServices = SERVICES.map(s => ({ ...s, displayOrder: 1, published: true }));
-  }
+  const { services } = useCms();
+  const [activeModalService, setActiveModalService] = useState<ServiceCMS | null>(null);
 
-  // Filter published services or fallback to default
-  const activeServices = (cmsServices && cmsServices.length > 0)
-    ? cmsServices.filter(s => s.published !== false)
-    : SERVICES;
+  const fallbackServices: ServiceCMS[] = [
+    {
+      id: 'web-development',
+      number: '01',
+      title: 'Web Development',
+      description: 'High-speed, SEO-optimized web applications, client portals, and e-commerce platforms built with modern React, Next.js, and TypeScript.',
+      fullDescription: 'We build high-performance web applications and corporate websites engineered for conversion, speed, and clean code. From headless architectures to mission-critical portals, our solutions deliver seamless user experiences and scalable backends.',
+      iconName: 'Globe',
+      features: ['React & Next.js Stacks', 'Sub-second Load Times', 'Search Engine Optimization', 'Enterprise Security'],
+      technologies: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Node.js'],
+      displayOrder: 1,
+      published: true,
+    },
+    {
+      id: 'mobile-applications',
+      number: '02',
+      title: 'Mobile Applications',
+      description: 'Modern Android and cross-platform mobile apps featuring fluid native interactions, offline data synchronization, and biometric security.',
+      fullDescription: 'Our mobile engineering team delivers production-ready Android and cross-platform mobile apps with responsive layouts, push notification infrastructure, and instant API syncing. Published and maintained on Google Play Store with top security standards.',
+      iconName: 'Smartphone',
+      features: ['Android Native & Cross-Platform', 'Offline Data Sync', 'Biometric Authentication', 'Play Store Publishing'],
+      technologies: ['Android', 'Kotlin', 'React Native', 'Firebase'],
+      displayOrder: 2,
+      published: true,
+    },
+    {
+      id: 'erp-business',
+      number: '03',
+      title: 'ERP & Business Software',
+      description: 'Custom ERPs, multi-warehouse inventory systems, GST billing software, and unified operational dashboards for Indian enterprises.',
+      fullDescription: 'Replace chaotic spreadsheets and off-the-shelf software with tailored operational engines. We build custom ERPs that connect your inventory, GST billing, multi-branch warehouses, and executive reporting into one single source of truth.',
+      iconName: 'BarChart3',
+      features: ['GST-Compliant Invoicing', 'Multi-Warehouse Inventory', 'Role-Based Access Control', 'Automated Daily Ledgers'],
+      technologies: ['Node.js', 'PostgreSQL', 'Express', 'React', 'Docker'],
+      displayOrder: 3,
+      published: true,
+    },
+    {
+      id: 'ai-automation',
+      number: '04',
+      title: 'AI & Automation',
+      description: 'Practical business workflow automation, document intelligence, customer triage bots, and internal productivity copilot engines.',
+      fullDescription: 'Harness the power of modern machine learning and language models without the hype. We integrate semantic vector search, automated invoice extraction, smart customer support routing, and internal workflow automations directly into your software.',
+      iconName: 'Sparkles',
+      features: ['Document Text Extraction', 'Intelligent Workflow Triage', 'Vector Semantic Search', 'Internal Copilot Tools'],
+      technologies: ['Python', 'Gemini API', 'LangChain', 'FastAPI', 'PostgreSQL'],
+      displayOrder: 4,
+      published: true,
+    },
+    {
+      id: 'ui-ux-design',
+      number: '05',
+      title: 'UI/UX Design',
+      description: 'Clean, intuitive, and accessible digital interfaces crafted with disciplined typographic hierarchy and mathematical spatial layout.',
+      fullDescription: 'Great software starts with empathetic, human-centric design. We craft design systems, component libraries, and interactive high-fidelity prototypes that Indian users find effortless to navigate on any mobile or desktop screen.',
+      iconName: 'Layout',
+      features: ['Accessible Design Systems', 'Interactive Prototyping', 'Indian User Flow Optimization', 'High-Converting Checkout Funnels'],
+      technologies: ['Figma', 'Design Tokens', 'Tailwind CSS', 'WCAG AA Standards'],
+      displayOrder: 5,
+      published: true,
+    },
+    {
+      id: 'cloud-digital',
+      number: '06',
+      title: 'Cloud & Digital Solutions',
+      description: 'Resilient cloud infrastructure, automated CI/CD deployment pipelines, database management, and ongoing software maintenance retainers.',
+      fullDescription: 'We provide full lifecycle cloud architecture and technical support. From migrating legacy servers to automated cloud hosting, SSL configurations, security auditing, and continuous post-launch performance monitoring.',
+      iconName: 'Cloud',
+      features: ['Zero-Downtime Deployments', 'Database Backup & Replication', 'API Gateways & Microservices', '24/7 Server Health Monitoring'],
+      technologies: ['AWS', 'Google Cloud', 'Docker', 'Linux', 'Vercel'],
+      displayOrder: 6,
+      published: true,
+    },
+  ];
 
-  const handleServiceClick = (serviceTitle: string) => {
+  const activeServices = (services && services.length > 0)
+    ? services.filter((s) => s.published !== false).sort((a, b) => a.displayOrder - b.displayOrder)
+    : fallbackServices;
+
+  const getIcon = (iconName: string) => {
+    switch (iconName?.toLowerCase()) {
+      case 'smartphone':
+        return <Smartphone className="w-5 h-5 text-[#F97316]" />;
+      case 'barchart3':
+      case 'erp':
+        return <BarChart3 className="w-5 h-5 text-[#15803D]" />;
+      case 'sparkles':
+      case 'ai':
+        return <Sparkles className="w-5 h-5 text-[#D4A72C]" />;
+      case 'layout':
+      case 'design':
+        return <Layout className="w-5 h-5 text-[#0B1F3A]" />;
+      case 'cloud':
+        return <Cloud className="w-5 h-5 text-[#0284C7]" />;
+      case 'globe':
+      default:
+        return <Globe className="w-5 h-5 text-[#F97316]" />;
+    }
+  };
+
+  const handleCardClick = (service: ServiceCMS) => {
     if (onSelectService) {
-      onSelectService(serviceTitle);
+      onSelectService(service.title);
     } else {
       const el = document.getElementById('contact');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -42,77 +122,78 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
   };
 
   return (
-    <section id="services" className="py-24 relative bg-[#0B0F16] border-t border-white/10 overflow-hidden">
-      {/* Background Decorative Tech Grid */}
-      <div className="absolute inset-0 bg-tech-grid opacity-30 pointer-events-none" />
-
+    <section id="services" className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#05070B] border border-[#D6A84F]/30 text-[10px] font-mono tracking-wider text-[#F5C85B] uppercase mb-4">
-            OUR CORE CAPABILITIES
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />
+            <span className="uppercase tracking-wider text-[11px] font-bold">CORE CAPABILITIES</span>
           </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight mb-4">
-            What We <span className="text-gold-gradient">Build</span>
+
+          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] tracking-tight mb-4">
+            What We Build
           </h2>
-          <p className="text-slate-400 max-w-2xl text-sm sm:text-base font-normal">
-            End-to-end software engineering and digital capabilities engineered to accelerate growth, modernize legacy platforms, and scale business operations.
+
+          <p className="text-base sm:text-lg text-[#0B1F3A]/70 max-w-2xl font-normal leading-relaxed">
+            Technology solutions designed around real business needs.
           </p>
         </div>
 
-        {/* Dynamic Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {activeServices.map((service, idx) => (
+        {/* 6 Services Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {activeServices.map((service, index) => (
             <motion.div
               key={service.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.08 }}
-              whileHover={{ y: -8 }}
-              className="group relative p-8 rounded-2xl bg-[#05070B] border border-white/10 hover:border-[#D6A84F]/50 transition-all duration-300 shadow-xl hover:shadow-[0_15px_35px_rgba(214,168,79,0.12)] flex flex-col justify-between"
+              transition={{ duration: 0.35, delay: index * 0.05 }}
+              className="group card-warm card-warm-hover rounded-2xl p-7 flex flex-col justify-between bg-white relative cursor-pointer"
+              onClick={() => handleCardClick(service)}
             >
               <div>
-                {/* Number & Icon Header */}
+                {/* Header: Icon & Editorial Number */}
                 <div className="flex items-center justify-between mb-6">
-                  <span className="font-mono text-xs font-bold text-slate-500 tracking-widest">
-                    //{service.number || `0${idx + 1}`}
-                  </span>
-                  <div className="p-3.5 rounded-xl bg-[#0B0F16] border border-white/10 group-hover:border-[#F5C85B] group-hover:scale-110 transition-all duration-300">
-                    {iconMap[service.iconName] || <Cpu className="w-6 h-6 text-[#F5C85B]" />}
+                  <div className="p-3 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/8 shadow-2xs group-hover:scale-105 transition-transform">
+                    {getIcon(service.iconName)}
                   </div>
+                  <span className="text-xs font-mono font-bold text-[#0B1F3A]/40 tabular-nums">
+                    0{index + 1}
+                  </span>
                 </div>
 
-                {/* Title & Description */}
-                <h3 className="font-display font-bold text-xl text-white mb-3 group-hover:text-[#F5C85B] transition-colors">
+                {/* Title */}
+                <h3 className="font-heading font-bold text-xl text-[#0B1F3A] mb-3 group-hover:text-[#F97316] transition-colors">
                   {service.title}
                 </h3>
-                <p className="text-sm text-slate-300 leading-relaxed mb-6 font-normal">
+
+                {/* Short description */}
+                <p className="text-sm text-[#0B1F3A]/70 leading-relaxed mb-6">
                   {service.description}
                 </p>
 
-                {/* Features Bullet List */}
+                {/* Key feature list */}
                 {service.features && service.features.length > 0 && (
-                  <div className="space-y-2 mb-8 pt-4 border-t border-white/5">
-                    {service.features.map((feat) => (
-                      <div key={feat} className="flex items-center gap-2 text-xs text-slate-400">
-                        <Check className="w-3.5 h-3.5 text-[#F5C85B] shrink-0" />
+                  <ul className="space-y-2 mb-6 pt-4 border-t border-[#0B1F3A]/6">
+                    {service.features.slice(0, 3).map((feat, idx) => (
+                      <li key={idx} className="flex items-center gap-2 text-xs text-[#0B1F3A]/80">
+                        <Check className="w-3.5 h-3.5 text-[#15803D] shrink-0" />
                         <span>{feat}</span>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 )}
               </div>
 
-              {/* Action Trigger */}
-              <button
-                onClick={() => handleServiceClick(service.title)}
-                className="inline-flex items-center gap-2 text-xs font-bold text-[#F5C85B] hover:text-white transition-colors group-hover:translate-x-1 duration-200 cursor-pointer pt-2"
-              >
-                <span>Explore</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              {/* Bottom Action Footer */}
+              <div className="pt-4 border-t border-[#0B1F3A]/6 flex items-center justify-between text-xs font-bold text-[#0B1F3A] group-hover:text-[#F97316] transition-colors">
+                <span>Start a Project</span>
+                <div className="w-7 h-7 rounded-full bg-[#0B1F3A]/5 group-hover:bg-[#F97316] group-hover:text-white flex items-center justify-center transition-all">
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>

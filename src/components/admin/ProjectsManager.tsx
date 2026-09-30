@@ -12,7 +12,9 @@ import {
   ExternalLink,
   Github,
   CheckCircle2,
-  Star
+  Star,
+  MoveUp,
+  MoveDown
 } from 'lucide-react';
 
 interface ProjectsManagerProps {
@@ -27,6 +29,7 @@ export const ProjectsManager: React.FC<ProjectsManagerProps> = ({ initialOpenAdd
 
   const [formData, setFormData] = useState<Omit<ProjectCMS, 'id'>>({
     name: '',
+    client: '',
     category: 'Custom Software & Web Application',
     projectType: 'Web System',
     shortDescription: '',
@@ -36,12 +39,14 @@ export const ProjectsManager: React.FC<ProjectsManagerProps> = ({ initialOpenAdd
     featured: true,
     imageBg: 'from-amber-950/40 via-slate-900 to-[#0B0F16]',
     imageUrl: '',
+    image: '',
     projectUrl: '',
     githubUrl: '',
     stats: 'Enterprise Grade',
     status: 'Completed',
     clientType: 'Commercial Client',
     timeline: '3 Months',
+    completionDate: '2025',
     overview: '',
     displayOrder: projects.length + 1,
     published: true,
@@ -55,6 +60,7 @@ export const ProjectsManager: React.FC<ProjectsManagerProps> = ({ initialOpenAdd
     setEditingId(null);
     setFormData({
       name: '',
+      client: '',
       category: 'Custom Software & Web Application',
       projectType: 'Web System',
       shortDescription: '',
@@ -64,12 +70,14 @@ export const ProjectsManager: React.FC<ProjectsManagerProps> = ({ initialOpenAdd
       featured: true,
       imageBg: 'from-amber-950/40 via-slate-900 to-[#0B0F16]',
       imageUrl: '',
+      image: '',
       projectUrl: '',
       githubUrl: '',
       stats: 'Enterprise Grade',
       status: 'Completed',
       clientType: 'Commercial Client',
       timeline: '3 Months',
+      completionDate: '2025',
       overview: '',
       displayOrder: projects.length + 1,
       published: true,
@@ -81,6 +89,7 @@ export const ProjectsManager: React.FC<ProjectsManagerProps> = ({ initialOpenAdd
     setEditingId(proj.id);
     setFormData({
       name: proj.name,
+      client: proj.client || '',
       category: proj.category,
       projectType: proj.projectType || 'Software System',
       shortDescription: proj.shortDescription,
@@ -89,18 +98,29 @@ export const ProjectsManager: React.FC<ProjectsManagerProps> = ({ initialOpenAdd
       features: proj.features ? [...proj.features] : [],
       featured: proj.featured || false,
       imageBg: proj.imageBg || 'from-amber-950/40 via-slate-900 to-[#0B0F16]',
-      imageUrl: proj.imageUrl || '',
+      imageUrl: proj.imageUrl || proj.image || '',
+      image: proj.image || proj.imageUrl || '',
       projectUrl: proj.projectUrl || '',
       githubUrl: proj.githubUrl || '',
       stats: proj.stats || '',
       status: proj.status || 'Completed',
       clientType: proj.clientType || 'Commercial System',
       timeline: proj.timeline || '',
+      completionDate: proj.completionDate || '',
       overview: proj.overview || '',
       displayOrder: proj.displayOrder,
       published: proj.published,
     });
     setIsModalOpen(true);
+  };
+
+  const handleMove = async (index: number, direction: 'up' | 'down') => {
+    const targetIdx = direction === 'up' ? index - 1 : index + 1;
+    if (targetIdx < 0 || targetIdx >= projects.length) return;
+    const current = projects[index];
+    const target = projects[targetIdx];
+    await updateProject(current.id, { displayOrder: target.displayOrder });
+    await updateProject(target.id, { displayOrder: current.displayOrder });
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -164,7 +184,7 @@ export const ProjectsManager: React.FC<ProjectsManagerProps> = ({ initialOpenAdd
 
       {/* Projects Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {projects.map((proj) => (
+        {projects.map((proj, idx) => (
           <div
             key={proj.id}
             className={`p-6 rounded-3xl bg-[#0B0F16] border transition-all space-y-4 shadow-xl relative ${
@@ -188,9 +208,31 @@ export const ProjectsManager: React.FC<ProjectsManagerProps> = ({ initialOpenAdd
                   )}
                 </div>
                 <h3 className="font-display font-extrabold text-2xl text-white mt-2">{proj.name}</h3>
+                {proj.client && (
+                  <p className="text-xs text-slate-400 mt-0.5">Client: <span className="text-slate-200">{proj.client}</span></p>
+                )}
               </div>
 
               <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 mr-1 border-r border-white/10 pr-2">
+                  <button
+                    disabled={idx === 0}
+                    onClick={() => handleMove(idx, 'up')}
+                    className="p-1 text-slate-400 hover:text-white disabled:opacity-30 cursor-pointer"
+                    title="Move Up"
+                  >
+                    <MoveUp className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    disabled={idx === projects.length - 1}
+                    onClick={() => handleMove(idx, 'down')}
+                    className="p-1 text-slate-400 hover:text-white disabled:opacity-30 cursor-pointer"
+                    title="Move Down"
+                  >
+                    <MoveDown className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
                 <button
                   onClick={() => handleTogglePublish(proj)}
                   className={`p-2 rounded-xl border text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer ${
@@ -308,6 +350,41 @@ export const ProjectsManager: React.FC<ProjectsManagerProps> = ({ initialOpenAdd
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 uppercase mb-2">Client Name / Organization</label>
+                  <input
+                    type="text"
+                    value={formData.client}
+                    onChange={(e) => setFormData({ ...formData, client: e.target.value })}
+                    placeholder="e.g. Apex Logistics India"
+                    className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 uppercase mb-2">Completion Date / Timeline</label>
+                  <input
+                    type="text"
+                    value={formData.completionDate}
+                    onChange={(e) => setFormData({ ...formData, completionDate: e.target.value })}
+                    placeholder="e.g. June 2025"
+                    className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono text-slate-300 uppercase mb-2">Project Image / Screenshot URL</label>
+                <input
+                  type="text"
+                  value={formData.image || formData.imageUrl}
+                  onChange={(e) => setFormData({ ...formData, image: e.target.value, imageUrl: e.target.value })}
+                  placeholder="https://... or /src/assets/images/..."
+                  className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                />
               </div>
 
               <div>

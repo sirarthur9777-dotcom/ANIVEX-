@@ -11,7 +11,9 @@ import {
   X,
   ExternalLink,
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  MoveUp,
+  MoveDown
 } from 'lucide-react';
 
 interface ProductsManagerProps {
@@ -26,14 +28,16 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({ initialOpenAdd
 
   const [formData, setFormData] = useState<Omit<ProductCMS, 'id'>>({
     name: '',
+    category: 'Enterprise Software',
     tagline: '',
     description: '',
     status: 'Available',
     badge: 'Enterprise Product',
-    features: ['Multi-tenant Support', 'AI Search'],
-    technologies: ['React', 'TypeScript', 'Firebase'],
-    productUrl: 'https://anivex.com/products/policyhub',
-    actionLabel: 'View Product →',
+    features: ['Multi-tenant Support', 'Instant Search'],
+    technologies: ['React', 'TypeScript', 'Node.js'],
+    productUrl: 'https://anivex.com',
+    image: '',
+    actionLabel: 'Explore Product →',
     isInteractive: false,
     featured: true,
     displayOrder: products.length + 1,
@@ -48,14 +52,16 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({ initialOpenAdd
     setEditingId(null);
     setFormData({
       name: '',
+      category: 'Enterprise Software',
       tagline: '',
       description: '',
       status: 'Available',
       badge: 'Enterprise Product',
-      features: ['Multi-tenant Support', 'AI Search'],
-      technologies: ['React', 'TypeScript', 'Firebase'],
-      productUrl: 'https://anivex.com/products/policyhub',
-      actionLabel: 'View Product →',
+      features: ['Multi-tenant Support', 'Instant Search'],
+      technologies: ['React', 'TypeScript', 'Node.js'],
+      productUrl: 'https://anivex.com',
+      image: '',
+      actionLabel: 'Explore Product →',
       isInteractive: false,
       featured: true,
       displayOrder: products.length + 1,
@@ -68,6 +74,7 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({ initialOpenAdd
     setEditingId(prod.id);
     setFormData({
       name: prod.name,
+      category: prod.category || 'Enterprise Software',
       tagline: prod.tagline,
       description: prod.description,
       status: prod.status,
@@ -75,13 +82,23 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({ initialOpenAdd
       features: [...prod.features],
       technologies: prod.technologies ? [...prod.technologies] : [],
       productUrl: prod.productUrl || '',
-      actionLabel: prod.actionLabel || 'View Product →',
+      image: prod.image || '',
+      actionLabel: prod.actionLabel || 'Explore Product →',
       isInteractive: prod.isInteractive || false,
       featured: prod.featured || false,
       displayOrder: prod.displayOrder,
       published: prod.published,
     });
     setIsModalOpen(true);
+  };
+
+  const handleMove = async (index: number, direction: 'up' | 'down') => {
+    const targetIdx = direction === 'up' ? index - 1 : index + 1;
+    if (targetIdx < 0 || targetIdx >= products.length) return;
+    const current = products[index];
+    const target = products[targetIdx];
+    await updateProduct(current.id, { displayOrder: target.displayOrder });
+    await updateProduct(target.id, { displayOrder: current.displayOrder });
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -151,7 +168,7 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({ initialOpenAdd
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {products.map((prod) => (
+        {products.map((prod, idx) => (
           <div
             key={prod.id}
             className={`p-6 rounded-3xl bg-[#0B0F16] border transition-all space-y-4 shadow-xl relative overflow-hidden ${
@@ -178,6 +195,25 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({ initialOpenAdd
               </div>
 
               <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 mr-1 border-r border-white/10 pr-2">
+                  <button
+                    disabled={idx === 0}
+                    onClick={() => handleMove(idx, 'up')}
+                    className="p-1 text-slate-400 hover:text-white disabled:opacity-30 cursor-pointer"
+                    title="Move Up"
+                  >
+                    <MoveUp className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    disabled={idx === products.length - 1}
+                    onClick={() => handleMove(idx, 'down')}
+                    className="p-1 text-slate-400 hover:text-white disabled:opacity-30 cursor-pointer"
+                    title="Move Down"
+                  >
+                    <MoveDown className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
                 <button
                   onClick={() => handleTogglePublish(prod)}
                   className={`p-2 rounded-xl border text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer ${
@@ -302,6 +338,30 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({ initialOpenAdd
                     value={formData.badge}
                     onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
                     placeholder="e.g. Enterprise Platform"
+                    className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 uppercase mb-2">Category</label>
+                  <input
+                    type="text"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    placeholder="e.g. Enterprise Governance, ERP & Billing"
+                    className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 uppercase mb-2">Product Image / Screenshot URL</label>
+                  <input
+                    type="text"
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="https://... or /src/assets/images/..."
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
                   />
                 </div>

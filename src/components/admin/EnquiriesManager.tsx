@@ -41,6 +41,7 @@ export const EnquiriesManager: React.FC = () => {
   const statusColors: Record<ContactEnquiry['status'], string> = {
     New: 'bg-amber-950/80 border-amber-500/40 text-amber-300',
     Contacted: 'bg-blue-950/80 border-blue-500/40 text-blue-300',
+    'In Progress': 'bg-indigo-950/80 border-indigo-500/40 text-indigo-300',
     'In Discussion': 'bg-purple-950/80 border-purple-500/40 text-purple-300',
     Converted: 'bg-emerald-950/80 border-emerald-500/40 text-emerald-300',
     Closed: 'bg-slate-800 border-slate-600 text-slate-400',
@@ -76,6 +77,7 @@ export const EnquiriesManager: React.FC = () => {
             <option value="ALL">All Statuses</option>
             <option value="New">New</option>
             <option value="Contacted">Contacted</option>
+            <option value="In Progress">In Progress</option>
             <option value="In Discussion">In Discussion</option>
             <option value="Converted">Converted</option>
             <option value="Closed">Closed</option>
@@ -250,6 +252,7 @@ export const EnquiriesManager: React.FC = () => {
                 >
                   <option value="New">New</option>
                   <option value="Contacted">Contacted</option>
+                  <option value="In Progress">In Progress</option>
                   <option value="In Discussion">In Discussion</option>
                   <option value="Converted">Converted</option>
                   <option value="Closed">Closed</option>
@@ -258,7 +261,7 @@ export const EnquiriesManager: React.FC = () => {
 
               <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                 <a
-                  href={`mailto:${selectedEnquiry.email}?subject=RE:%20ANIVEX%20Solutions%20Project%20Inquiry%20[${selectedEnquiry.id}]`}
+                  href={`mailto:${selectedEnquiry.email}?subject=RE:%20Anivex%20Solution%20Project%20Inquiry%20[${selectedEnquiry.id}]`}
                   className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D6A84F] to-[#F5C85B] text-[#05070B] font-bold text-xs flex items-center gap-1.5 hover:opacity-90"
                 >
                   <Mail className="w-3.5 h-3.5" />

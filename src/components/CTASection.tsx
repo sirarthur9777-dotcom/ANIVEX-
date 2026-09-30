@@ -1,66 +1,95 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, MessageSquareCode } from 'lucide-react';
+import { ArrowRight, MessageCircle, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { useCms } from '../context/CmsContext';
 
 interface CTASectionProps {
   onStartProject?: () => void;
-  onTalkToAnivex?: () => void;
 }
 
-export const CTASection: React.FC<CTASectionProps> = ({ onStartProject, onTalkToAnivex }) => {
+export const CTASection: React.FC<CTASectionProps> = ({ onStartProject }) => {
+  const { siteContent, companyInfo } = useCms();
+
+  const heading = siteContent.ctaHeading || "Let's Build Something That Matters.";
+  const subtitle = siteContent.ctaSubtitle || "Whether you need a custom software platform, high-converting web application, or enterprise ERP, we are ready to build it with you.";
+  const primaryText = siteContent.primaryCtaText || "Start a Conversation →";
+  const secondaryText = siteContent.secondaryCtaText || "Chat on WhatsApp";
+
+  const rawPhone = companyInfo?.phone || '+91 98765 43210';
+  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
+
+  const whatsappUrl = `https://wa.me/${phoneToUse}?text=${encodeURIComponent(
+    'Namaste Anivex Solution! I have an upcoming software project and would like to discuss it.'
+  )}`;
+
   const handleScrollToContact = () => {
     const el = document.getElementById('contact');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <section className="py-24 relative bg-[#0B0F16] border-t border-white/10 overflow-hidden">
-      {/* Background Gold Glow Effect */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[350px] bg-[#D6A84F]/15 rounded-full blur-[180px] pointer-events-none" />
-
+    <section className="py-20 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="p-10 sm:p-16 rounded-3xl bg-gradient-to-b from-[#05070B] via-[#0B0F16] to-[#05070B] border border-[#D6A84F]/40 shadow-[0_20px_60px_rgba(214,168,79,0.12)] text-center relative overflow-hidden"
+          transition={{ duration: 0.4 }}
+          className="p-8 sm:p-14 rounded-3xl bg-[#0B1F3A] text-white text-center relative overflow-hidden shadow-xl"
         >
-          {/* Subtle Corner Accents */}
-          <div className="absolute top-0 left-0 w-32 h-32 border-t-2 border-l-2 border-[#D6A84F]/40 pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-32 h-32 border-b-2 border-r-2 border-[#D6A84F]/40 pointer-events-none" />
+          {/* Subtle decorative glow */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#F97316]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#15803D]/10 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Icon Badge */}
-          <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-[#121824] border border-[#D6A84F]/30 text-[#F5C85B] mb-6 shadow-lg">
-            <MessageSquareCode className="w-8 h-8 animate-pulse" />
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-[#D4A72C] mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />
+            <span className="uppercase tracking-wider text-[11px] font-bold">READY TO SCALE?</span>
           </div>
 
           {/* Heading */}
-          <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-white tracking-tight mb-4 max-w-3xl mx-auto">
-            Have an Idea? <span className="text-gold-gradient">Let's Build It.</span>
+          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl md:text-5xl text-white tracking-tight mb-4 max-w-3xl mx-auto leading-tight">
+            {heading}
           </h2>
 
-          {/* Subtext */}
-          <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto font-normal leading-relaxed mb-8">
-            Tell us what you're trying to build. We'll help turn the idea into a practical, scalable digital solution.
+          {/* Subtitle */}
+          <p className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto font-normal leading-relaxed mb-8">
+            {subtitle}
           </p>
 
-          {/* Dual Buttons */}
+          {/* Action CTAs */}
           <div className="flex flex-wrap items-center justify-center gap-4">
             <button
+              type="button"
               onClick={onStartProject || handleScrollToContact}
-              className="group inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-gradient-to-r from-[#D6A84F] via-[#F5C85B] to-[#D6A84F] text-[#05070B] font-extrabold text-sm tracking-wide shadow-[0_0_30px_rgba(245,200,91,0.4)] hover:shadow-[0_0_40px_rgba(245,200,91,0.6)] hover:scale-[1.02] transition-all cursor-pointer"
+              className="px-7 py-3.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-bold text-xs tracking-wide shadow-md transition-all cursor-pointer flex items-center gap-2"
             >
-              <span>Start a Project</span>
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <span>{primaryText}</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
 
-            <button
-              onClick={onTalkToAnivex || handleScrollToContact}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#05070B] border border-white/20 text-white font-semibold text-sm tracking-wide hover:bg-white/10 hover:border-white/40 transition-all cursor-pointer"
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#15803D] hover:bg-[#166534] text-white font-bold text-xs tracking-wide shadow-sm transition-all"
             >
-              <span>Talk to ANIVEX</span>
-            </button>
+              <MessageCircle className="w-4 h-4 fill-current" />
+              <span>{secondaryText} (+91)</span>
+            </a>
+          </div>
+
+          {/* Reassurance text */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-300/80">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-[#15803D]" />
+              Free Architectural Scoping
+            </span>
+            <span>·</span>
+            <span>Direct WhatsApp & Call Support</span>
+            <span>·</span>
+            <span>GST Tax Invoices Provided</span>
           </div>
         </motion.div>
       </div>

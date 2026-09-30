@@ -1,4 +1,69 @@
+export interface NavbarItem {
+  id: string;
+  label: string;
+  href: string;
+  visible: boolean;
+  order: number;
+}
+
+export interface NavbarSettings {
+  brandName: string;
+  logoUrl?: string;
+  ctaText: string;
+  ctaLink: string;
+  items: NavbarItem[];
+}
+
+export interface TrustStatItem {
+  id: string;
+  title: string;
+  label: string;
+  description: string;
+  iconName: string;
+  order: number;
+  enabled: boolean;
+}
+
+export interface WhyAnivexFeature {
+  id: string;
+  number: string;
+  title: string;
+  description: string;
+  iconName: string;
+  order: number;
+}
+
+export interface WhyAnivexSettings {
+  heading: string;
+  description: string;
+  enabled: boolean;
+  features: WhyAnivexFeature[];
+}
+
+export interface TestimonialCMS {
+  id: string;
+  customerName: string;
+  company: string;
+  designation: string;
+  profileImage?: string;
+  testimonial: string;
+  rating: number;
+  featured: boolean;
+  published: boolean;
+  displayOrder: number;
+}
+
+export interface FaqCMS {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
+  displayOrder: number;
+  published: boolean;
+}
+
 export interface SiteContent {
+  heroBadge?: string;
   heroHeading: string;
   heroSubtitle: string;
   heroDescription: string;
@@ -6,15 +71,22 @@ export interface SiteContent {
   primaryButtonLink: string;
   secondaryButtonText: string;
   secondaryButtonLink: string;
+  heroImage?: string;
+  heroVisible?: boolean;
+  navbar?: NavbarSettings;
+  trustStats?: TrustStatItem[];
+  whyAnivex?: WhyAnivexSettings;
   aboutHeading: string;
   aboutDescription: string;
   aboutStory: string;
   mission: string;
   vision: string;
+  values?: { title: string; description: string }[];
   founderName: string;
   founderRole: string;
   founderDescription: string;
   founderImage?: string;
+  companyImage?: string;
   ctaHeading: string;
   ctaSubtitle: string;
   primaryCtaText: string;
@@ -25,11 +97,17 @@ export interface ServiceCMS {
   id: string;
   number: string;
   title: string;
+  slug?: string;
   description: string;
   fullDescription?: string;
   iconName: string;
+  coverImage?: string;
   features: string[];
   technologies: string[];
+  cta?: string;
+  ctaUrl?: string;
+  seoTitle?: string;
+  seoDescription?: string;
   displayOrder: number;
   published: boolean;
 }
@@ -37,6 +115,7 @@ export interface ServiceCMS {
 export interface ProductCMS {
   id: string;
   name: string;
+  category?: string;
   tagline: string;
   description: string;
   status: 'Available' | 'Coming Soon' | 'In Development' | 'Beta';
@@ -45,7 +124,9 @@ export interface ProductCMS {
   technologies: string[];
   productUrl?: string;
   logoUrl?: string;
+  image?: string;
   actionLabel: string;
+  cta?: string;
   isInteractive?: boolean;
   featured: boolean;
   displayOrder: number;
@@ -68,6 +149,7 @@ export interface SolutionCMS {
 export interface ProjectCMS {
   id: string;
   name: string;
+  client?: string;
   category: string;
   projectType: string;
   shortDescription: string;
@@ -77,12 +159,15 @@ export interface ProjectCMS {
   featured: boolean;
   imageBg: string;
   imageUrl?: string;
+  image?: string;
+  gallery?: string[];
   projectUrl?: string;
   githubUrl?: string;
   stats?: string;
   status: 'Featured' | 'Active' | 'Completed' | 'Coming Soon' | 'In Development' | 'Archived';
   clientType: string;
   timeline: string;
+  completionDate?: string;
   overview: string;
   displayOrder: number;
   published: boolean;
@@ -150,7 +235,7 @@ export interface ContactEnquiry {
   date: string;
   time: string;
   submittedAt: string;
-  status: 'New' | 'Contacted' | 'In Discussion' | 'Converted' | 'Closed';
+  status: 'New' | 'Contacted' | 'In Progress' | 'In Discussion' | 'Converted' | 'Closed';
   read: boolean;
 }
 
@@ -243,6 +328,95 @@ export interface InvoiceRecord {
   warrantySupport?: string;
   supportEmail?: string;
   supportPhone?: string;
+  createdAt: string;
+}
+
+export interface ClientRecord {
+  id: string;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  address?: string;
+  gstin?: string;
+  city?: string;
+  state?: string;
+  notes?: string;
+  createdAt: string;
+}
+
+export interface ContractRecord {
+  id: string;
+  contractNumber: string;
+  clientId?: string;
+  clientName: string;
+  clientCompany: string;
+  clientEmail: string;
+  clientPhone: string;
+  clientAddress: string;
+  clientGstin?: string;
+
+  projectTitle: string;
+  effectiveDate: string;
+  deliveryDate: string;
+  totalAmount: number;
+  advancePercentage: number;
+  advanceAmount: number;
+  currency: 'INR' | 'USD' | 'EUR';
+
+  scopeOfWork: string;
+  deliverables: string[];
+  paymentTerms: string;
+  intellectualPropertyClause: string;
+  confidentialityClause: string;
+  warrantyPeriod: string;
+  governingLaw: string;
+  
+  status: 'Draft' | 'Active' | 'Signed' | 'Completed' | 'Cancelled';
+  serviceProviderSignatory: string;
+  serviceProviderTitle: string;
+  clientSignatory: string;
+  clientSignatoryTitle: string;
+  signedDate?: string;
+  createdAt: string;
+}
+
+export interface QuotationLineItem {
+  id: string;
+  description: string;
+  details?: string;
+  quantity: number;
+  unitPrice: number;
+  amount: number;
+}
+
+export interface QuotationRecord {
+  id: string;
+  quotationNumber: string;
+  quotationDate: string;
+  validUntil: string;
+  clientId?: string;
+  clientName: string;
+  clientCompany: string;
+  clientEmail: string;
+  clientPhone: string;
+  clientAddress: string;
+  clientGstin?: string;
+
+  projectTitle: string;
+  executiveSummary: string;
+  lineItems: QuotationLineItem[];
+  subtotal: number;
+  gstRate: number; // e.g. 18
+  gstAmount: number;
+  discountAmount: number;
+  totalAmount: number;
+  currency: 'INR' | 'USD';
+
+  estimatedTimeline: string;
+  milestones: { title: string; percentage: number; description: string }[];
+  termsAndConditions: string;
+  status: 'Draft' | 'Sent' | 'Accepted' | 'Declined' | 'Invoiced';
   createdAt: string;
 }
 

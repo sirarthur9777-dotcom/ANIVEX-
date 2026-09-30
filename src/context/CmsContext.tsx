@@ -24,7 +24,12 @@ import {
   AdminNotification,
   AdminActivityLog,
   MediaItem,
-  InvoiceRecord
+  InvoiceRecord,
+  TestimonialCMS,
+  FaqCMS,
+  ClientRecord,
+  ContractRecord,
+  QuotationRecord
 } from '../types/cms';
 import {
   initialSiteContent,
@@ -40,7 +45,15 @@ import {
   initialNotifications,
   initialActivityLogs,
   initialMediaItems,
-  initialInvoices
+  initialInvoices,
+  initialNavbar,
+  initialTrustStats,
+  initialWhyAnivex,
+  initialTestimonials,
+  initialFaqs,
+  initialClients,
+  initialContracts,
+  initialQuotations
 } from '../data/initialCmsData';
 
 interface ToastState {
@@ -55,6 +68,11 @@ interface CmsContextType {
   solutions: SolutionCMS[];
   projects: ProjectCMS[];
   builtByAnivex: BuiltByAnivexItem[];
+  testimonials: TestimonialCMS[];
+  faqs: FaqCMS[];
+  clients: ClientRecord[];
+  contracts: ContractRecord[];
+  quotations: QuotationRecord[];
   companyInfo: CompanyInfo;
   paymentSettings: PaymentSettings;
   socialLinks: SocialLinks;
@@ -94,6 +112,31 @@ interface CmsContextType {
   addBuiltByAnivex: (data: Omit<BuiltByAnivexItem, 'id'>) => Promise<void>;
   updateBuiltByAnivex: (id: string, data: Partial<BuiltByAnivexItem>) => Promise<void>;
   deleteBuiltByAnivex: (id: string) => Promise<void>;
+
+  // Testimonials
+  addTestimonial: (data: Omit<TestimonialCMS, 'id'>) => Promise<void>;
+  updateTestimonial: (id: string, data: Partial<TestimonialCMS>) => Promise<void>;
+  deleteTestimonial: (id: string) => Promise<void>;
+
+  // FAQs
+  addFaq: (data: Omit<FaqCMS, 'id'>) => Promise<void>;
+  updateFaq: (id: string, data: Partial<FaqCMS>) => Promise<void>;
+  deleteFaq: (id: string) => Promise<void>;
+
+  // Clients
+  addClient: (data: Omit<ClientRecord, 'id' | 'createdAt'>) => Promise<string>;
+  updateClient: (id: string, data: Partial<ClientRecord>) => Promise<void>;
+  deleteClient: (id: string) => Promise<void>;
+
+  // Contracts
+  addContract: (data: Omit<ContractRecord, 'id' | 'createdAt'>) => Promise<string>;
+  updateContract: (id: string, data: Partial<ContractRecord>) => Promise<void>;
+  deleteContract: (id: string) => Promise<void>;
+
+  // Quotations
+  addQuotation: (data: Omit<QuotationRecord, 'id' | 'createdAt'>) => Promise<string>;
+  updateQuotation: (id: string, data: Partial<QuotationRecord>) => Promise<void>;
+  deleteQuotation: (id: string) => Promise<void>;
 
   // Company Info, Payment Settings & Socials
   updateCompanyInfo: (data: CompanyInfo) => Promise<void>;
@@ -136,7 +179,25 @@ const CmsContext = createContext<CmsContextType | undefined>(undefined);
 export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [siteContent, setSiteContent] = useState<SiteContent>(() => {
     const local = localStorage.getItem('anivex_site_content');
-    return local ? JSON.parse(local) : initialSiteContent;
+    if (local) {
+      try {
+        const parsed = JSON.parse(local);
+        return {
+          ...initialSiteContent,
+          ...parsed,
+          heroBadge: parsed.heroBadge || initialSiteContent.heroBadge,
+          heroHeading: parsed.heroHeading || initialSiteContent.heroHeading,
+          heroDescription: parsed.heroDescription || initialSiteContent.heroDescription,
+          heroImage: parsed.heroImage || initialSiteContent.heroImage,
+          navbar: parsed.navbar || initialNavbar,
+          trustStats: parsed.trustStats && parsed.trustStats.length > 0 ? parsed.trustStats : initialTrustStats,
+          whyAnivex: parsed.whyAnivex || initialWhyAnivex,
+        };
+      } catch (e) {
+        return initialSiteContent;
+      }
+    }
+    return initialSiteContent;
   });
 
   const [services, setServices] = useState<ServiceCMS[]>(() => {
@@ -162,6 +223,16 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [builtByAnivex, setBuiltByAnivex] = useState<BuiltByAnivexItem[]>(() => {
     const local = localStorage.getItem('anivex_built_by');
     return local ? JSON.parse(local) : initialBuiltByAnivex;
+  });
+
+  const [testimonials, setTestimonials] = useState<TestimonialCMS[]>(() => {
+    const local = localStorage.getItem('anivex_testimonials');
+    return local ? JSON.parse(local) : initialTestimonials;
+  });
+
+  const [faqs, setFaqs] = useState<FaqCMS[]>(() => {
+    const local = localStorage.getItem('anivex_faqs');
+    return local ? JSON.parse(local) : initialFaqs;
   });
 
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo>(() => {
@@ -202,6 +273,21 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [invoices, setInvoices] = useState<InvoiceRecord[]>(() => {
     const local = localStorage.getItem('anivex_invoices');
     return local ? JSON.parse(local) : initialInvoices;
+  });
+
+  const [clients, setClients] = useState<ClientRecord[]>(() => {
+    const local = localStorage.getItem('anivex_clients');
+    return local ? JSON.parse(local) : initialClients;
+  });
+
+  const [contracts, setContracts] = useState<ContractRecord[]>(() => {
+    const local = localStorage.getItem('anivex_contracts');
+    return local ? JSON.parse(local) : initialContracts;
+  });
+
+  const [quotations, setQuotations] = useState<QuotationRecord[]>(() => {
+    const local = localStorage.getItem('anivex_quotations');
+    return local ? JSON.parse(local) : initialQuotations;
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -270,6 +356,26 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem('anivex_invoices', JSON.stringify(invoices));
   }, [invoices]);
+
+  useEffect(() => {
+    localStorage.setItem('anivex_testimonials', JSON.stringify(testimonials));
+  }, [testimonials]);
+
+  useEffect(() => {
+    localStorage.setItem('anivex_faqs', JSON.stringify(faqs));
+  }, [faqs]);
+
+  useEffect(() => {
+    localStorage.setItem('anivex_clients', JSON.stringify(clients));
+  }, [clients]);
+
+  useEffect(() => {
+    localStorage.setItem('anivex_contracts', JSON.stringify(contracts));
+  }, [contracts]);
+
+  useEffect(() => {
+    localStorage.setItem('anivex_quotations', JSON.stringify(quotations));
+  }, [quotations]);
 
   // Firestore Real-Time Subscriptions
   useEffect(() => {
@@ -348,6 +454,26 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
       }, (err) => console.warn('Firestore notifications sync:', err));
 
+      // Subscribe to testimonials
+      const unsubTestimonials = onSnapshot(collection(db, 'testimonials'), (snapshot) => {
+        if (!snapshot.empty) {
+          const list: TestimonialCMS[] = [];
+          snapshot.forEach((d) => list.push({ id: d.id, ...d.data() } as TestimonialCMS));
+          list.sort((a, b) => a.displayOrder - b.displayOrder);
+          setTestimonials(list);
+        }
+      }, (err) => console.warn('Firestore testimonials sync:', err));
+
+      // Subscribe to faqs
+      const unsubFaqs = onSnapshot(collection(db, 'faqs'), (snapshot) => {
+        if (!snapshot.empty) {
+          const list: FaqCMS[] = [];
+          snapshot.forEach((d) => list.push({ id: d.id, ...d.data() } as FaqCMS));
+          list.sort((a, b) => a.displayOrder - b.displayOrder);
+          setFaqs(list);
+        }
+      }, (err) => console.warn('Firestore faqs sync:', err));
+
       return () => {
         unsubCompany();
         unsubPayment();
@@ -357,6 +483,8 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         unsubProjects();
         unsubEnquiries();
         unsubNotifs();
+        unsubTestimonials();
+        unsubFaqs();
       };
     } catch (e) {
       console.warn('Firestore initialization fallback to local state:', e);
@@ -702,7 +830,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return {
       success: true,
       referenceId: id,
-      message: `Thank you, ${data.fullName}. Your project inquiry has been securely transmitted to ANIVEX Solutions. Reference ID: ${id}`,
+      message: `Thank you, ${data.fullName}. Your project inquiry has been securely transmitted to Anivex Solution. Reference ID: ${id}`,
     };
   };
 
@@ -832,6 +960,212 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  // Testimonials
+  const addTestimonial = async (data: Omit<TestimonialCMS, 'id'>) => {
+    const id = `test-${Date.now()}`;
+    const newTestimonial: TestimonialCMS = { id, ...data };
+    setTestimonials((prev) => [...prev, newTestimonial]);
+    showToast(`Testimonial from "${data.customerName}" added.`);
+    await logActivity('Added Testimonial', data.customerName);
+
+    try {
+      await setDoc(doc(db, 'testimonials', id), newTestimonial);
+    } catch (e) {
+      console.warn('Firestore addTestimonial fallback:', e);
+    }
+  };
+
+  const updateTestimonial = async (id: string, data: Partial<TestimonialCMS>) => {
+    setTestimonials((prev) => prev.map((t) => (t.id === id ? { ...t, ...data } : t)));
+    showToast('Testimonial updated.');
+    await logActivity('Updated Testimonial', id);
+
+    try {
+      await updateDoc(doc(db, 'testimonials', id), data);
+    } catch (e) {
+      console.warn('Firestore updateTestimonial fallback:', e);
+    }
+  };
+
+  const deleteTestimonial = async (id: string) => {
+    const item = testimonials.find((t) => t.id === id);
+    setTestimonials((prev) => prev.filter((t) => t.id !== id));
+    showToast('Testimonial deleted.');
+    await logActivity('Deleted Testimonial', item?.customerName || id);
+
+    try {
+      await deleteDoc(doc(db, 'testimonials', id));
+    } catch (e) {
+      console.warn('Firestore deleteTestimonial fallback:', e);
+    }
+  };
+
+  // FAQs
+  const addFaq = async (data: Omit<FaqCMS, 'id'>) => {
+    const id = `faq-${Date.now()}`;
+    const newFaq: FaqCMS = { id, ...data };
+    setFaqs((prev) => [...prev, newFaq]);
+    showToast(`FAQ question added.`);
+    await logActivity('Added FAQ', data.question);
+
+    try {
+      await setDoc(doc(db, 'faqs', id), newFaq);
+    } catch (e) {
+      console.warn('Firestore addFaq fallback:', e);
+    }
+  };
+
+  const updateFaq = async (id: string, data: Partial<FaqCMS>) => {
+    setFaqs((prev) => prev.map((f) => (f.id === id ? { ...f, ...data } : f)));
+    showToast('FAQ updated.');
+    await logActivity('Updated FAQ', id);
+
+    try {
+      await updateDoc(doc(db, 'faqs', id), data);
+    } catch (e) {
+      console.warn('Firestore updateFaq fallback:', e);
+    }
+  };
+
+  const deleteFaq = async (id: string) => {
+    const item = faqs.find((f) => f.id === id);
+    setFaqs((prev) => prev.filter((f) => f.id !== id));
+    showToast('FAQ deleted.');
+    await logActivity('Deleted FAQ', item?.question || id);
+
+    try {
+      await deleteDoc(doc(db, 'faqs', id));
+    } catch (e) {
+      console.warn('Firestore deleteFaq fallback:', e);
+    }
+  };
+
+  // Clients
+  const addClient = async (data: Omit<ClientRecord, 'id' | 'createdAt'>): Promise<string> => {
+    const id = `cli-${Date.now()}`;
+    const newClient: ClientRecord = {
+      id,
+      ...data,
+      createdAt: new Date().toISOString(),
+    };
+    setClients((prev) => [newClient, ...prev]);
+    showToast(`Client "${data.name}" added.`);
+    await logActivity('Added Client', data.name);
+    try {
+      await setDoc(doc(db, 'clients', id), newClient);
+    } catch (e) {
+      console.warn('Firestore addClient fallback:', e);
+    }
+    return id;
+  };
+
+  const updateClient = async (id: string, data: Partial<ClientRecord>) => {
+    setClients((prev) => prev.map((c) => (c.id === id ? { ...c, ...data } : c)));
+    showToast('Client updated.');
+    await logActivity('Updated Client', id);
+    try {
+      await updateDoc(doc(db, 'clients', id), data);
+    } catch (e) {
+      console.warn('Firestore updateClient fallback:', e);
+    }
+  };
+
+  const deleteClient = async (id: string) => {
+    const c = clients.find((item) => item.id === id);
+    setClients((prev) => prev.filter((item) => item.id !== id));
+    showToast('Client deleted.');
+    await logActivity('Deleted Client', c?.name || id);
+    try {
+      await deleteDoc(doc(db, 'clients', id));
+    } catch (e) {
+      console.warn('Firestore deleteClient fallback:', e);
+    }
+  };
+
+  // Contracts
+  const addContract = async (data: Omit<ContractRecord, 'id' | 'createdAt'>): Promise<string> => {
+    const id = `ctr-${Date.now()}`;
+    const newContract: ContractRecord = {
+      id,
+      ...data,
+      createdAt: new Date().toISOString(),
+    };
+    setContracts((prev) => [newContract, ...prev]);
+    showToast(`Contract "${data.contractNumber}" created.`);
+    await logActivity('Created Contract', data.contractNumber);
+    try {
+      await setDoc(doc(db, 'contracts', id), newContract);
+    } catch (e) {
+      console.warn('Firestore addContract fallback:', e);
+    }
+    return id;
+  };
+
+  const updateContract = async (id: string, data: Partial<ContractRecord>) => {
+    setContracts((prev) => prev.map((c) => (c.id === id ? { ...c, ...data } : c)));
+    showToast('Contract updated.');
+    await logActivity('Updated Contract', id);
+    try {
+      await updateDoc(doc(db, 'contracts', id), data);
+    } catch (e) {
+      console.warn('Firestore updateContract fallback:', e);
+    }
+  };
+
+  const deleteContract = async (id: string) => {
+    const c = contracts.find((item) => item.id === id);
+    setContracts((prev) => prev.filter((item) => item.id !== id));
+    showToast('Contract deleted.');
+    await logActivity('Deleted Contract', c?.contractNumber || id);
+    try {
+      await deleteDoc(doc(db, 'contracts', id));
+    } catch (e) {
+      console.warn('Firestore deleteContract fallback:', e);
+    }
+  };
+
+  // Quotations
+  const addQuotation = async (data: Omit<QuotationRecord, 'id' | 'createdAt'>): Promise<string> => {
+    const id = `qtn-${Date.now()}`;
+    const newQuotation: QuotationRecord = {
+      id,
+      ...data,
+      createdAt: new Date().toISOString(),
+    };
+    setQuotations((prev) => [newQuotation, ...prev]);
+    showToast(`Quotation "${data.quotationNumber}" generated.`);
+    await logActivity('Generated Quotation', data.quotationNumber);
+    try {
+      await setDoc(doc(db, 'quotations', id), newQuotation);
+    } catch (e) {
+      console.warn('Firestore addQuotation fallback:', e);
+    }
+    return id;
+  };
+
+  const updateQuotation = async (id: string, data: Partial<QuotationRecord>) => {
+    setQuotations((prev) => prev.map((q) => (q.id === id ? { ...q, ...data } : q)));
+    showToast('Quotation updated.');
+    await logActivity('Updated Quotation', id);
+    try {
+      await updateDoc(doc(db, 'quotations', id), data);
+    } catch (e) {
+      console.warn('Firestore updateQuotation fallback:', e);
+    }
+  };
+
+  const deleteQuotation = async (id: string) => {
+    const q = quotations.find((item) => item.id === id);
+    setQuotations((prev) => prev.filter((item) => item.id !== id));
+    showToast('Quotation deleted.');
+    await logActivity('Deleted Quotation', q?.quotationNumber || id);
+    try {
+      await deleteDoc(doc(db, 'quotations', id));
+    } catch (e) {
+      console.warn('Firestore deleteQuotation fallback:', e);
+    }
+  };
+
   return (
     <CmsContext.Provider
       value={{
@@ -841,6 +1175,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         solutions,
         projects,
         builtByAnivex,
+        testimonials,
+        faqs,
+        clients,
+        contracts,
+        quotations,
         companyInfo,
         paymentSettings,
         socialLinks,
@@ -868,6 +1207,21 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addBuiltByAnivex,
         updateBuiltByAnivex,
         deleteBuiltByAnivex,
+        addTestimonial,
+        updateTestimonial,
+        deleteTestimonial,
+        addFaq,
+        updateFaq,
+        deleteFaq,
+        addClient,
+        updateClient,
+        deleteClient,
+        addContract,
+        updateContract,
+        deleteContract,
+        addQuotation,
+        updateQuotation,
+        deleteQuotation,
         updateCompanyInfo,
         updatePaymentSettings,
         updateSocialLinks,

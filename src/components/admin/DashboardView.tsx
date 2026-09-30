@@ -14,7 +14,11 @@ import {
   ArrowUpRight,
   CheckCircle2,
   User,
-  Activity
+  Activity,
+  Users,
+  FileCheck2,
+  FileSpreadsheet,
+  FileText
 } from 'lucide-react';
 
 interface DashboardViewProps {
@@ -39,12 +43,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     solutions,
     contactEnquiries,
     activityLogs,
+    contracts,
+    quotations,
+    clients
   } = useCms();
 
   const totalProjects = projects.length;
   const totalProducts = products.length;
   const totalServices = services.length;
   const totalSolutions = solutions.length;
+  const totalClients = clients.length;
+  const totalContracts = contracts.length;
+  const totalQuotations = quotations.length;
 
   const publishedCount =
     projects.filter((p) => p.published).length +
@@ -66,54 +76,55 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const recentLogs = activityLogs.slice(0, 5);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-sans">
       
       {/* Top Banner with Quick Actions */}
-      <div className="p-8 rounded-3xl bg-gradient-to-r from-[#0B0F16] via-[#121824] to-[#0B0F16] border border-[#D6A84F]/30 shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <div className="p-7 sm:p-8 rounded-3xl bg-gradient-to-r from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] border border-[#0B1F3A]/20 shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-6 text-white">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#05070B] border border-[#D6A84F]/30 text-[10px] font-mono text-[#F5C85B] uppercase mb-3">
-            ANIVEX SOLUTIONS CMS DASHBOARD
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] font-mono text-[#F97316] font-bold uppercase mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F97316] animate-pulse" />
+            <span>ANIVEX SOLUTION CMS DASHBOARD</span>
           </div>
-          <h2 className="font-display font-bold text-2xl sm:text-3xl text-white">
-            Welcome back, <span className="text-gold-gradient">Krishndas Chauhan</span>
+          <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-white tracking-tight">
+            Welcome back, <span className="text-[#F97316]">Krishndas Chauhan</span>
           </h2>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
-            Manage public website content, publish products, review incoming project scoping enquiries, and monitor system metrics in real time.
+          <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-xl font-normal leading-relaxed">
+            Manage public website content, draft client agreements, generate GST quotations, review enquiries, and monitor studio metrics in real time.
           </p>
         </div>
 
         {/* Quick Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
-            onClick={onOpenProjectModal}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D6A84F] via-[#F5C85B] to-[#D6A84F] text-[#05070B] font-extrabold text-xs flex items-center gap-1.5 shadow-md hover:scale-[1.02] transition-transform cursor-pointer"
+            onClick={() => setActiveTab('contracts')}
+            className="px-4 py-2.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
-            <span>Add Project</span>
+            <FileCheck2 className="w-4 h-4" />
+            <span>New Contract</span>
           </button>
 
           <button
-            onClick={onOpenProductModal}
-            className="px-4 py-2.5 rounded-xl bg-[#121824] border border-[#D6A84F]/40 text-[#F5C85B] font-semibold text-xs flex items-center gap-1.5 hover:bg-[#121824]/80 transition-colors cursor-pointer"
+            onClick={() => setActiveTab('quotations')}
+            className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/20 text-white font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer border border-white/10"
           >
-            <Plus className="w-4 h-4" />
-            <span>Add Product</span>
+            <FileSpreadsheet className="w-4 h-4 text-[#D4A72C]" />
+            <span>New Quotation</span>
           </button>
 
           <button
-            onClick={onOpenServiceModal}
-            className="px-4 py-2.5 rounded-xl bg-[#05070B] border border-white/10 text-white font-medium text-xs flex items-center gap-1.5 hover:border-white/30 transition-colors cursor-pointer"
+            onClick={() => setActiveTab('clients')}
+            className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/20 text-white font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer border border-white/10"
           >
-            <Plus className="w-4 h-4" />
-            <span>Add Service</span>
+            <Users className="w-4 h-4 text-emerald-400" />
+            <span>Clients ({totalClients})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('enquiries')}
-            className="px-4 py-2.5 rounded-xl bg-[#05070B] border border-white/10 text-slate-300 font-medium text-xs flex items-center gap-1.5 hover:border-white/30 transition-colors cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer border border-white/10"
           >
-            <Mail className="w-4 h-4 text-[#F5C85B]" />
-            <span>View Enquiries ({unreadEnquiries})</span>
+            <Mail className="w-4 h-4 text-[#F97316]" />
+            <span>Enquiries ({unreadEnquiries})</span>
           </button>
         </div>
       </div>
@@ -121,151 +132,159 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* 8 Statistics Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         
+        {/* Total Clients */}
+        <div
+          onClick={() => setActiveTab('clients')}
+          className="p-5 sm:p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 hover:border-[#F97316]/40 transition-all cursor-pointer group shadow-xs"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-[#0B1F3A]/60 uppercase tracking-wider">Clients</span>
+            <div className="p-2 rounded-xl bg-[#0B1F3A]/5 text-[#0B1F3A] group-hover:bg-[#F97316]/10 group-hover:text-[#F97316] transition-colors">
+              <Users className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="font-heading font-extrabold text-3xl text-[#0B1F3A]">
+            {totalClients}
+          </div>
+          <p className="text-[11px] text-[#0B1F3A]/60 mt-1.5">Registered client directory</p>
+        </div>
+
+        {/* Client Contracts */}
+        <div
+          onClick={() => setActiveTab('contracts')}
+          className="p-5 sm:p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 hover:border-[#F97316]/40 transition-all cursor-pointer group shadow-xs"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-[#0B1F3A]/60 uppercase tracking-wider">Contracts</span>
+            <div className="p-2 rounded-xl bg-[#15803D]/10 text-[#15803D]">
+              <FileCheck2 className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="font-heading font-extrabold text-3xl text-[#0B1F3A]">
+            {totalContracts}
+          </div>
+          <p className="text-[11px] text-[#0B1F3A]/60 mt-1.5">PDF agreements generated</p>
+        </div>
+
+        {/* Project Quotations */}
+        <div
+          onClick={() => setActiveTab('quotations')}
+          className="p-5 sm:p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 hover:border-[#F97316]/40 transition-all cursor-pointer group shadow-xs"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-[#0B1F3A]/60 uppercase tracking-wider">Quotations</span>
+            <div className="p-2 rounded-xl bg-[#D4A72C]/10 text-[#D4A72C]">
+              <FileSpreadsheet className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="font-heading font-extrabold text-3xl text-[#0B1F3A]">
+            {totalQuotations}
+          </div>
+          <p className="text-[11px] text-[#0B1F3A]/60 mt-1.5">GST estimates & proposals</p>
+        </div>
+
+        {/* Total Enquiries */}
+        <div
+          onClick={() => setActiveTab('enquiries')}
+          className="p-5 sm:p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 hover:border-[#F97316]/40 transition-all cursor-pointer group shadow-xs"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-[#0B1F3A]/60 uppercase tracking-wider">Enquiries</span>
+            <div className="p-2 rounded-xl bg-[#F97316]/10 text-[#F97316]">
+              <Mail className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="font-heading font-extrabold text-3xl text-[#0B1F3A] flex items-center gap-2">
+            <span>{totalEnquiries}</span>
+            {unreadEnquiries > 0 && (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[#F97316] text-white font-bold">
+                {unreadEnquiries} new
+              </span>
+            )}
+          </div>
+          <p className="text-[11px] text-[#0B1F3A]/60 mt-1.5">Website leads & scopes</p>
+        </div>
+
         {/* Total Projects */}
         <div
           onClick={() => setActiveTab('projects')}
-          className="p-6 rounded-2xl bg-[#0B0F16] border border-white/10 hover:border-[#D6A84F]/40 transition-all cursor-pointer group shadow-lg"
+          className="p-5 sm:p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 hover:border-[#0B1F3A]/30 transition-all cursor-pointer group shadow-xs"
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono text-slate-400 uppercase">Total Projects</span>
-            <div className="p-2.5 rounded-xl bg-[#121824] text-[#F5C85B] border border-[#D6A84F]/20">
-              <FolderGit2 className="w-5 h-5" />
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-[#0B1F3A]/60 uppercase tracking-wider">Projects</span>
+            <div className="p-2 rounded-xl bg-slate-100 text-[#0B1F3A]">
+              <FolderGit2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="font-display font-extrabold text-3xl text-white group-hover:text-[#F5C85B] transition-colors">
+          <div className="font-heading font-extrabold text-3xl text-[#0B1F3A]">
             {totalProjects}
           </div>
-          <p className="text-[11px] text-slate-500 mt-2">Active portfolio case studies</p>
+          <p className="text-[11px] text-[#0B1F3A]/60 mt-1.5">Portfolio case studies</p>
         </div>
 
         {/* Total Products */}
         <div
           onClick={() => setActiveTab('products')}
-          className="p-6 rounded-2xl bg-[#0B0F16] border border-white/10 hover:border-[#D6A84F]/40 transition-all cursor-pointer group shadow-lg"
+          className="p-5 sm:p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 hover:border-[#0B1F3A]/30 transition-all cursor-pointer group shadow-xs"
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono text-slate-400 uppercase">Total Products</span>
-            <div className="p-2.5 rounded-xl bg-[#121824] text-[#F5C85B] border border-[#D6A84F]/20">
-              <Package className="w-5 h-5" />
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-[#0B1F3A]/60 uppercase tracking-wider">Products</span>
+            <div className="p-2 rounded-xl bg-slate-100 text-[#0B1F3A]">
+              <Package className="w-4 h-4" />
             </div>
           </div>
-          <div className="font-display font-extrabold text-3xl text-white group-hover:text-[#F5C85B] transition-colors">
+          <div className="font-heading font-extrabold text-3xl text-[#0B1F3A]">
             {totalProducts}
           </div>
-          <p className="text-[11px] text-slate-500 mt-2">PolicyHub, ANIVEX AI, etc.</p>
+          <p className="text-[11px] text-[#0B1F3A]/60 mt-1.5">PolicyHub, VyaparDesk, etc.</p>
         </div>
 
         {/* Total Services */}
         <div
           onClick={() => setActiveTab('services')}
-          className="p-6 rounded-2xl bg-[#0B0F16] border border-white/10 hover:border-[#D6A84F]/40 transition-all cursor-pointer group shadow-lg"
+          className="p-5 sm:p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 hover:border-[#0B1F3A]/30 transition-all cursor-pointer group shadow-xs"
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono text-slate-400 uppercase">Total Services</span>
-            <div className="p-2.5 rounded-xl bg-[#121824] text-[#F5C85B] border border-[#D6A84F]/20">
-              <Layers className="w-5 h-5" />
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-[#0B1F3A]/60 uppercase tracking-wider">Services</span>
+            <div className="p-2 rounded-xl bg-slate-100 text-[#0B1F3A]">
+              <Layers className="w-4 h-4" />
             </div>
           </div>
-          <div className="font-display font-extrabold text-3xl text-white group-hover:text-[#F5C85B] transition-colors">
+          <div className="font-heading font-extrabold text-3xl text-[#0B1F3A]">
             {totalServices}
           </div>
-          <p className="text-[11px] text-slate-500 mt-2">Core engineering verticals</p>
+          <p className="text-[11px] text-[#0B1F3A]/60 mt-1.5">Engineering verticals</p>
         </div>
 
-        {/* Total Solutions */}
-        <div
-          onClick={() => setActiveTab('solutions')}
-          className="p-6 rounded-2xl bg-[#0B0F16] border border-white/10 hover:border-[#D6A84F]/40 transition-all cursor-pointer group shadow-lg"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono text-slate-400 uppercase">Total Solutions</span>
-            <div className="p-2.5 rounded-xl bg-[#121824] text-[#F5C85B] border border-[#D6A84F]/20">
-              <Sparkles className="w-5 h-5" />
+        {/* Live Published Items */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-white border border-[#15803D]/20 shadow-xs">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-[#15803D] uppercase tracking-wider">Live Website</span>
+            <div className="p-2 rounded-xl bg-[#15803D]/10 text-[#15803D]">
+              <Eye className="w-4 h-4" />
             </div>
           </div>
-          <div className="font-display font-extrabold text-3xl text-white group-hover:text-[#F5C85B] transition-colors">
-            {totalSolutions}
-          </div>
-          <p className="text-[11px] text-slate-500 mt-2">Target audience verticals</p>
-        </div>
-
-        {/* Published Items */}
-        <div className="p-6 rounded-2xl bg-[#0B0F16] border border-emerald-500/20 shadow-lg">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono text-emerald-400 uppercase">Published Items</span>
-            <div className="p-2.5 rounded-xl bg-emerald-950/50 text-emerald-400 border border-emerald-500/30">
-              <Eye className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="font-display font-extrabold text-3xl text-emerald-300">
+          <div className="font-heading font-extrabold text-3xl text-[#15803D]">
             {publishedCount}
           </div>
-          <p className="text-[11px] text-slate-500 mt-2">Live on public website</p>
-        </div>
-
-        {/* Hidden Items */}
-        <div className="p-6 rounded-2xl bg-[#0B0F16] border border-amber-500/20 shadow-lg">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono text-amber-400 uppercase">Hidden / Drafts</span>
-            <div className="p-2.5 rounded-xl bg-amber-950/50 text-amber-400 border border-amber-500/30">
-              <EyeOff className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="font-display font-extrabold text-3xl text-amber-300">
-            {hiddenCount}
-          </div>
-          <p className="text-[11px] text-slate-500 mt-2">Unpublished drafts</p>
-        </div>
-
-        {/* Total Contact Enquiries */}
-        <div
-          onClick={() => setActiveTab('enquiries')}
-          className="p-6 rounded-2xl bg-[#0B0F16] border border-white/10 hover:border-[#D6A84F]/40 transition-all cursor-pointer group shadow-lg"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono text-slate-400 uppercase">Total Enquiries</span>
-            <div className="p-2.5 rounded-xl bg-[#121824] text-[#F5C85B] border border-[#D6A84F]/20">
-              <Mail className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="font-display font-extrabold text-3xl text-white group-hover:text-[#F5C85B] transition-colors">
-            {totalEnquiries}
-          </div>
-          <p className="text-[11px] text-slate-500 mt-2">Form submissions</p>
-        </div>
-
-        {/* Unread Enquiries */}
-        <div
-          onClick={() => setActiveTab('enquiries')}
-          className="p-6 rounded-2xl bg-[#0B0F16] border border-[#D6A84F]/40 shadow-lg cursor-pointer group"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono text-[#F5C85B] uppercase">Unread Enquiries</span>
-            <div className="p-2.5 rounded-xl bg-[#121824] text-[#F5C85B] border border-[#D6A84F]/40">
-              <Mail className="w-5 h-5 animate-pulse" />
-            </div>
-          </div>
-          <div className="font-display font-extrabold text-3xl text-gold-gradient">
-            {unreadEnquiries}
-          </div>
-          <p className="text-[11px] text-slate-400 mt-2">Requires admin review</p>
+          <p className="text-[11px] text-[#0B1F3A]/60 mt-1.5">Active published assets</p>
         </div>
 
       </div>
 
-      {/* 3 Detailed Recent Activity Lists */}
+      {/* 2 Detailed Recent Activity Lists */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Recent Contact Enquiries */}
-        <div className="lg:col-span-6 p-6 rounded-3xl bg-[#0B0F16] border border-white/10 shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-4 border-b border-white/10">
+        <div className="lg:col-span-6 p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-4 border-b border-[#0B1F3A]/10">
             <div className="flex items-center gap-2">
-              <Mail className="w-5 h-5 text-[#F5C85B]" />
-              <h3 className="font-display font-bold text-lg text-white">Recent Project Enquiries</h3>
+              <Mail className="w-5 h-5 text-[#F97316]" />
+              <h3 className="font-heading font-bold text-lg text-[#0B1F3A]">Recent Client Enquiries</h3>
             </div>
             <button
               onClick={() => setActiveTab('enquiries')}
-              className="text-xs font-mono text-[#F5C85B] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-bold text-[#F97316] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>View All</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -274,30 +293,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           <div className="space-y-3">
             {recentEnquiries.length === 0 ? (
-              <p className="text-xs text-slate-500 py-4 text-center">No contact enquiries received yet.</p>
+              <p className="text-xs text-[#0B1F3A]/60 py-6 text-center">No contact enquiries received yet.</p>
             ) : (
               recentEnquiries.map((e) => (
                 <div
                   key={e.id}
                   onClick={() => setActiveTab('enquiries')}
-                  className="p-4 rounded-2xl bg-[#05070B] border border-white/5 hover:border-[#D6A84F]/30 transition-all cursor-pointer flex items-center justify-between gap-4"
+                  className="p-4 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/8 hover:border-[#F97316]/30 transition-all cursor-pointer flex items-center justify-between gap-4"
                 >
                   <div className="space-y-1 overflow-hidden">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-white truncate">{e.fullName}</span>
+                      <span className="text-xs font-bold text-[#0B1F3A] truncate">{e.fullName}</span>
                       {!e.read && (
-                        <span className="px-2 py-0.5 rounded-full bg-[#D6A84F] text-[#05070B] text-[9px] font-bold uppercase">
+                        <span className="px-2 py-0.5 rounded-full bg-[#F97316] text-white text-[9px] font-bold uppercase">
                           NEW
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 truncate">{e.email} • {e.projectType}</p>
-                    <p className="text-[11px] text-slate-500 truncate">{e.company}</p>
+                    <p className="text-xs text-[#0B1F3A]/70 truncate">{e.email} • {e.projectType}</p>
+                    <p className="text-[11px] text-[#0B1F3A]/60 truncate">{e.company}</p>
                   </div>
 
                   <div className="text-right shrink-0">
-                    <span className="text-[10px] font-mono text-slate-500 block">{e.date}</span>
-                    <span className="text-xs font-mono text-[#F5C85B]">{e.budgetRange}</span>
+                    <span className="text-[10px] font-mono text-[#0B1F3A]/50 block">{e.date}</span>
+                    <span className="text-xs font-bold text-[#F97316]">{e.budgetRange}</span>
                   </div>
                 </div>
               ))
@@ -305,63 +324,78 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Recent Projects */}
-        <div className="lg:col-span-6 p-6 rounded-3xl bg-[#0B0F16] border border-white/10 shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-4 border-b border-white/10">
+        {/* Recent Contracts & Quotations */}
+        <div className="lg:col-span-6 p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-4 border-b border-[#0B1F3A]/10">
             <div className="flex items-center gap-2">
-              <FolderGit2 className="w-5 h-5 text-[#F5C85B]" />
-              <h3 className="font-display font-bold text-lg text-white">Recent Projects</h3>
+              <FileCheck2 className="w-5 h-5 text-[#15803D]" />
+              <h3 className="font-heading font-bold text-lg text-[#0B1F3A]">Contracts & Agreements</h3>
             </div>
             <button
-              onClick={() => setActiveTab('projects')}
-              className="text-xs font-mono text-[#F5C85B] hover:underline flex items-center gap-1 cursor-pointer"
+              onClick={() => setActiveTab('contracts')}
+              className="text-xs font-bold text-[#15803D] hover:underline flex items-center gap-1 cursor-pointer"
             >
-              <span>Manage Projects</span>
+              <span>Manage Contracts</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
           <div className="space-y-3">
-            {recentProjects.map((p) => (
-              <div
-                key={p.id}
-                onClick={() => setActiveTab('projects')}
-                className="p-4 rounded-2xl bg-[#05070B] border border-white/5 hover:border-[#D6A84F]/30 transition-all cursor-pointer flex items-center justify-between gap-4"
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-white">{p.name}</span>
-                    <span className="px-2 py-0.5 rounded-full bg-[#121824] border border-[#D6A84F]/30 text-[#F5C85B] text-[10px]">
-                      {p.status}
+            {contracts.length === 0 ? (
+              <div className="p-6 text-center bg-[#FFFDF7] rounded-xl border border-dashed border-[#0B1F3A]/15">
+                <p className="text-xs text-[#0B1F3A]/70">No client agreements created yet.</p>
+                <button
+                  onClick={() => setActiveTab('contracts')}
+                  className="mt-2 text-xs font-bold text-[#F97316] hover:underline cursor-pointer"
+                >
+                  + Create your first client contract
+                </button>
+              </div>
+            ) : (
+              contracts.slice(0, 5).map((c) => (
+                <div
+                  key={c.id}
+                  onClick={() => setActiveTab('contracts')}
+                  className="p-4 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/8 hover:border-[#15803D]/30 transition-all cursor-pointer flex items-center justify-between gap-4"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-[#0B1F3A]">{c.clientName}</span>
+                      <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[#0B1F3A] text-[10px] font-mono">
+                        {c.contractNumber}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#0B1F3A]/70 mt-1 line-clamp-1">{c.projectTitle || c.clientCompany}</p>
+                  </div>
+
+                  <div className="text-right shrink-0">
+                    <span className="text-xs font-bold text-[#15803D] block">
+                      ₹{c.totalAmount.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[10px] font-mono text-[#0B1F3A]/60">
+                      {c.status}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1 line-clamp-1">{p.shortDescription}</p>
                 </div>
-
-                <div className="text-right shrink-0">
-                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${p.published ? 'bg-emerald-950 text-emerald-400' : 'bg-amber-950 text-amber-400'}`}>
-                    {p.published ? 'Published' : 'Hidden'}
-                  </span>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
       </div>
 
       {/* Recent Activity Log */}
-      <div className="p-6 rounded-3xl bg-[#0B0F16] border border-white/10 shadow-xl space-y-4">
-        <div className="flex items-center justify-between pb-4 border-b border-white/10">
+      <div className="p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-xs space-y-4">
+        <div className="flex items-center justify-between pb-4 border-b border-[#0B1F3A]/10">
           <div className="flex items-center gap-2">
-            <Activity className="w-5 h-5 text-[#F5C85B]" />
-            <h3 className="font-display font-bold text-lg text-white">Recent Admin Activity</h3>
+            <Activity className="w-5 h-5 text-[#F97316]" />
+            <h3 className="font-heading font-bold text-lg text-[#0B1F3A]">System Activity & Audit Log</h3>
           </div>
           <button
             onClick={() => setActiveTab('activity-logs')}
-            className="text-xs font-mono text-[#F5C85B] hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-[#F97316] hover:underline flex items-center gap-1 cursor-pointer"
           >
-            <span>View Audit Logs</span>
+            <span>View All Logs</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -370,16 +404,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {recentLogs.map((log) => (
             <div
               key={log.id}
-              className="p-3.5 rounded-xl bg-[#05070B] border border-white/5 flex items-center justify-between text-xs"
+              className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs"
             >
               <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-[#D6A84F]" />
+                <div className="w-2 h-2 rounded-full bg-[#F97316]" />
                 <div>
-                  <span className="font-bold text-white">{log.action}</span>
-                  <span className="text-slate-400 font-normal"> — {log.targetItem}</span>
+                  <span className="font-bold text-[#0B1F3A]">{log.action}</span>
+                  <span className="text-[#0B1F3A]/70 font-normal"> — {log.targetItem}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-4 text-slate-500 font-mono text-[11px]">
+              <div className="flex items-center gap-4 text-[#0B1F3A]/50 font-mono text-[11px]">
                 <span>{log.adminEmail}</span>
                 <span>{log.timestamp}</span>
               </div>

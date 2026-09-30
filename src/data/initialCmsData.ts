@@ -12,30 +12,229 @@ import {
   AdminNotification,
   AdminActivityLog,
   MediaItem,
-  InvoiceRecord
+  InvoiceRecord,
+  NavbarSettings,
+  TrustStatItem,
+  WhyAnivexSettings,
+  TestimonialCMS,
+  FaqCMS,
+  ClientRecord,
+  ContractRecord,
+  QuotationRecord
 } from '../types/cms';
 
+export const initialNavbar: NavbarSettings = {
+  brandName: 'Anivex Solution',
+  logoUrl: '',
+  ctaText: 'Start a Project →',
+  ctaLink: '#contact',
+  items: [
+    { id: 'nav-home', label: 'Home', href: '#hero', visible: true, order: 1 },
+    { id: 'nav-about', label: 'About', href: '#about', visible: true, order: 2 },
+    { id: 'nav-services', label: 'Services', href: '#services', visible: true, order: 3 },
+    { id: 'nav-products', label: 'Products', href: '#products', visible: true, order: 4 },
+    { id: 'nav-projects', label: 'Projects', href: '#projects', visible: true, order: 5 },
+    { id: 'nav-why', label: 'Why Anivex', href: '#why-anivex', visible: true, order: 6 },
+    { id: 'nav-faq', label: 'FAQ', href: '#faq', visible: true, order: 7 },
+    { id: 'nav-contact', label: 'Contact', href: '#contact', visible: true, order: 8 },
+  ]
+};
+
+export const initialTrustStats: TrustStatItem[] = [
+  {
+    id: 'trust-1',
+    title: 'Custom Architecture',
+    label: 'Engineered for Growth',
+    description: 'Zero generic templates or bloated plugins. Built purposefully for your business.',
+    iconName: 'Code2',
+    order: 1,
+    enabled: true
+  },
+  {
+    id: 'trust-2',
+    title: 'Production Stacks',
+    label: 'Modern Engineering',
+    description: 'High-speed React, Node.js, enterprise databases, and secure cloud environments.',
+    iconName: 'Layers',
+    order: 2,
+    enabled: true
+  },
+  {
+    id: 'trust-3',
+    title: 'Direct Engineering',
+    label: 'Transparent Partnership',
+    description: 'Collaborate directly with lead software architects. No sales bureaucracy.',
+    iconName: 'ShieldCheck',
+    order: 3,
+    enabled: true
+  },
+  {
+    id: 'trust-4',
+    title: 'GST Compliant',
+    label: 'Indian Craftsmanship',
+    description: 'Official Indian tax invoicing, IMPS/UPI receipts, and long-term support warranties.',
+    iconName: 'Award',
+    order: 4,
+    enabled: true
+  }
+];
+
+export const initialWhyAnivex: WhyAnivexSettings = {
+  heading: 'Why Anivex Solution',
+  description: 'We believe technology should serve real business goals — reducing overhead, accelerating growth, and delivering long-term competitive advantage.',
+  enabled: true,
+  features: [
+    {
+      id: 'why-1',
+      number: '01',
+      title: 'Business First',
+      description: 'Technology built around actual business requirements, daily workflows, and bottom-line growth.',
+      iconName: 'TrendingUp',
+      order: 1
+    },
+    {
+      id: 'why-2',
+      number: '02',
+      title: 'Modern Technology',
+      description: 'Modern development stack (React, Node.js, TypeScript, Cloud) with clean, scalable architecture.',
+      iconName: 'Cpu',
+      order: 2
+    },
+    {
+      id: 'why-3',
+      number: '03',
+      title: 'Custom Solutions',
+      description: 'No unnecessary one-size-fits-all templates or bloated plugins. Built purposefully from the ground up.',
+      iconName: 'Layers',
+      order: 3
+    },
+    {
+      id: 'why-4',
+      number: '04',
+      title: 'Long-Term Support',
+      description: 'Solutions designed for future growth with continuous updates, security audits, and dedicated support.',
+      iconName: 'HeartHandshake',
+      order: 4
+    }
+  ]
+};
+
+export const initialTestimonials: TestimonialCMS[] = [
+  {
+    id: 'test-1',
+    customerName: 'Rajesh Varma',
+    company: 'Apex Logistics & Freight',
+    designation: 'Managing Director',
+    profileImage: '',
+    testimonial: 'Anivex Solution built our multi-branch inventory and dispatch management system. Their deep understanding of Indian GST billing and local warehouse operations made the whole transition seamless.',
+    rating: 5,
+    featured: true,
+    published: true,
+    displayOrder: 1
+  },
+  {
+    id: 'test-2',
+    customerName: 'Priya Sundaram',
+    company: 'FinTrack Digital',
+    designation: 'Co-Founder & COO',
+    profileImage: '',
+    testimonial: 'The level of craftsmanship Krishndas and the team deliver is exceptional. Clean architecture, lightning-fast UI, and zero fluff. They are our go-to technology partner.',
+    rating: 5,
+    featured: true,
+    published: true,
+    displayOrder: 2
+  },
+  {
+    id: 'test-3',
+    customerName: 'Amitabh Sharma',
+    company: 'MedSecure Health Systems',
+    designation: 'Head of Technology',
+    profileImage: '',
+    testimonial: 'From architecture scoping to high-speed MVP deployment, Anivex Solution delivered exactly what was promised. Their responsive WhatsApp support and sprint accountability are top-tier.',
+    rating: 5,
+    featured: true,
+    published: true,
+    displayOrder: 3
+  }
+];
+
+export const initialFaqs: FaqCMS[] = [
+  {
+    id: 'faq-1',
+    question: 'What types of software solutions does Anivex Solution build?',
+    answer: 'We design and develop custom web applications, Android & iOS mobile apps, custom ERP systems, GST-compliant billing software, AI workflow automation, and conversion-focused business websites.',
+    category: 'General',
+    displayOrder: 1,
+    published: true
+  },
+  {
+    id: 'faq-2',
+    question: 'How long does a typical project take to develop and launch?',
+    answer: 'High-speed business websites and MVPs typically take 1 to 3 weeks. Comprehensive custom software or ERP solutions typically require 4 to 8 weeks depending on the complexity and scope.',
+    category: 'Process',
+    displayOrder: 2,
+    published: true
+  },
+  {
+    id: 'faq-3',
+    question: 'Do you provide GST tax invoices and Indian payment options?',
+    answer: 'Yes, absolutely. We provide official GST tax invoices for all client engagements, and accept UPI (Google Pay, PhonePe, Paytm), IMPS/NEFT direct bank transfers, and standard business payment methods.',
+    category: 'Billing',
+    displayOrder: 3,
+    published: true
+  },
+  {
+    id: 'faq-4',
+    question: 'Will we have full ownership of the source code and IP?',
+    answer: 'Yes. Upon project completion and final handover, you receive 100% intellectual property ownership, complete source code repository access, and all associated deployment assets.',
+    category: 'Ownership',
+    displayOrder: 4,
+    published: true
+  },
+  {
+    id: 'faq-5',
+    question: 'What kind of support do you provide after launch?',
+    answer: 'Every Anivex Solution delivery includes post-launch warranty support, bug fixes, server monitoring, and direct WhatsApp communication for rapid responses. We also offer ongoing maintenance retainers.',
+    category: 'Support',
+    displayOrder: 5,
+    published: true
+  }
+];
+
 export const initialSiteContent: SiteContent = {
-  heroHeading: "We Build Technology That Moves Businesses Forward.",
-  heroSubtitle: "NEXT-GENERATION TECHNOLOGY COMPANY",
-  heroDescription: "ANIVEX Solutions builds modern software, AI-powered systems, web applications, mobile apps, and scalable digital solutions tailored for forward-thinking enterprises.",
-  primaryButtonText: "Start a Project",
+  heroBadge: "MODERN INDIAN TECHNOLOGY",
+  heroHeading: "Technology Built for India's Next Generation of Businesses.",
+  heroSubtitle: "MODERN SOFTWARE & DIGITAL SOLUTIONS",
+  heroDescription: "Anivex Solution builds modern websites, enterprise software, ERP systems, mobile applications and intelligent digital solutions for growing businesses.",
+  primaryButtonText: "Start Your Project →",
   primaryButtonLink: "#contact",
   secondaryButtonText: "Explore Solutions",
-  secondaryButtonLink: "#solutions",
+  secondaryButtonLink: "#services",
+  heroImage: "",
+  heroVisible: true,
+  navbar: initialNavbar,
+  trustStats: initialTrustStats,
+  whyAnivex: initialWhyAnivex,
   aboutHeading: "Technology With Purpose.",
-  aboutDescription: "ANIVEX Solutions helps businesses transform ideas into reliable digital products and intelligent technology solutions.",
-  aboutStory: "We combine disciplined software engineering, modern human-centered design, and emerging technology stacks to create scalable, high-performance systems that solve real-world operational problems.",
-  mission: "To deliver scalable, resilient, and human-centric software engineering that empowers organizations and creators to thrive in a digital-first world.",
-  vision: "To be a leading global technology force known for high craftsmanship, innovative AI solutions, and reliable product execution.",
+  aboutDescription: "Anivex Solution helps businesses transform ideas into reliable digital products and intelligent technology solutions.",
+  aboutStory: "Founded with a mission to deliver world-class digital craftsmanship for Indian and global enterprises, Anivex Solution blends disciplined engineering with intuitive human-centric design. We eliminate technical bloat to create resilient, scalable digital engines.",
+  mission: "To engineer scalable, resilient, and human-centric software solutions that empower Indian businesses, startups, and institutions to excel in the digital economy.",
+  vision: "To be recognized as India's premier high-trust technology engineering firm, synonymous with disciplined delivery, architectural elegance, and tangible business results.",
+  values: [
+    { title: "Business First", description: "Every line of code must create real operational efficiency or revenue growth." },
+    { title: "Architectural Rigor", description: "We build on modern, maintainable stacks that scale effortlessly." },
+    { title: "Radical Transparency", description: "Direct communication, realistic timelines, and zero deceptive practices." },
+    { title: "Indian Innovation", description: "World-class engineering standards with deep empathy for Indian business operations." }
+  ],
   founderName: "Krishndas Chauhan",
-  founderRole: "Founder",
-  founderDescription: "Krishndas Chauhan is the Founder of ANIVEX Solutions, focused on building modern software products, digital platforms, and technology-driven solutions for businesses.",
-  founderImage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400",
-  ctaHeading: "Have an Idea? Let's Build It.",
-  ctaSubtitle: "Tell us what you're trying to build. We'll help turn the idea into a practical, scalable digital solution.",
-  primaryCtaText: "Start a Project",
-  secondaryCtaText: "Talk to ANIVEX"
+  founderRole: "Founder & Lead Architect",
+  founderDescription: "Krishndas Chauhan is the Founder of Anivex Solution, dedicated to architecting high-performance digital products, enterprise systems, and scalable technology for forward-looking enterprises.",
+  founderImage: "",
+  companyImage: "",
+  ctaHeading: "Let's Build Something That Matters.",
+  ctaSubtitle: "Whether you need a custom software platform, a high-converting web application, or an enterprise ERP, we are ready to build it with you.",
+  primaryCtaText: "Start a Conversation →",
+  secondaryCtaText: "Chat on WhatsApp"
 };
 
 export const initialServices: ServiceCMS[] = [
@@ -117,31 +316,37 @@ export const initialProducts: ProductCMS[] = [
   {
     id: 'policyhub',
     name: 'PolicyHub',
-    tagline: 'Smart Policy & Document Management',
-    description: 'A modern platform designed to organize, manage, govern, and access important policies and business compliance documents securely with intelligent search.',
+    category: 'Enterprise Governance',
+    tagline: 'Smart Policy & Compliance Governance',
+    description: 'A modern platform designed to organize, govern, and access critical policies, business contracts, and compliance documents with instant semantic search.',
     status: 'Available',
     badge: 'Enterprise Platform',
-    features: ['Document Versioning', 'Granular Access Control', 'AI Search Engine', 'Audit Trail Logging'],
-    technologies: ['React', 'TypeScript', 'Firebase', 'Gemini AI'],
+    features: ['Granular Access Control', 'Automated Versioning', 'Semantic Document Search', 'Audit Trail Logging'],
+    technologies: ['React', 'TypeScript', 'Firebase', 'Vector Search'],
     productUrl: 'https://anivex.com/products/policyhub',
-    actionLabel: 'View Product →',
+    image: '/src/assets/images/product_policyhub_showcase_1790750505931.jpg',
+    actionLabel: 'Explore PolicyHub →',
+    cta: 'Explore PolicyHub →',
     isInteractive: false,
     featured: true,
     displayOrder: 1,
     published: true,
   },
   {
-    id: 'anivex-ai',
-    name: 'ANIVEX AI',
-    tagline: 'Intelligent Digital Assistant',
-    description: 'An AI-powered assistant designed to interact naturally with users, handle document contexts, and help automate everyday business and digital tasks.',
-    status: 'Coming Soon',
-    badge: 'Flagship AI Engine',
-    features: ['Natural Conversation', 'Contextual Reasoning', 'Multi-System Integration', 'Task Automation'],
-    technologies: ['Gemini 2.5 Flash', 'Node.js', 'Vector DB', 'TypeScript'],
-    productUrl: '#',
-    actionLabel: 'Try Live Demo →',
-    isInteractive: true,
+    id: 'vyapardesk',
+    name: 'ANIVEX VyaparDesk',
+    category: 'ERP & Billing Software',
+    tagline: 'GST Billing, Invoicing & Inventory Engine',
+    description: 'Built specifically for Indian enterprises and growing trade businesses: fast GST invoice generation, barcode stock tracking, and ledger reconciliation.',
+    status: 'Available',
+    badge: 'Indian Business Engine',
+    features: ['Instant GST Invoice Printing', 'Barcode Stock Tracking', 'Multi-Warehouse Sync', 'Automated WhatsApp Invoices'],
+    technologies: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
+    productUrl: '#contact',
+    image: '/src/assets/images/project_vyapardesk_erp_1790750520625.jpg',
+    actionLabel: 'Schedule Demo →',
+    cta: 'Schedule Demo →',
+    isInteractive: false,
     featured: true,
     displayOrder: 2,
     published: true,
@@ -149,14 +354,17 @@ export const initialProducts: ProductCMS[] = [
   {
     id: 'anivex-ops',
     name: 'ANIVEX OpsGrid',
-    tagline: 'Next-Gen Enterprise Resource Dashboard',
+    category: 'Operations Dashboard',
+    tagline: 'Unified Enterprise Operations & Resource Monitor',
     description: 'Unified operational monitoring workspace uniting business analytics, team permissions, and real-time process execution into one clean display.',
     status: 'In Development',
-    badge: 'Upcoming Product',
-    features: ['Modular Widgets', 'Telemetry Stream', 'Custom Connectors', 'Real-time Alerts'],
+    badge: 'Operations Platform',
+    features: ['Modular Metrics Widgets', 'Role-Based Access', 'Custom Workflow Connectors', 'Real-time Alerts'],
     technologies: ['React', 'Next.js', 'WebSockets', 'Tailwind CSS'],
-    productUrl: '#',
-    actionLabel: 'Learn More →',
+    productUrl: '#contact',
+    image: '/src/assets/images/hero_indian_tech_business_1790750492543.jpg',
+    actionLabel: 'Request Early Access →',
+    cta: 'Request Early Access →',
     isInteractive: false,
     featured: false,
     displayOrder: 3,
@@ -219,6 +427,7 @@ export const initialProjects: ProjectCMS[] = [
   {
     id: 'policyhub-project',
     name: 'PolicyHub',
+    client: 'Enterprise Corporate Client',
     category: 'SaaS Platform & Enterprise Product',
     projectType: 'SaaS Product',
     shortDescription: 'A modern platform designed to organize, manage, govern, and access corporate policies and compliance documents.',
@@ -227,35 +436,42 @@ export const initialProjects: ProjectCMS[] = [
     features: ['AI Document Search', 'Granular Access Permissions', 'Version Tracking', 'Compliance Audits'],
     featured: true,
     imageBg: 'from-amber-950/40 via-slate-900 to-[#0B0F16]',
-    imageUrl: '',
+    imageUrl: '/src/assets/images/product_policyhub_showcase_1790750505931.jpg',
+    image: '/src/assets/images/product_policyhub_showcase_1790750505931.jpg',
+    gallery: ['/src/assets/images/product_policyhub_showcase_1790750505931.jpg'],
     projectUrl: 'https://anivex.com/products/policyhub',
     githubUrl: '',
     stats: 'Enterprise Ready',
     status: 'Featured',
     clientType: 'ANIVEX Flagship Product',
     timeline: '2025 – Active',
+    completionDate: 'June 2025',
     overview: 'Engineered from the ground up to solve corporate document clutter, PolicyHub integrates fine-grained permission control, automated document lifecycle management, and instant semantic search.',
     displayOrder: 1,
     published: true,
   },
   {
     id: 'nexus-erp',
-    name: 'Nexus Operations Portal',
+    name: 'ANIVEX VyaparDesk ERP',
+    client: 'Apex Retail & Logistics India',
     category: 'Custom ERP & Business Automation',
     projectType: 'ERP / Business Software',
     shortDescription: 'Unified operational dashboard designed for multi-branch inventory tracking, workforce allocation, and financial auditing.',
     fullDescription: 'Replaced legacy spreadsheets with a real-time web portal that processes stock updates, multi-branch logistics, and automated compliance reports.',
-    techStack: ['Next.js', 'TypeScript', 'Express', 'MySQL', 'Tailwind CSS'],
-    features: ['Multi-Branch Inventory', 'Real-Time Telemetry', 'Role-Based Access', 'Automated Exports'],
-    featured: false,
+    techStack: ['Next.js', 'TypeScript', 'Express', 'PostgreSQL', 'Tailwind CSS'],
+    features: ['Multi-Branch Inventory', 'GST Invoicing', 'Role-Based Access', 'Automated Reports'],
+    featured: true,
     imageBg: 'from-slate-900 via-[#0B0F16] to-zinc-950',
-    imageUrl: '',
-    projectUrl: '#',
+    imageUrl: '/src/assets/images/project_vyapardesk_erp_1790750520625.jpg',
+    image: '/src/assets/images/project_vyapardesk_erp_1790750520625.jpg',
+    gallery: ['/src/assets/images/project_vyapardesk_erp_1790750520625.jpg'],
+    projectUrl: '#contact',
     githubUrl: '',
     stats: 'Multi-Branch System',
     status: 'Completed',
     clientType: 'Commercial Enterprise System',
     timeline: '4 Months Development',
+    completionDate: 'April 2025',
     overview: 'Replaced 5 legacy spreadsheets with a real-time web portal that processes stock updates and generates automated compliance reports.',
     displayOrder: 2,
     published: true,
@@ -263,21 +479,25 @@ export const initialProjects: ProjectCMS[] = [
   {
     id: 'aura-health-app',
     name: 'Aura Mobile Companion',
+    client: 'HealthCare Plus India',
     category: 'Mobile Application (Android)',
     projectType: 'Mobile App',
     shortDescription: 'Cross-platform mobile experience featuring offline biometric sync, health metric visualizers, and appointment booking.',
     fullDescription: 'Built with offline-first synchronization to ensure patient medical summaries remain available even in low-connectivity environments.',
-    techStack: ['Android', 'TypeScript', 'Firebase', 'REST APIs'],
+    techStack: ['Android', 'Kotlin', 'Firebase', 'REST APIs'],
     features: ['Biometric Login', 'Offline Sync', 'Real-time Vital Tracking', 'Push Reminders'],
     featured: false,
     imageBg: 'from-blue-950/30 via-[#0B0F16] to-slate-950',
-    imageUrl: '',
-    projectUrl: '#',
+    imageUrl: '/src/assets/images/hero_indian_tech_business_1790750492543.jpg',
+    image: '/src/assets/images/hero_indian_tech_business_1790750492543.jpg',
+    gallery: ['/src/assets/images/hero_indian_tech_business_1790750492543.jpg'],
+    projectUrl: '#contact',
     githubUrl: '',
     stats: 'Android & Cross-Platform',
     status: 'Active',
     clientType: 'Healthcare Provider',
     timeline: '3 Months Development',
+    completionDate: 'February 2025',
     overview: 'Built with offline-first synchronization to ensure patient medical summaries remain available even in low-connectivity environments.',
     displayOrder: 3,
     published: true,
@@ -322,15 +542,15 @@ export const initialBuiltByAnivex: BuiltByAnivexItem[] = [
 ];
 
 export const initialCompanyInfo: CompanyInfo = {
-  name: "ANIVEX Solutions",
+  name: "Anivex Solution",
   tagline: "Innovate. Develop. Deliver.",
-  description: "Building scalable software, AI systems, and custom digital technology for forward-thinking enterprises and startups.",
+  description: "Building scalable custom software, web platforms, mobile applications and digital enterprise systems for forward-thinking businesses.",
   businessEmail: "anivexsolution@gmail.com",
   phone: "+91 98765 43210",
   headquarters: "India",
-  address: "Technology Engineering HQ, India",
+  address: "Technology Engineering Studio, India",
   websiteUrl: "https://anivex.com",
-  businessHours: "Mon - Fri: 9:00 AM - 6:00 PM IST",
+  businessHours: "Mon - Sat: 9:00 AM - 7:00 PM IST",
   logoUrl: "",
 };
 
@@ -449,7 +669,7 @@ export const initialInvoices: InvoiceRecord[] = [
     dueDate: '20 Aug 2026',
     status: 'Pending',
     currency: 'INR',
-    billerName: 'ANIVEX Solutions',
+    billerName: 'Anivex Solution',
     billerAddress: 'Jaunpur, Uttar Pradesh, India',
     billerEmail: 'anivexsolution@gmail.com',
     billerPhone: '+91 7985668826',
@@ -462,10 +682,10 @@ export const initialInvoices: InvoiceRecord[] = [
     clientRef: 'SKC/2026/08/12',
     projectTitle: 'Custom Web App',
     placeOfSupply: 'Uttar Pradesh (09)',
-    websiteUrl: 'www.anivexsolutions.in',
+    websiteUrl: 'www.anivexsolution.in',
     deliveryMethod: 'Digital Delivery',
     warrantySupport: '30 Days Support',
-    supportEmail: 'support@anivexsolutions.in',
+    supportEmail: 'support@anivexsolution.in',
     supportPhone: '+91 7985668826',
     items: [
       {
@@ -498,10 +718,10 @@ export const initialInvoices: InvoiceRecord[] = [
     taxAmount: 396,
     discountAmount: 0,
     totalAmount: 2596,
-    paymentNotes: 'Thank you for partnering with ANIVEX Solutions. All deliverables completed according to milestone specifications.',
-    bankDetails: 'ANIVEX Solutions | Bank of Baroda | A/C: 45950100023052 | IFSC: BARBOMACHHA | UPI: 7985668826-2@bybl',
+    paymentNotes: 'Thank you for partnering with Anivex Solution. All deliverables completed according to milestone specifications.',
+    bankDetails: 'Anivex Solution | Bank of Baroda | A/C: 45950100023052 | IFSC: BARBOMACHHA | UPI: 7985668826-2@bybl',
     bankName: 'Bank of Baroda',
-    accountHolderName: 'ANIVEX SOLUTIONS',
+    accountHolderName: 'Anivex Solution',
     accountNumber: '45950100023052',
     ifscCode: 'BARBOMACHHA',
     upiId: '7985668826-2@bybl',
@@ -512,9 +732,9 @@ export const initialInvoices: InvoiceRecord[] = [
 
 export const initialPaymentSettings: PaymentSettings = {
   upiId: '7985668826-2@bybl',
-  upiName: 'ANIVEX SOLUTIONS',
+  upiName: 'Anivex Solution',
   bankName: 'Bank of Baroda',
-  accountHolderName: 'ANIVEX SOLUTIONS',
+  accountHolderName: 'Anivex Solution',
   accountNumber: '45950100023052',
   ifscCode: 'BARBOMACHHA',
   paymentInstructions: 'Scan the UPI QR code using any payment app (GPay, PhonePe, Paytm, BHIM) or transfer via IMPS/NEFT to our Bank of Baroda account. Please include your Project or Invoice Reference ID in transaction remarks.',
@@ -522,4 +742,148 @@ export const initialPaymentSettings: PaymentSettings = {
   paymentButtonText: 'Make Direct Payment / View QR',
   enabled: true,
 };
+
+export const initialClients: ClientRecord[] = [
+  {
+    id: 'cli-1',
+    name: 'Rajesh Varma',
+    company: 'Apex Logistics & Freight India',
+    email: 'rajesh.varma@apexlogistics.in',
+    phone: '+91 98200 12345',
+    address: 'Plot 42, Sector 18, Udyog Vihar, Gurugram, Haryana - 122015',
+    gstin: '07AAAAA0000A1Z5',
+    city: 'Gurugram',
+    state: 'Haryana',
+    notes: 'Key logistics client. Custom multi-warehouse ERP contract.',
+    createdAt: '2026-08-01T10:00:00.000Z',
+  },
+  {
+    id: 'cli-2',
+    name: 'Priya Sundaram',
+    company: 'FinTrack Digital Solutions',
+    email: 'priya@fintrackdigital.com',
+    phone: '+91 98450 67890',
+    address: 'Indiranagar 100ft Road, Bengaluru, Karnataka - 560038',
+    gstin: '29BBBBB1111B1Z2',
+    city: 'Bengaluru',
+    state: 'Karnataka',
+    notes: 'Fintech client. Full-stack cloud platform.',
+    createdAt: '2026-08-05T11:30:00.000Z',
+  }
+];
+
+export const initialContracts: ContractRecord[] = [
+  {
+    id: 'ctr-1',
+    contractNumber: 'ANX-CTR-2026-001',
+    clientId: 'cli-1',
+    clientName: 'Rajesh Varma',
+    clientCompany: 'Apex Logistics & Freight India',
+    clientEmail: 'rajesh.varma@apexlogistics.in',
+    clientPhone: '+91 98200 12345',
+    clientAddress: 'Plot 42, Sector 18, Udyog Vihar, Gurugram, Haryana - 122015',
+    clientGstin: '07AAAAA0000A1Z5',
+
+    projectTitle: 'Custom Multi-Warehouse ERP & Invoicing Platform',
+    effectiveDate: '2026-08-15',
+    deliveryDate: '2026-10-30',
+    totalAmount: 250000,
+    advancePercentage: 40,
+    advanceAmount: 100000,
+    currency: 'INR',
+
+    scopeOfWork: 'Design, architectural engineering, development, testing, and deployment of a multi-branch warehouse inventory tracking and GST billing platform for Apex Logistics & Freight India.',
+    deliverables: [
+      'Role-based Administrator & Branch Manager Portal (React, TypeScript)',
+      'Backend API Engine & PostgreSQL Database Architecture',
+      'Instant GST Tax Invoicing with PDF generation & WhatsApp dispatch',
+      'Multi-warehouse real-time inventory ledger and audit trail',
+      'Deployment on Cloud Server with SSL and automated daily backups',
+      '30-day post-launch technical warranty and bug-fix support'
+    ],
+    paymentTerms: '40% advance upon contract signing; 40% upon staging MVP demo and user acceptance testing; 20% upon final production deployment and source code transfer.',
+    intellectualPropertyClause: 'Upon 100% full settlement of all contractual development fees, 100% intellectual property rights, bespoke custom source code, database schemas, and documentation are assigned exclusively to the Client.',
+    confidentialityClause: 'Both parties agree to protect and treat all proprietary business data, trade secrets, software designs, and financial terms as strictly confidential.',
+    warrantyPeriod: '60 Days comprehensive bug-fix and server uptime warranty commencing from final production release.',
+    governingLaw: 'This Agreement shall be governed by, construed and enforced in accordance with the Laws of India, subject to the jurisdiction of competent courts in India.',
+    
+    status: 'Active',
+    serviceProviderSignatory: 'Krishndas Chauhan',
+    serviceProviderTitle: 'Founder & Lead Architect, Anivex Solution',
+    clientSignatory: 'Rajesh Varma',
+    clientSignatoryTitle: 'Managing Director, Apex Logistics & Freight India',
+    signedDate: '2026-08-15',
+    createdAt: '2026-08-15T09:00:00.000Z',
+  }
+];
+
+export const initialQuotations: QuotationRecord[] = [
+  {
+    id: 'qtn-1',
+    quotationNumber: 'ANX-QTN-2026-001',
+    quotationDate: '2026-08-10',
+    validUntil: '2026-09-10',
+    clientId: 'cli-1',
+    clientName: 'Rajesh Varma',
+    clientCompany: 'Apex Logistics & Freight India',
+    clientEmail: 'rajesh.varma@apexlogistics.in',
+    clientPhone: '+91 98200 12345',
+    clientAddress: 'Plot 42, Sector 18, Udyog Vihar, Gurugram, Haryana - 122015',
+    clientGstin: '07AAAAA0000A1Z5',
+
+    projectTitle: 'Custom Multi-Warehouse ERP & Invoicing Platform',
+    executiveSummary: 'Comprehensive engineering estimate for building a centralized, GST-compliant operational software solution to synchronize 4 warehouses with real-time inventory and dispatch ledgers.',
+    lineItems: [
+      {
+        id: 'li-1',
+        description: 'System Architecture, UI/UX Design & Database Modeling',
+        details: 'Relational database schema, responsive high-fidelity design system in Tailwind, prototype review',
+        quantity: 1,
+        unitPrice: 50000,
+        amount: 50000,
+      },
+      {
+        id: 'li-2',
+        description: 'Warehouse Inventory & Stock Dispatch Engine',
+        details: 'Barcode tracking, low-stock triggers, multi-branch ledger sync, and audit trail',
+        quantity: 1,
+        unitPrice: 80000,
+        amount: 80000,
+      },
+      {
+        id: 'li-3',
+        description: 'GST Invoicing, E-Way Bill Readiness & WhatsApp Alerts',
+        details: 'Compliant tax calculation, one-click PDF generation, and automated WhatsApp invoice notifications',
+        quantity: 1,
+        unitPrice: 60000,
+        amount: 60000,
+      },
+      {
+        id: 'li-4',
+        description: 'Role-Based Authentication, Cloud CI/CD Deployment & Security Hardening',
+        details: 'Role permissions (Admin, Storekeeper, Accountant), SSL setup, Docker staging and backup cron jobs',
+        quantity: 1,
+        unitPrice: 60000,
+        amount: 60000,
+      }
+    ],
+    subtotal: 250000,
+    gstRate: 18,
+    gstAmount: 45000,
+    discountAmount: 0,
+    totalAmount: 295000,
+    currency: 'INR',
+
+    estimatedTimeline: '6 to 8 Weeks from kickoff date',
+    milestones: [
+      { title: 'Milestone 1: Wireframing & Database Architecture', percentage: 40, description: 'Kickoff advance and approval of technical specification.' },
+      { title: 'Milestone 2: Functional Core MVP & Testing', percentage: 40, description: 'Inventory engine, GST billing, and branch testing on staging server.' },
+      { title: 'Milestone 3: Final Deployment & Handover', percentage: 20, description: 'Production rollout, SSL, source code repository handover, and staff walkthrough.' }
+    ],
+    termsAndConditions: '1. Quotation valid for 30 days. 2. Payments via Bank Transfer or UPI. 3. 60-day post-launch warranty included. 4. 100% intellectual property transferred to client on final payment.',
+    status: 'Accepted',
+    createdAt: '2026-08-10T11:00:00.000Z',
+  }
+];
+
 
