@@ -2,12 +2,11 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { PhoneCall, FileSpreadsheet, Palette, Code2, ShieldCheck, Rocket, MessageCircle } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { formatWhatsAppUrl } from '../services/websiteSettings';
 
 export const Process: React.FC = () => {
-  const { companyInfo } = useCms();
-  const rawPhone = companyInfo?.phone || '+91 98765 43210';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
+  const { companyInfo, websiteSettings } = useCms();
+  const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
 
   const steps = [
     {
@@ -118,7 +117,7 @@ export const Process: React.FC = () => {
         {/* Quick CTA */}
         <div className="mt-12 text-center">
           <a
-            href={`https://wa.me/${phoneToUse}?text=${encodeURIComponent('Namaste ANIVEX! I want to start Step 1 with a free discussion.')}`}
+            href={formatWhatsAppUrl(phone, 'Namaste Anivex Solution! I want to start Step 1 with a free discussion.')}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs shadow-md transition-all cursor-pointer"

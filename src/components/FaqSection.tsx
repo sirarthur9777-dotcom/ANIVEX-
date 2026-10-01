@@ -3,19 +3,19 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, HelpCircle, MessageCircle } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { FaqCMS } from '../types/cms';
+import { formatWhatsAppUrl } from '../services/websiteSettings';
 
 export const FaqSection: React.FC = () => {
-  const { faqs, companyInfo } = useCms();
+  const { faqs, companyInfo, websiteSettings } = useCms();
   const [openId, setOpenId] = useState<string | null>('faq-1');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  const rawPhone = companyInfo?.phone || '+91 98765 43210';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
+  const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
 
-  const whatsappUrl = `https://wa.me/${phoneToUse}?text=${encodeURIComponent(
+  const whatsappUrl = formatWhatsAppUrl(
+    phone,
     'Namaste Anivex Solution! I have a question about your software development process.'
-  )}`;
+  );
 
   const fallbackFaqs: FaqCMS[] = [
     {

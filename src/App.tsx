@@ -29,7 +29,11 @@ import { AdminDashboard } from './components/admin/AdminDashboard';
 
 // Inner component with access to Admin Auth Context
 function AdminRouteWrapper() {
-  const { isAdmin } = useAdminAuth();
+  const { isAdmin, isLoading } = useAdminAuth();
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#FFFDF7] text-[#0B1F3A] font-semibold">Checking administrator access...</div>;
+  }
 
   if (isAdmin) {
     return <AdminDashboard />;

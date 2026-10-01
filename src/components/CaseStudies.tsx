@@ -3,12 +3,11 @@ import { motion } from 'motion/react';
 import { CASE_STUDIES } from '../data/companyData';
 import { AlertCircle, CheckCircle2, Cpu, TrendingUp, ArrowRight, MessageCircle } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { formatWhatsAppUrl } from '../services/websiteSettings';
 
 export const CaseStudies: React.FC = () => {
-  const { companyInfo } = useCms();
-  const rawPhone = companyInfo?.phone || '+91 98765 43210';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
+  const { companyInfo, websiteSettings } = useCms();
+  const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
 
   return (
     <section id="case-studies" className="py-24 relative bg-[#0B1120] overflow-hidden border-t border-white/10">
@@ -51,7 +50,7 @@ export const CaseStudies: React.FC = () => {
                 
                 <div className="flex items-center gap-2">
                   <a
-                    href={`https://wa.me/${phoneToUse}?text=${encodeURIComponent(`Namaste! I want to discuss a solution similar to your case study: "${cs.title}".`)}`}
+                    href={formatWhatsAppUrl(phone, `Namaste! I want to discuss a solution similar to your case study: "${cs.title}".`)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center justify-center transition-colors"

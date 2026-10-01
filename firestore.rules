@@ -1,18 +1,27 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Helper functions
     function isAdmin() {
-      return request.auth != null;
+      return request.auth != null
+        && exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid))
+        && get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.role == 'admin'
+        && get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.active == true;
     }
 
-    // Public Collections (Read for anyone, write for admins)
+    // Public CMS content: everyone may read, only registered CMS admins may write.
+    match /websiteSettings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
     match /siteContent/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
     match /companyInfo/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /paymentSettings/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
@@ -40,26 +49,55 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+    match /testimonials/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /faqs/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
     match /media/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Contact Enquiries: Anyone can create, only Admin can read/update/delete
+    // Public enquiry submission. Reading and moderation are admin-only.
     match /contactEnquiries/{docId} {
       allow create: if true;
       allow read, update, delete: if isAdmin();
     }
 
-    // Admin Only Collections
+    // Admin-only data.
     match /notifications/{docId} {
       allow read, write: if isAdmin();
     }
     match /activityLogs/{docId} {
       allow read, write: if isAdmin();
     }
-    match /adminUsers/{docId} {
+    match /invoices/{docId} {
       allow read, write: if isAdmin();
+    }
+    match /clients/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /contracts/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /quotations/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Admin identity records are provisioned manually in Firebase Console.
+    // A signed-in user may read only their own authorization record.
+    match /adminUsers/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false;
+    }
+
+    // Explicitly deny unknown collections.
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

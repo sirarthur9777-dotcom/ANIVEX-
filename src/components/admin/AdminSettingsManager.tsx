@@ -34,9 +34,8 @@ export const AdminSettingsManager: React.FC = () => {
   };
 
   const handleResetDefaults = () => {
-    if (window.confirm('Reset all CMS data to initial default seed values? This will replace local edits.')) {
-      localStorage.clear();
-      showToast('Local state reset to default. Reloading...');
+    if (window.confirm('Reload CMS data from Firestore? This will discard only unsaved in-memory changes.')) {
+      showToast('Reloading CMS data from Firestore...');
       setTimeout(() => window.location.reload(), 1000);
     }
   };
@@ -98,7 +97,7 @@ export const AdminSettingsManager: React.FC = () => {
             className="w-full py-3 rounded-xl bg-red-950/40 border border-red-500/30 text-red-400 font-bold text-xs flex items-center justify-center gap-2 hover:bg-red-900/40 transition-colors cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
-            <span>Reset Local Cache To Default</span>
+            <span>Reload Data From Firestore</span>
           </button>
         </div>
       </div>

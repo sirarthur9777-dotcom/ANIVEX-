@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 export const QuotationsManager: React.FC = () => {
-  const { quotations, clients, addQuotation, updateQuotation, deleteQuotation } = useCms();
+  const { quotations, clients, websiteSettings, companyInfo, addQuotation, updateQuotation, deleteQuotation } = useCms();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
@@ -778,10 +778,10 @@ export const QuotationsManager: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/10 text-xs">
                 <div>
                   <span className="font-bold uppercase text-[10px] text-[#0B1F3A]/50 block mb-1">PROPOSAL PREPARED BY:</span>
-                  <h4 className="font-bold text-sm text-[#0B1F3A]">Anivex Solution</h4>
-                  <p className="text-[#0B1F3A]/70">Technology Engineering Studio, India</p>
+                  <h4 className="font-bold text-sm text-[#0B1F3A]">{websiteSettings?.companyName || 'Anivex Solution'}</h4>
+                  <p className="text-[#0B1F3A]/70">{websiteSettings?.address || 'Technology Engineering Studio, India'}</p>
                   <p className="text-[#0B1F3A]/70">GSTIN / Tax ID: Verified Official Vendor</p>
-                  <p className="text-[#0B1F3A]/70">Contact: anivexsolution@gmail.com | +91 98765 43210</p>
+                  <p className="text-[#0B1F3A]/70">Contact: {websiteSettings?.email || companyInfo?.businessEmail || ''} | {websiteSettings?.phone || companyInfo?.phone || ''}</p>
                 </div>
 
                 <div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, MessageCircle, QrCode, Landmark, Copy, Check, ArrowRight } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { formatWhatsAppUrl, formatPhoneTel } from '../services/websiteSettings';
 
 interface ContactProps {
   preselectedProjectType?: string;
@@ -8,7 +9,7 @@ interface ContactProps {
 }
 
 export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, preselectedBudget }) => {
-  const { submitContactEnquiry, companyInfo, paymentSettings } = useCms();
+  const { submitContactEnquiry, companyInfo, websiteSettings, paymentSettings } = useCms();
 
   const projectOptions = [
     'Website',
@@ -35,9 +36,10 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [copiedUpi, setCopiedUpi] = useState(false);
 
-  const rawPhone = companyInfo?.phone || '+91 98765 43210';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
+  const phone = websiteSettings?.phone || companyInfo?.phone || '';
+  const whatsappNumber = websiteSettings?.whatsapp || phone;
+  const email = websiteSettings?.email || companyInfo?.businessEmail || '';
+  const phoneTel = formatPhoneTel(phone);
 
   const handleSelectOption = (opt: string) => {
     setSelectedType(opt);
@@ -87,7 +89,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
 *Project Type:* ${selectedType}
 *Message:* ${formData.message || 'I would like to discuss my project requirements.'}`;
 
-    window.open(`https://wa.me/${phoneToUse}?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(formatWhatsAppUrl(whatsappNumber, text), '_blank');
   };
 
   const handleCopyUpi = () => {
@@ -207,7 +209,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 79056 68826"
                     className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#0B1F3A]/15 text-sm text-[#0B1F3A] placeholder-[#0B1F3A]/40 focus:border-[#F97316] focus:outline-none transition-colors"
                   />
                 </div>
@@ -276,7 +278,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
 
               <div className="space-y-3.5 pt-2">
                 <a
-                  href={`https://wa.me/${phoneToUse}?text=${encodeURIComponent('Namaste Anivex Solution! I want to discuss a new software project.')}`}
+                  href={formatWhatsAppUrl(whatsappNumber, 'Namaste Anivex Solution! I want to discuss a new software project.')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#0B1F3A]/8 text-[#0B1F3A] hover:border-[#15803D] transition-colors"
@@ -286,12 +288,12 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                   </div>
                   <div>
                     <span className="text-[10px] font-bold text-[#15803D] block uppercase">WhatsApp Direct</span>
-                    <span className="text-xs font-bold text-[#0B1F3A]">{rawPhone}</span>
+                    <span className="text-xs font-bold text-[#0B1F3A]">{phone}</span>
                   </div>
                 </a>
 
                 <a
-                  href={`tel:${rawPhone.replace(/\s+/g, '')}`}
+                  href={phoneTel}
                   className="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#0B1F3A]/8 text-[#0B1F3A] hover:border-[#F97316] transition-colors"
                 >
                   <div className="p-2 rounded-lg bg-[#F97316]/10 text-[#F97316]">
@@ -299,12 +301,12 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                   </div>
                   <div>
                     <span className="text-[10px] font-bold text-[#0B1F3A]/60 block uppercase">Phone Support</span>
-                    <span className="text-xs font-bold text-[#0B1F3A]">{rawPhone}</span>
+                    <span className="text-xs font-bold text-[#0B1F3A]">{phone}</span>
                   </div>
                 </a>
 
                 <a
-                  href={`mailto:${companyInfo?.businessEmail || 'anivexsolution@gmail.com'}`}
+                  href={`mailto:${email}`}
                   className="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#0B1F3A]/8 text-[#0B1F3A] hover:border-[#0B1F3A] transition-colors"
                 >
                   <div className="p-2 rounded-lg bg-[#0B1F3A]/5 text-[#0B1F3A]">
@@ -312,7 +314,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                   </div>
                   <div>
                     <span className="text-[10px] font-bold text-[#0B1F3A]/60 block uppercase">Email</span>
-                    <span className="text-xs font-bold text-[#0B1F3A]">{companyInfo?.businessEmail || 'anivexsolution@gmail.com'}</span>
+                    <span className="text-xs font-bold text-[#0B1F3A]">{email}</span>
                   </div>
                 </a>
               </div>

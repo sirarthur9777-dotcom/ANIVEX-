@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowUp, Lock, MessageCircle, Phone, Mail, MapPin } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { formatWhatsAppUrl, formatPhoneTel } from '../services/websiteSettings';
 
 interface FooterProps {
   onNavigateToPrivacy?: () => void;
@@ -8,10 +9,11 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateToTerms }) => {
-  const { companyInfo, socialLinks } = useCms();
-  const rawPhone = companyInfo?.phone || '+91 98765 43210';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
+  const { companyInfo, websiteSettings, socialLinks } = useCms();
+  const phone = websiteSettings?.phone || companyInfo?.phone || '';
+  const email = websiteSettings?.email || companyInfo?.businessEmail || '';
+  const whatsappUrl = formatWhatsAppUrl(websiteSettings?.whatsapp || phone, 'Namaste Anivex Solution!');
+  const phoneTel = formatPhoneTel(phone);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -79,7 +81,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
 
             <div className="flex items-center gap-3 pt-2">
               <a
-                href={`https://wa.me/${phoneToUse}?text=${encodeURIComponent('Namaste Anivex Solution!')}`}
+                href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#15803D] hover:bg-[#166534] text-white text-xs font-semibold shadow-xs transition-colors"
@@ -89,11 +91,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
               </a>
 
               <a
-                href={`tel:${rawPhone.replace(/\s+/g, '')}`}
+                href={phoneTel}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-medium transition-colors"
               >
                 <Phone className="w-3.5 h-3.5 text-[#F97316]" />
-                <span>{rawPhone}</span>
+                <span>{phone}</span>
               </a>
             </div>
           </div>
@@ -132,13 +134,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
             <ul className="space-y-2.5 text-xs">
               <li className="flex items-center gap-1.5 text-slate-300/80">
                 <Mail className="w-3.5 h-3.5 text-[#F97316]" />
-                <a href={`mailto:${companyInfo.businessEmail || 'anivexsolution@gmail.com'}`} className="hover:text-white">
-                  {companyInfo.businessEmail || 'anivexsolution@gmail.com'}
+                <a href={`mailto:${email}`} className="hover:text-white">
+                  {email}
                 </a>
               </li>
               <li className="flex items-center gap-1.5 text-slate-300/80">
                 <MapPin className="w-3.5 h-3.5 text-[#15803D]" />
-                <span>Bengaluru & India · Worldwide Delivery</span>
+                <span>{websiteSettings?.headquarters || 'Lucknow, Uttar Pradesh, India · Worldwide Delivery'}</span>
               </li>
               <li>
                 <a

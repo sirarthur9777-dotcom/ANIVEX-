@@ -2,16 +2,15 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Check, ArrowRight, MessageCircle, ShieldCheck } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { formatWhatsAppUrl } from '../services/websiteSettings';
 
 interface PricingPackagesProps {
   onSelectPackage?: (packageName: string, budgetRange: string) => void;
 }
 
 export const PricingPackages: React.FC<PricingPackagesProps> = ({ onSelectPackage }) => {
-  const { companyInfo } = useCms();
-  const rawPhone = companyInfo?.phone || '+91 98765 43210';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
+  const { companyInfo, websiteSettings } = useCms();
+  const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
 
   const packages = [
     {
@@ -107,7 +106,7 @@ export const PricingPackages: React.FC<PricingPackagesProps> = ({ onSelectPackag
 
   const handleWhatsappInquiry = (pkgName: string) => {
     const text = `Namaste Anivex Solution! I am interested in the ${pkgName} package. Please share a detailed quotation.`;
-    window.open(`https://wa.me/${phoneToUse}?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(formatWhatsAppUrl(phone, text), '_blank');
   };
 
   return (

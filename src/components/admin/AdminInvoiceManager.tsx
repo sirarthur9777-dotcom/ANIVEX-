@@ -309,7 +309,7 @@ export const AdminInvoiceManager: React.FC = () => {
     setCurrency(inv.currency || 'INR');
     setBillerName(inv.billerName || 'Anivex Solution');
     setBillerAddress(inv.billerAddress || 'Jaunpur, Uttar Pradesh, India');
-    setBillerEmail(inv.billerEmail || 'anivexsolution@gmail.com');
+    setBillerEmail(inv.billerEmail || '');
     setBillerPhone(inv.billerPhone || '+91 7985668826');
     setBillerTaxId(inv.billerTaxId || 'GSTIN: 27AABCA1234F1Z0');
     setClientName(inv.clientName);
@@ -712,7 +712,7 @@ export const AdminInvoiceManager: React.FC = () => {
                         type="text"
                         value={clientPhone}
                         onChange={(e) => setClientPhone(e.target.value)}
-                        placeholder="+91 98765 00000"
+                        placeholder="+91 10-digit mobile number"
                         className="w-full bg-[#0B0F16] border border-white/10 rounded-lg p-2 text-white"
                       />
                     </div>
@@ -1041,7 +1041,7 @@ export const AdminInvoiceManager: React.FC = () => {
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Mail className="w-3 h-3 text-[#F5C85B] shrink-0" />
-                        <span className="truncate">{selectedInvoiceForView.billerEmail || 'anivexsolution@gmail.com'}</span>
+                        <span className="truncate">{selectedInvoiceForView.billerEmail || ''}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Phone className="w-3 h-3 text-[#F5C85B] shrink-0" />

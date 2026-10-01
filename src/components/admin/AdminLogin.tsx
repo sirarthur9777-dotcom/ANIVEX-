@@ -90,7 +90,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
             {/* Admin Email */}
             <div>
               <label className="block text-xs font-bold text-[#0B1F3A] uppercase mb-1.5">
-                Administrator Email / ID
+                Administrator Email
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-[#0B1F3A]/40 absolute left-3.5 top-3.5" />
@@ -99,7 +99,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@anivex.com or Admin ID"
+                  placeholder="your Firebase admin email"
                   className="w-full bg-[#FFFDF7] border border-[#0B1F3A]/15 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-[#0B1F3A] placeholder:text-[#0B1F3A]/40 focus:outline-none focus:border-[#F97316] transition-colors"
                 />
               </div>
@@ -133,13 +133,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Quick Demo Hint */}
-          <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
-            <p className="text-[11px] text-[#0B1F3A]/70">
-              Demo access: <strong className="font-mono text-[#0B1F3A]">admin</strong> / <strong className="font-mono text-[#0B1F3A]">anivex123</strong>
-            </p>
-          </div>
 
           <div className="pt-2 border-t border-[#0B1F3A]/10 text-center">
             <a href="/" className="text-xs text-[#0B1F3A]/60 hover:text-[#0B1F3A] transition-colors">

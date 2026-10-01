@@ -1,12 +1,17 @@
 import React, { useEffect } from 'react';
 import { ArrowLeft, FileText, CheckCircle2, ShieldCheck, Mail, Scale } from 'lucide-react';
 import { Footer } from './Footer';
+import { useCms } from '../context/CmsContext';
 
 interface TermsAndConditionsPageProps {
   onBackToHome: () => void;
 }
 
 export const TermsAndConditionsPage: React.FC<TermsAndConditionsPageProps> = ({ onBackToHome }) => {
+  const { websiteSettings, companyInfo } = useCms();
+  const phone = websiteSettings?.phone || companyInfo?.phone || '';
+  const email = websiteSettings?.email || companyInfo?.businessEmail || '';
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     document.title = "Terms & Conditions | Anivex Solution";
@@ -140,10 +145,10 @@ export const TermsAndConditionsPage: React.FC<TermsAndConditionsPageProps> = ({ 
               For contractual inquiries, master service agreements, or formal legal notices, please contact:
             </p>
             <div className="pt-2 text-xs space-y-1">
-              <p><strong>Entity:</strong> Anivex Solution</p>
+              <p><strong>Entity:</strong> {websiteSettings?.companyName || 'Anivex Solution'}</p>
               <p><strong>Lead Architect:</strong> Krishndas Chauhan</p>
-              <p><strong>Email:</strong> <a href="mailto:anivexsolution@gmail.com" className="text-[#F97316] font-semibold underline">anivexsolution@gmail.com</a></p>
-              <p><strong>Direct WhatsApp:</strong> +91 98765 43210</p>
+              <p><strong>Email:</strong> <a href={`mailto:${email}`} className="text-[#F97316] font-semibold underline">{email}</a></p>
+              <p><strong>Direct WhatsApp:</strong> {phone}</p>
               <p><strong>Location:</strong> India</p>
             </div>
           </section>

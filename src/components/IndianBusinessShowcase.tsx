@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Globe, Smartphone, Receipt, CheckCircle2, MessageCircle, PhoneCall, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { useCms } from '../context/CmsContext';
+import { formatWhatsAppUrl } from '../services/websiteSettings';
 
 export const IndianBusinessShowcase: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'web' | 'mobile' | 'billing'>('web');
+  const { websiteSettings, companyInfo } = useCms();
 
-  const whatsappNumber = '919876543210';
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+  const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
+  const whatsappUrl = formatWhatsAppUrl(
+    phone,
     'Namaste Anivex Solution! I want to discuss a new software/website project for my business.'
-  )}`;
+  );
 
   return (
     <div className="relative w-full max-w-lg mx-auto">

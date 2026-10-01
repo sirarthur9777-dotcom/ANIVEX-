@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { formatWhatsAppUrl } from '../services/websiteSettings';
 
 export const FloatingWhatsApp: React.FC = () => {
   const [showTooltip, setShowTooltip] = useState(true);
-  const { companyInfo } = useCms();
+  const { companyInfo, websiteSettings } = useCms();
 
-  const rawPhone = companyInfo?.phone || '+91 98765 43210';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
-
+  const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
   const defaultMessage = 'Namaste Anivex Solution! I am interested in discussing a website/software project.';
-  const whatsappUrl = `https://wa.me/${phoneToUse}?text=${encodeURIComponent(defaultMessage)}`;
+  const whatsappUrl = formatWhatsAppUrl(phone, defaultMessage);
 
   return (
     <aside aria-label="WhatsApp Contact" className="fixed bottom-6 right-6 z-50 flex items-end flex-col gap-2">

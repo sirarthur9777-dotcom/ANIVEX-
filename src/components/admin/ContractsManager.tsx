@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 export const ContractsManager: React.FC = () => {
-  const { contracts, clients, addContract, updateContract, deleteContract } = useCms();
+  const { contracts, clients, websiteSettings, companyInfo, addContract, updateContract, deleteContract } = useCms();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
@@ -729,9 +729,9 @@ export const ContractsManager: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/10 text-xs">
                 <div>
                   <span className="font-bold uppercase text-[10px] text-[#0B1F3A]/50 block mb-1">SERVICE PROVIDER:</span>
-                  <h4 className="font-bold text-sm text-[#0B1F3A]">Anivex Solution</h4>
-                  <p className="text-[#0B1F3A]/70">Technology Engineering Studio, India</p>
-                  <p className="text-[#0B1F3A]/70">Contact: anivexsolution@gmail.com | +91 98765 43210</p>
+                  <h4 className="font-bold text-sm text-[#0B1F3A]">{websiteSettings?.companyName || 'Anivex Solution'}</h4>
+                  <p className="text-[#0B1F3A]/70">{websiteSettings?.address || 'Technology Engineering Studio, India'}</p>
+                  <p className="text-[#0B1F3A]/70">Contact: {websiteSettings?.email || companyInfo?.businessEmail || ''} | {websiteSettings?.phone || companyInfo?.phone || ''}</p>
                 </div>
 
                 <div>

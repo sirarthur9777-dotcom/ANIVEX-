@@ -2,26 +2,26 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, MessageCircle, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { formatWhatsAppUrl } from '../services/websiteSettings';
 
 interface CTASectionProps {
   onStartProject?: () => void;
 }
 
 export const CTASection: React.FC<CTASectionProps> = ({ onStartProject }) => {
-  const { siteContent, companyInfo } = useCms();
+  const { siteContent, companyInfo, websiteSettings } = useCms();
 
   const heading = siteContent.ctaHeading || "Let's Build Something That Matters.";
   const subtitle = siteContent.ctaSubtitle || "Whether you need a custom software platform, high-converting web application, or enterprise ERP, we are ready to build it with you.";
   const primaryText = siteContent.primaryCtaText || "Start a Conversation →";
   const secondaryText = siteContent.secondaryCtaText || "Chat on WhatsApp";
 
-  const rawPhone = companyInfo?.phone || '+91 98765 43210';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
+  const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
 
-  const whatsappUrl = `https://wa.me/${phoneToUse}?text=${encodeURIComponent(
+  const whatsappUrl = formatWhatsAppUrl(
+    phone,
     'Namaste Anivex Solution! I have an upcoming software project and would like to discuss it.'
-  )}`;
+  );
 
   const handleScrollToContact = () => {
     const el = document.getElementById('contact');

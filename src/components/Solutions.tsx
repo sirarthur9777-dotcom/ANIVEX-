@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Building2, Rocket, ShieldCheck, UserCheck, ArrowRight, CheckCircle2, MessageCircle } from 'lucide-react';
 import { SOLUTIONS } from '../data/companyData';
 import { useCms } from '../context/CmsContext';
+import { formatWhatsAppUrl } from '../services/websiteSettings';
 
 const iconMap: Record<string, React.ReactNode> = {
   Building2: <Building2 className="w-5 h-5 text-[#F59E0B]" />,
@@ -16,10 +17,8 @@ interface SolutionsProps {
 }
 
 export const Solutions: React.FC<SolutionsProps> = ({ onSelectSolution }) => {
-  const { companyInfo, solutions: cmsSolutions } = useCms();
-  const rawPhone = companyInfo?.phone || '+91 98765 43210';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
+  const { companyInfo, websiteSettings, solutions: cmsSolutions } = useCms();
+  const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
 
   const activeSolutions = (cmsSolutions && cmsSolutions.length > 0)
     ? cmsSolutions.filter(s => s.published !== false)
@@ -35,8 +34,8 @@ export const Solutions: React.FC<SolutionsProps> = ({ onSelectSolution }) => {
   };
 
   const handleWhatsappSolution = (title: string) => {
-    const text = `Namaste ANIVEX! I want to discuss a tailored solution: "${title}".`;
-    window.open(`https://wa.me/${phoneToUse}?text=${encodeURIComponent(text)}`, '_blank');
+    const text = `Namaste Anivex Solution! I want to discuss a tailored solution: "${title}".`;
+    window.open(formatWhatsAppUrl(phone, text), '_blank');
   };
 
   return (

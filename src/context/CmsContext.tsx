@@ -1,1244 +1,602 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
   collection,
-  doc,
-  getDocs,
-  setDoc,
-  addDoc,
-  updateDoc,
   deleteDoc,
-  onSnapshot
+  doc,
+  getDoc,
+  getDocs,
+  writeBatch,
+  onSnapshot,
+  setDoc,
+  updateDoc,
 } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from '../lib/firebase';
+import { isAdminUser } from '../lib/adminAuthorization';
 import {
-  SiteContent,
-  ServiceCMS,
-  ProductCMS,
-  SolutionCMS,
-  ProjectCMS,
-  BuiltByAnivexItem,
-  CompanyInfo,
-  PaymentSettings,
-  SocialLinks,
-  ContactEnquiry,
-  AdminNotification,
-  AdminActivityLog,
-  MediaItem,
-  InvoiceRecord,
-  TestimonialCMS,
-  FaqCMS,
-  ClientRecord,
-  ContractRecord,
-  QuotationRecord
+  WebsiteSettings,
+  DEFAULT_WEBSITE_SETTINGS,
+  updateWebsiteSettings as updateWebsiteSettingsService,
+} from '../services/websiteSettings';
+import {
+  SiteContent, ServiceCMS, ProductCMS, SolutionCMS, ProjectCMS, BuiltByAnivexItem,
+  CompanyInfo, PaymentSettings, SocialLinks, ContactEnquiry, AdminNotification,
+  AdminActivityLog, MediaItem, InvoiceRecord, TestimonialCMS, FaqCMS, ClientRecord,
+  ContractRecord, QuotationRecord,
 } from '../types/cms';
 import {
-  initialSiteContent,
-  initialServices,
-  initialProducts,
-  initialSolutions,
-  initialProjects,
-  initialBuiltByAnivex,
-  initialCompanyInfo,
-  initialPaymentSettings,
-  initialSocialLinks,
-  initialContactEnquiries,
-  initialNotifications,
-  initialActivityLogs,
-  initialMediaItems,
-  initialInvoices,
-  initialNavbar,
-  initialTrustStats,
-  initialWhyAnivex,
-  initialTestimonials,
-  initialFaqs,
-  initialClients,
-  initialContracts,
-  initialQuotations
+  initialSiteContent, initialServices, initialProducts, initialSolutions,
+  initialProjects, initialBuiltByAnivex, initialCompanyInfo, initialPaymentSettings,
+  initialSocialLinks, initialContactEnquiries, initialNotifications, initialActivityLogs,
+  initialMediaItems, initialTestimonials, initialFaqs, initialClients, initialContracts,
+  initialQuotations,
 } from '../data/initialCmsData';
 
-interface ToastState {
-  type: 'success' | 'error' | 'info';
-  message: string;
-}
+interface ToastState { type: 'success' | 'error' | 'info'; message: string; }
 
 interface CmsContextType {
-  siteContent: SiteContent;
-  services: ServiceCMS[];
-  products: ProductCMS[];
-  solutions: SolutionCMS[];
-  projects: ProjectCMS[];
-  builtByAnivex: BuiltByAnivexItem[];
-  testimonials: TestimonialCMS[];
-  faqs: FaqCMS[];
-  clients: ClientRecord[];
-  contracts: ContractRecord[];
-  quotations: QuotationRecord[];
-  companyInfo: CompanyInfo;
-  paymentSettings: PaymentSettings;
-  socialLinks: SocialLinks;
-  contactEnquiries: ContactEnquiry[];
-  notifications: AdminNotification[];
-  activityLogs: AdminActivityLog[];
-  mediaItems: MediaItem[];
-  invoices: InvoiceRecord[];
-  isLoading: boolean;
-  toast: ToastState | null;
+  siteContent: SiteContent; services: ServiceCMS[]; products: ProductCMS[];
+  solutions: SolutionCMS[]; projects: ProjectCMS[]; builtByAnivex: BuiltByAnivexItem[];
+  testimonials: TestimonialCMS[]; faqs: FaqCMS[]; clients: ClientRecord[];
+  contracts: ContractRecord[]; quotations: QuotationRecord[]; companyInfo: CompanyInfo;
+  websiteSettings: WebsiteSettings; isLoadingSettings: boolean; settingsError: string | null;
+  paymentSettings: PaymentSettings; socialLinks: SocialLinks; contactEnquiries: ContactEnquiry[];
+  notifications: AdminNotification[]; activityLogs: AdminActivityLog[]; mediaItems: MediaItem[];
+  invoices: InvoiceRecord[]; isLoading: boolean; toast: ToastState | null;
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
-
-  // Site Content
+  updateWebsiteSettings: (data: Partial<WebsiteSettings>) => Promise<void>;
   updateSiteContent: (data: Partial<SiteContent>) => Promise<void>;
-
-  // Services
   addService: (data: Omit<ServiceCMS, 'id'>) => Promise<void>;
   updateService: (id: string, data: Partial<ServiceCMS>) => Promise<void>;
   deleteService: (id: string) => Promise<void>;
-
-  // Products
   addProduct: (data: Omit<ProductCMS, 'id'>) => Promise<void>;
   updateProduct: (id: string, data: Partial<ProductCMS>) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
-
-  // Solutions
   addSolution: (data: Omit<SolutionCMS, 'id'>) => Promise<void>;
   updateSolution: (id: string, data: Partial<SolutionCMS>) => Promise<void>;
   deleteSolution: (id: string) => Promise<void>;
-
-  // Projects
   addProject: (data: Omit<ProjectCMS, 'id'>) => Promise<void>;
   updateProject: (id: string, data: Partial<ProjectCMS>) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
-
-  // Built By ANIVEX
   addBuiltByAnivex: (data: Omit<BuiltByAnivexItem, 'id'>) => Promise<void>;
   updateBuiltByAnivex: (id: string, data: Partial<BuiltByAnivexItem>) => Promise<void>;
   deleteBuiltByAnivex: (id: string) => Promise<void>;
-
-  // Testimonials
   addTestimonial: (data: Omit<TestimonialCMS, 'id'>) => Promise<void>;
   updateTestimonial: (id: string, data: Partial<TestimonialCMS>) => Promise<void>;
   deleteTestimonial: (id: string) => Promise<void>;
-
-  // FAQs
   addFaq: (data: Omit<FaqCMS, 'id'>) => Promise<void>;
   updateFaq: (id: string, data: Partial<FaqCMS>) => Promise<void>;
   deleteFaq: (id: string) => Promise<void>;
-
-  // Clients
   addClient: (data: Omit<ClientRecord, 'id' | 'createdAt'>) => Promise<string>;
   updateClient: (id: string, data: Partial<ClientRecord>) => Promise<void>;
   deleteClient: (id: string) => Promise<void>;
-
-  // Contracts
   addContract: (data: Omit<ContractRecord, 'id' | 'createdAt'>) => Promise<string>;
   updateContract: (id: string, data: Partial<ContractRecord>) => Promise<void>;
   deleteContract: (id: string) => Promise<void>;
-
-  // Quotations
   addQuotation: (data: Omit<QuotationRecord, 'id' | 'createdAt'>) => Promise<string>;
   updateQuotation: (id: string, data: Partial<QuotationRecord>) => Promise<void>;
   deleteQuotation: (id: string) => Promise<void>;
-
-  // Company Info, Payment Settings & Socials
   updateCompanyInfo: (data: CompanyInfo) => Promise<void>;
   updatePaymentSettings: (data: PaymentSettings) => Promise<void>;
   updateSocialLinks: (data: SocialLinks) => Promise<void>;
-
-  // Enquiries
-  submitContactEnquiry: (data: {
-    fullName: string;
-    email: string;
-    phone?: string;
-    company?: string;
-    projectType: string;
-    budgetRange: string;
-    description: string;
-  }) => Promise<{ success: boolean; message: string; referenceId?: string }>;
+  submitContactEnquiry: (data: { fullName: string; email: string; phone?: string; company?: string; projectType: string; budgetRange: string; description: string; }) => Promise<{ success: boolean; message: string; referenceId?: string }>;
   markEnquiryRead: (id: string, read: boolean) => Promise<void>;
   updateEnquiryStatus: (id: string, status: ContactEnquiry['status']) => Promise<void>;
   deleteEnquiry: (id: string) => Promise<void>;
-
-  // Notifications
   markNotificationRead: (id: string) => Promise<void>;
   deleteNotification: (id: string) => Promise<void>;
-
-  // Media
   addMedia: (data: Omit<MediaItem, 'id'>) => Promise<void>;
   deleteMedia: (id: string) => Promise<void>;
-
-  // Invoices
   addInvoice: (data: Omit<InvoiceRecord, 'id' | 'createdAt'>) => Promise<string>;
   updateInvoice: (id: string, data: Partial<InvoiceRecord>) => Promise<void>;
   deleteInvoice: (id: string) => Promise<void>;
-
-  // Log
   logActivity: (action: string, targetItem: string) => Promise<void>;
 }
 
 const CmsContext = createContext<CmsContextType | undefined>(undefined);
 
+const sortByOrder = <T extends { displayOrder?: number }>(items: T[]) =>
+  [...items].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+
+const sortByDateDesc = <T extends { createdAt?: string; submittedAt?: string; timestamp?: string }>(items: T[]) =>
+  [...items].sort((a, b) => {
+    const av = a.createdAt || a.submittedAt || a.timestamp || '';
+    const bv = b.createdAt || b.submittedAt || b.timestamp || '';
+    return new Date(bv).getTime() - new Date(av).getTime();
+  });
+
 export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [siteContent, setSiteContent] = useState<SiteContent>(() => {
-    const local = localStorage.getItem('anivex_site_content');
-    if (local) {
-      try {
-        const parsed = JSON.parse(local);
-        return {
-          ...initialSiteContent,
-          ...parsed,
-          heroBadge: parsed.heroBadge || initialSiteContent.heroBadge,
-          heroHeading: parsed.heroHeading || initialSiteContent.heroHeading,
-          heroDescription: parsed.heroDescription || initialSiteContent.heroDescription,
-          heroImage: parsed.heroImage || initialSiteContent.heroImage,
-          navbar: parsed.navbar || initialNavbar,
-          trustStats: parsed.trustStats && parsed.trustStats.length > 0 ? parsed.trustStats : initialTrustStats,
-          whyAnivex: parsed.whyAnivex || initialWhyAnivex,
-        };
-      } catch (e) {
-        return initialSiteContent;
-      }
-    }
-    return initialSiteContent;
-  });
-
-  const [services, setServices] = useState<ServiceCMS[]>(() => {
-    const local = localStorage.getItem('anivex_services');
-    return local ? JSON.parse(local) : initialServices;
-  });
-
-  const [products, setProducts] = useState<ProductCMS[]>(() => {
-    const local = localStorage.getItem('anivex_products');
-    return local ? JSON.parse(local) : initialProducts;
-  });
-
-  const [solutions, setSolutions] = useState<SolutionCMS[]>(() => {
-    const local = localStorage.getItem('anivex_solutions');
-    return local ? JSON.parse(local) : initialSolutions;
-  });
-
-  const [projects, setProjects] = useState<ProjectCMS[]>(() => {
-    const local = localStorage.getItem('anivex_projects');
-    return local ? JSON.parse(local) : initialProjects;
-  });
-
-  const [builtByAnivex, setBuiltByAnivex] = useState<BuiltByAnivexItem[]>(() => {
-    const local = localStorage.getItem('anivex_built_by');
-    return local ? JSON.parse(local) : initialBuiltByAnivex;
-  });
-
-  const [testimonials, setTestimonials] = useState<TestimonialCMS[]>(() => {
-    const local = localStorage.getItem('anivex_testimonials');
-    return local ? JSON.parse(local) : initialTestimonials;
-  });
-
-  const [faqs, setFaqs] = useState<FaqCMS[]>(() => {
-    const local = localStorage.getItem('anivex_faqs');
-    return local ? JSON.parse(local) : initialFaqs;
-  });
-
-  const [companyInfo, setCompanyInfo] = useState<CompanyInfo>(() => {
-    const local = localStorage.getItem('anivex_company_info');
-    return local ? JSON.parse(local) : initialCompanyInfo;
-  });
-
-  const [paymentSettings, setPaymentSettings] = useState<PaymentSettings>(() => {
-    const local = localStorage.getItem('anivex_payment_settings');
-    return local ? JSON.parse(local) : initialPaymentSettings;
-  });
-
-  const [socialLinks, setSocialLinks] = useState<SocialLinks>(() => {
-    const local = localStorage.getItem('anivex_social_links');
-    return local ? JSON.parse(local) : initialSocialLinks;
-  });
-
-  const [contactEnquiries, setContactEnquiries] = useState<ContactEnquiry[]>(() => {
-    const local = localStorage.getItem('anivex_enquiries');
-    return local ? JSON.parse(local) : initialContactEnquiries;
-  });
-
-  const [notifications, setNotifications] = useState<AdminNotification[]>(() => {
-    const local = localStorage.getItem('anivex_notifications');
-    return local ? JSON.parse(local) : initialNotifications;
-  });
-
-  const [activityLogs, setActivityLogs] = useState<AdminActivityLog[]>(() => {
-    const local = localStorage.getItem('anivex_activity_logs');
-    return local ? JSON.parse(local) : initialActivityLogs;
-  });
-
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>(() => {
-    const local = localStorage.getItem('anivex_media');
-    return local ? JSON.parse(local) : initialMediaItems;
-  });
-
-  const [invoices, setInvoices] = useState<InvoiceRecord[]>(() => {
-    const local = localStorage.getItem('anivex_invoices');
-    return local ? JSON.parse(local) : initialInvoices;
-  });
-
-  const [clients, setClients] = useState<ClientRecord[]>(() => {
-    const local = localStorage.getItem('anivex_clients');
-    return local ? JSON.parse(local) : initialClients;
-  });
-
-  const [contracts, setContracts] = useState<ContractRecord[]>(() => {
-    const local = localStorage.getItem('anivex_contracts');
-    return local ? JSON.parse(local) : initialContracts;
-  });
-
-  const [quotations, setQuotations] = useState<QuotationRecord[]>(() => {
-    const local = localStorage.getItem('anivex_quotations');
-    return local ? JSON.parse(local) : initialQuotations;
-  });
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [siteContent, setSiteContent] = useState(initialSiteContent);
+  const [services, setServices] = useState<ServiceCMS[]>(initialServices);
+  const [products, setProducts] = useState<ProductCMS[]>(initialProducts);
+  const [solutions, setSolutions] = useState<SolutionCMS[]>(initialSolutions);
+  const [projects, setProjects] = useState<ProjectCMS[]>(initialProjects);
+  const [builtByAnivex, setBuiltByAnivex] = useState<BuiltByAnivexItem[]>(initialBuiltByAnivex);
+  const [testimonials, setTestimonials] = useState<TestimonialCMS[]>(initialTestimonials);
+  const [faqs, setFaqs] = useState<FaqCMS[]>(initialFaqs);
+  const [clients, setClients] = useState<ClientRecord[]>([]);
+  const [contracts, setContracts] = useState<ContractRecord[]>([]);
+  const [quotations, setQuotations] = useState<QuotationRecord[]>([]);
+  const [companyInfo, setCompanyInfo] = useState<CompanyInfo>(initialCompanyInfo);
+  const [websiteSettings, setWebsiteSettings] = useState<WebsiteSettings>(DEFAULT_WEBSITE_SETTINGS);
+  const [isLoadingSettings, setIsLoadingSettings] = useState(true);
+  const [settingsError, setSettingsError] = useState<string | null>(null);
+  const [paymentSettings, setPaymentSettings] = useState<PaymentSettings>(initialPaymentSettings);
+  const [socialLinks, setSocialLinks] = useState<SocialLinks>(initialSocialLinks);
+  const [contactEnquiries, setContactEnquiries] = useState<ContactEnquiry[]>([]);
+  const [notifications, setNotifications] = useState<AdminNotification[]>([]);
+  const [activityLogs, setActivityLogs] = useState<AdminActivityLog[]>([]);
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>(initialMediaItems);
+  const [invoices, setInvoices] = useState<InvoiceRecord[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState<ToastState | null>(null);
 
-  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+  const showToast = (message: string, type: ToastState['type'] = 'success') => {
     setToast({ message, type });
-    setTimeout(() => {
-      setToast(null);
-    }, 4000);
+    window.setTimeout(() => setToast(null), 4000);
   };
 
-  // Sync to local storage for instant responsiveness
   useEffect(() => {
-    localStorage.setItem('anivex_site_content', JSON.stringify(siteContent));
-  }, [siteContent]);
+    const unsubs: Array<() => void> = [];
 
-  useEffect(() => {
-    localStorage.setItem('anivex_services', JSON.stringify(services));
-  }, [services]);
+    const watchDoc = <T,>(collectionName: string, id: string, setter: React.Dispatch<React.SetStateAction<T>>, mapper: (data: any) => T) => {
+      unsubs.push(onSnapshot(doc(db, collectionName, id), (snap) => {
+        if (snap.exists()) setter(mapper(snap.data()));
+      }, (error) => console.warn(`Firestore ${collectionName}/${id} sync:`, error)));
+    };
 
-  useEffect(() => {
-    localStorage.setItem('anivex_products', JSON.stringify(products));
-  }, [products]);
+    const watchCollection = <T,>(collectionName: string, setter: React.Dispatch<React.SetStateAction<T[]>>, mapper: (id: string, data: any) => T, sort?: (items: T[]) => T[]) => {
+      unsubs.push(onSnapshot(collection(db, collectionName), (snap) => {
+        const items = snap.docs.map((d) => mapper(d.id, d.data()));
+        setter(sort ? sort(items) : items);
+      }, (error) => console.warn(`Firestore ${collectionName} sync:`, error)));
+    };
 
-  useEffect(() => {
-    localStorage.setItem('anivex_solutions', JSON.stringify(solutions));
-  }, [solutions]);
+    unsubs.push(onSnapshot(doc(db, 'websiteSettings', 'global'), (snap) => {
+      if (snap.exists()) {
+        const merged = { ...DEFAULT_WEBSITE_SETTINGS, ...(snap.data() as Partial<WebsiteSettings>) };
+        setWebsiteSettings(merged);
+        setCompanyInfo({
+          name: merged.companyName,
+          tagline: merged.tagline,
+          description: merged.description,
+          businessEmail: merged.email,
+          phone: merged.phone,
+          headquarters: merged.headquarters,
+          address: merged.address,
+          websiteUrl: merged.websiteUrl,
+          businessHours: merged.businessHours,
+          logoUrl: merged.logoUrl,
+        });
+      }
+      setIsLoadingSettings(false);
+      setSettingsError(null);
+    }, (error) => {
+      console.error('Failed to load website settings:', error);
+      setSettingsError(error.message || 'Failed to load website settings');
+      setIsLoadingSettings(false);
+    }));
 
-  useEffect(() => {
-    localStorage.setItem('anivex_projects', JSON.stringify(projects));
-  }, [projects]);
+    watchDoc<PaymentSettings>('paymentSettings', 'main', setPaymentSettings, (data) => data as PaymentSettings);
+    watchDoc<SocialLinks>('socialLinks', 'main', setSocialLinks, (data) => data as SocialLinks);
+    watchDoc<SiteContent>('siteContent', 'main', setSiteContent, (data) => ({ ...initialSiteContent, ...data }));
+    watchCollection<ServiceCMS>('services', setServices, (id, data) => ({ id, ...data } as ServiceCMS), sortByOrder);
+    watchCollection<ProductCMS>('products', setProducts, (id, data) => ({ id, ...data } as ProductCMS), sortByOrder);
+    watchCollection<SolutionCMS>('solutions', setSolutions, (id, data) => ({ id, ...data } as SolutionCMS), sortByOrder);
+    watchCollection<ProjectCMS>('projects', setProjects, (id, data) => ({ id, ...data } as ProjectCMS), sortByOrder);
+    watchCollection<BuiltByAnivexItem>('builtByAnivex', setBuiltByAnivex, (id, data) => ({ id, ...data } as BuiltByAnivexItem), sortByOrder);
+    watchCollection<TestimonialCMS>('testimonials', setTestimonials, (id, data) => ({ id, ...data } as TestimonialCMS), sortByOrder);
+    watchCollection<FaqCMS>('faqs', setFaqs, (id, data) => ({ id, ...data } as FaqCMS), sortByOrder);
+    watchCollection<MediaItem>('media', setMediaItems, (id, data) => ({ id, ...data } as MediaItem));
 
-  useEffect(() => {
-    localStorage.setItem('anivex_built_by', JSON.stringify(builtByAnivex));
-  }, [builtByAnivex]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_company_info', JSON.stringify(companyInfo));
-  }, [companyInfo]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_payment_settings', JSON.stringify(paymentSettings));
-  }, [paymentSettings]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_social_links', JSON.stringify(socialLinks));
-  }, [socialLinks]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_enquiries', JSON.stringify(contactEnquiries));
-  }, [contactEnquiries]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_notifications', JSON.stringify(notifications));
-  }, [notifications]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_activity_logs', JSON.stringify(activityLogs));
-  }, [activityLogs]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_media', JSON.stringify(mediaItems));
-  }, [mediaItems]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_invoices', JSON.stringify(invoices));
-  }, [invoices]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_testimonials', JSON.stringify(testimonials));
-  }, [testimonials]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_faqs', JSON.stringify(faqs));
-  }, [faqs]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_clients', JSON.stringify(clients));
-  }, [clients]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_contracts', JSON.stringify(contracts));
-  }, [contracts]);
-
-  useEffect(() => {
-    localStorage.setItem('anivex_quotations', JSON.stringify(quotations));
-  }, [quotations]);
-
-  // Firestore Real-Time Subscriptions
-  useEffect(() => {
-    try {
-      // Subscribe to companyInfo
-      const unsubCompany = onSnapshot(doc(db, 'companyInfo', 'main'), (snapshot) => {
-        if (snapshot.exists()) {
-          setCompanyInfo(snapshot.data() as CompanyInfo);
-        }
-      }, (err) => console.warn('Firestore companyInfo sync:', err));
-
-      // Subscribe to paymentSettings
-      const unsubPayment = onSnapshot(doc(db, 'paymentSettings', 'main'), (snapshot) => {
-        if (snapshot.exists()) {
-          setPaymentSettings(snapshot.data() as PaymentSettings);
-        }
-      }, (err) => console.warn('Firestore paymentSettings sync:', err));
-
-      // Subscribe to services
-      const unsubServices = onSnapshot(collection(db, 'services'), (snapshot) => {
-        if (!snapshot.empty) {
-          const list: ServiceCMS[] = [];
-          snapshot.forEach((d) => list.push({ id: d.id, ...d.data() } as ServiceCMS));
-          list.sort((a, b) => a.displayOrder - b.displayOrder);
-          setServices(list);
-        }
-      }, (err) => console.warn('Firestore services sync:', err));
-
-      // Subscribe to products
-      const unsubProducts = onSnapshot(collection(db, 'products'), (snapshot) => {
-        if (!snapshot.empty) {
-          const list: ProductCMS[] = [];
-          snapshot.forEach((d) => list.push({ id: d.id, ...d.data() } as ProductCMS));
-          list.sort((a, b) => a.displayOrder - b.displayOrder);
-          setProducts(list);
-        }
-      }, (err) => console.warn('Firestore products sync:', err));
-
-      // Subscribe to solutions
-      const unsubSolutions = onSnapshot(collection(db, 'solutions'), (snapshot) => {
-        if (!snapshot.empty) {
-          const list: SolutionCMS[] = [];
-          snapshot.forEach((d) => list.push({ id: d.id, ...d.data() } as SolutionCMS));
-          list.sort((a, b) => a.displayOrder - b.displayOrder);
-          setSolutions(list);
-        }
-      }, (err) => console.warn('Firestore solutions sync:', err));
-
-      // Subscribe to projects
-      const unsubProjects = onSnapshot(collection(db, 'projects'), (snapshot) => {
-        if (!snapshot.empty) {
-          const list: ProjectCMS[] = [];
-          snapshot.forEach((d) => list.push({ id: d.id, ...d.data() } as ProjectCMS));
-          list.sort((a, b) => a.displayOrder - b.displayOrder);
-          setProjects(list);
-        }
-      }, (err) => console.warn('Firestore projects sync:', err));
-
-      // Subscribe to contactEnquiries
-      const unsubEnquiries = onSnapshot(collection(db, 'contactEnquiries'), (snapshot) => {
-        if (!snapshot.empty) {
-          const list: ContactEnquiry[] = [];
-          snapshot.forEach((d) => list.push({ id: d.id, ...d.data() } as ContactEnquiry));
-          list.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
-          setContactEnquiries(list);
-        }
-      }, (err) => console.warn('Firestore enquiries sync:', err));
-
-      // Subscribe to notifications
-      const unsubNotifs = onSnapshot(collection(db, 'notifications'), (snapshot) => {
-        if (!snapshot.empty) {
-          const list: AdminNotification[] = [];
-          snapshot.forEach((d) => list.push({ id: d.id, ...d.data() } as AdminNotification));
-          list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-          setNotifications(list);
-        }
-      }, (err) => console.warn('Firestore notifications sync:', err));
-
-      // Subscribe to testimonials
-      const unsubTestimonials = onSnapshot(collection(db, 'testimonials'), (snapshot) => {
-        if (!snapshot.empty) {
-          const list: TestimonialCMS[] = [];
-          snapshot.forEach((d) => list.push({ id: d.id, ...d.data() } as TestimonialCMS));
-          list.sort((a, b) => a.displayOrder - b.displayOrder);
-          setTestimonials(list);
-        }
-      }, (err) => console.warn('Firestore testimonials sync:', err));
-
-      // Subscribe to faqs
-      const unsubFaqs = onSnapshot(collection(db, 'faqs'), (snapshot) => {
-        if (!snapshot.empty) {
-          const list: FaqCMS[] = [];
-          snapshot.forEach((d) => list.push({ id: d.id, ...d.data() } as FaqCMS));
-          list.sort((a, b) => a.displayOrder - b.displayOrder);
-          setFaqs(list);
-        }
-      }, (err) => console.warn('Firestore faqs sync:', err));
-
-      return () => {
-        unsubCompany();
-        unsubPayment();
-        unsubServices();
-        unsubProducts();
-        unsubSolutions();
-        unsubProjects();
-        unsubEnquiries();
-        unsubNotifs();
-        unsubTestimonials();
-        unsubFaqs();
-      };
-    } catch (e) {
-      console.warn('Firestore initialization fallback to local state:', e);
-    }
+    return () => unsubs.forEach((unsubscribe) => unsubscribe());
   }, []);
 
-  // Helper for Activity Logging
+  useEffect(() => {
+    let adminUnsubs: Array<() => void> = [];
+    let authUnsub: (() => void) | undefined;
+
+    authUnsub = onAuthStateChanged(auth, async (user) => {
+      adminUnsubs.forEach((unsubscribe) => unsubscribe());
+      adminUnsubs = [];
+      if (!user || !(await isAdminUser(user))) return;
+
+      // Seed the new Firebase project only when public CMS collections are empty/missing.
+      // Existing Firestore data is never overwritten.
+      const seedIfMissing = async () => {
+        const batch = writeBatch(db);
+        let writes = 0;
+
+        const seedDoc = async (collectionName: string, id: string, data: any) => {
+          const ref = doc(db, collectionName, id);
+          const snap = await getDoc(ref);
+          if (!snap.exists()) {
+            batch.set(ref, data);
+            writes += 1;
+          }
+        };
+
+        await seedDoc('websiteSettings', 'global', DEFAULT_WEBSITE_SETTINGS);
+        await seedDoc('siteContent', 'main', initialSiteContent);
+        await seedDoc('companyInfo', 'main', initialCompanyInfo);
+        await seedDoc('paymentSettings', 'main', initialPaymentSettings);
+        await seedDoc('socialLinks', 'main', initialSocialLinks);
+
+        const collections: Array<[string, any[]]> = [
+          ['services', initialServices], ['products', initialProducts], ['solutions', initialSolutions],
+          ['projects', initialProjects], ['builtByAnivex', initialBuiltByAnivex], ['testimonials', initialTestimonials],
+          ['faqs', initialFaqs], ['media', initialMediaItems],
+        ];
+        for (const [collectionName, items] of collections) {
+          const existing = await getDocs(collection(db, collectionName));
+          if (existing.empty) {
+            for (const item of items) {
+              batch.set(doc(db, collectionName, item.id), item);
+              writes += 1;
+            }
+          }
+        }
+
+        if (writes > 0) await batch.commit();
+      };
+
+      try {
+        await seedIfMissing();
+      } catch (error) {
+        console.warn('Initial Firestore seed skipped:', error);
+      }
+
+      const watchAdminCollection = <T,>(name: string, setter: React.Dispatch<React.SetStateAction<T[]>>, mapper: (id: string, data: any) => T, sort?: (items: T[]) => T[]) => {
+        adminUnsubs.push(onSnapshot(collection(db, name), (snap) => {
+          const items = snap.docs.map((d) => mapper(d.id, d.data()));
+          setter(sort ? sort(items) : items);
+        }, (error) => console.warn(`Firestore admin ${name} sync:`, error)));
+      };
+
+      watchAdminCollection<ContactEnquiry>('contactEnquiries', setContactEnquiries, (id, data) => ({ id, ...data } as ContactEnquiry), sortByDateDesc);
+      watchAdminCollection<AdminNotification>('notifications', setNotifications, (id, data) => ({ id, ...data } as AdminNotification), sortByDateDesc);
+      watchAdminCollection<AdminActivityLog>('activityLogs', setActivityLogs, (id, data) => ({ id, ...data } as AdminActivityLog), sortByDateDesc);
+      watchAdminCollection<InvoiceRecord>('invoices', setInvoices, (id, data) => ({ id, ...data } as InvoiceRecord), sortByDateDesc);
+      watchAdminCollection<ClientRecord>('clients', setClients, (id, data) => ({ id, ...data } as ClientRecord), sortByDateDesc);
+      watchAdminCollection<ContractRecord>('contracts', setContracts, (id, data) => ({ id, ...data } as ContractRecord), sortByDateDesc);
+      watchAdminCollection<QuotationRecord>('quotations', setQuotations, (id, data) => ({ id, ...data } as QuotationRecord), sortByDateDesc);
+    });
+
+    return () => {
+      authUnsub?.();
+      adminUnsubs.forEach((unsubscribe) => unsubscribe());
+    };
+  }, []);
+
   const logActivity = async (action: string, targetItem: string) => {
+    const user = auth.currentUser;
+    if (!user || !(await isAdminUser(user))) return;
     const newLog: AdminActivityLog = {
       id: `act-${Date.now()}`,
-      adminEmail: 'admin@anivex.com',
+      adminEmail: user.email || 'admin',
       action,
       targetItem,
-      timestamp: new Date().toISOString().replace('T', ' ').slice(0, 16),
+      timestamp: new Date().toISOString(),
     };
-    setActivityLogs((prev) => [newLog, ...prev]);
-
     try {
-      await addDoc(collection(db, 'activityLogs'), newLog);
-    } catch (e) {
-      // Local fallback
+      await setDoc(doc(db, 'activityLogs', newLog.id), newLog);
+    } catch (error) {
+      console.warn('Activity log failed (non-blocking):', error);
     }
   };
 
-  // Site Content Update
+  const commitSet = async (collectionName: string, id: string, data: any, merge = false) => {
+    await setDoc(doc(db, collectionName, id), data, merge ? { merge: true } : undefined);
+  };
+
+  const commitDelete = async (collectionName: string, id: string) => {
+    await deleteDoc(doc(db, collectionName, id));
+  };
+
   const updateSiteContent = async (data: Partial<SiteContent>) => {
-    const updated = { ...siteContent, ...data };
-    setSiteContent(updated);
-    showToast('Home & Site Content updated successfully!');
-    await logActivity('Updated Site Content', 'Home & About Sections');
-
+    setIsLoading(true);
     try {
-      await setDoc(doc(db, 'siteContent', 'main'), updated, { merge: true });
-    } catch (e) {
-      console.warn('Firestore siteContent update fallback:', e);
-    }
+      const updated = { ...siteContent, ...data };
+      await commitSet('siteContent', 'main', updated, true);
+      setSiteContent(updated);
+      showToast('Home & Site Content updated successfully!');
+      await logActivity('Updated Site Content', 'Home & About Sections');
+    } catch (error: any) {
+      showToast(`Failed to update site content: ${error.message}`, 'error');
+      throw error;
+    } finally { setIsLoading(false); }
   };
 
-  // Services
-  const addService = async (data: Omit<ServiceCMS, 'id'>) => {
-    const id = `srv-${Date.now()}`;
-    const newService: ServiceCMS = { id, ...data };
-    setServices((prev) => [...prev, newService]);
-    showToast(`Service "${data.title}" created successfully!`);
-    await logActivity('Added Service', data.title);
+  const makeCrud = <T extends { id: string }>(
+    collectionName: string,
+    state: T[],
+    setState: React.Dispatch<React.SetStateAction<T[]>>,
+    label: (data: any) => string,
+    prefix: string,
+  ) => ({
+    add: async (data: Omit<T, 'id'>) => {
+      setIsLoading(true);
+      const id = `${prefix}-${Date.now()}`;
+      const item = { id, ...data } as T;
+      try {
+        await commitSet(collectionName, id, item);
+        setState((prev) => [...prev, item]);
+        showToast(`${label(data)} added successfully!`);
+        await logActivity(`Added ${collectionName}`, label(data));
+      } catch (error: any) {
+        showToast(`Failed to save ${collectionName}: ${error.message}`, 'error');
+        throw error;
+      } finally { setIsLoading(false); }
+    },
+    update: async (id: string, data: Partial<T>) => {
+      setIsLoading(true);
+      try {
+        await commitSet(collectionName, id, data, true);
+        setState((prev) => prev.map((item) => item.id === id ? { ...item, ...data } : item));
+        showToast(`${collectionName} item updated successfully!`);
+        await logActivity(`Updated ${collectionName}`, label(data));
+      } catch (error: any) {
+        showToast(`Failed to update ${collectionName}: ${error.message}`, 'error');
+        throw error;
+      } finally { setIsLoading(false); }
+    },
+    remove: async (id: string) => {
+      setIsLoading(true);
+      const item = state.find((entry) => entry.id === id);
+      try {
+        await commitDelete(collectionName, id);
+        setState((prev) => prev.filter((entry) => entry.id !== id));
+        showToast(`${collectionName} item deleted.`);
+        await logActivity(`Deleted ${collectionName}`, label(item || { id }));
+      } catch (error: any) {
+        showToast(`Failed to delete ${collectionName}: ${error.message}`, 'error');
+        throw error;
+      } finally { setIsLoading(false); }
+    },
+  });
 
+  const servicesCrud = makeCrud<ServiceCMS>('services', services, setServices, (d) => d.title || d.id, 'srv');
+  const productsCrud = makeCrud<ProductCMS>('products', products, setProducts, (d) => d.name || d.id, 'prod');
+  const solutionsCrud = makeCrud<SolutionCMS>('solutions', solutions, setSolutions, (d) => d.title || d.id, 'sol');
+  const projectsCrud = makeCrud<ProjectCMS>('projects', projects, setProjects, (d) => d.name || d.id, 'proj');
+  const builtCrud = makeCrud<BuiltByAnivexItem>('builtByAnivex', builtByAnivex, setBuiltByAnivex, (d) => d.title || d.id, 'built');
+  const testimonialCrud = makeCrud<TestimonialCMS>('testimonials', testimonials, setTestimonials, (d) => d.customerName || d.id, 'test');
+  const faqCrud = makeCrud<FaqCMS>('faqs', faqs, setFaqs, (d) => d.question || d.id, 'faq');
+
+  const updateWebsiteSettings = async (data: Partial<WebsiteSettings>) => {
+    setIsLoading(true);
     try {
-      await setDoc(doc(db, 'services', id), newService);
-    } catch (e) {
-      console.warn('Firestore addService fallback:', e);
-    }
+      await updateWebsiteSettingsService(data);
+      setWebsiteSettings((prev) => ({ ...prev, ...data }));
+      setCompanyInfo((prev) => ({
+        ...prev,
+        name: data.companyName ?? prev.name,
+        phone: data.phone ?? prev.phone,
+        businessEmail: data.email ?? prev.businessEmail,
+        tagline: data.tagline ?? prev.tagline,
+        description: data.description ?? prev.description,
+        headquarters: data.headquarters ?? prev.headquarters,
+        address: data.address ?? prev.address,
+        websiteUrl: data.websiteUrl ?? prev.websiteUrl,
+        businessHours: data.businessHours ?? prev.businessHours,
+        logoUrl: data.logoUrl ?? prev.logoUrl,
+      }));
+      showToast('Website settings saved successfully in Firestore!');
+      await logActivity('Updated Website Settings', data.companyName || 'Global Settings');
+    } catch (error: any) {
+      showToast(`Failed to update settings: ${error.message}`, 'error');
+      throw error;
+    } finally { setIsLoading(false); }
   };
 
-  const updateService = async (id: string, data: Partial<ServiceCMS>) => {
-    setServices((prev) => prev.map((s) => (s.id === id ? { ...s, ...data } : s)));
-    showToast('Service updated successfully!');
-    await logActivity('Updated Service', data.title || id);
-
-    try {
-      await setDoc(doc(db, 'services', id), data, { merge: true });
-    } catch (e) {
-      console.warn('Firestore updateService fallback:', e);
-    }
-  };
-
-  const deleteService = async (id: string) => {
-    const item = services.find((s) => s.id === id);
-    setServices((prev) => prev.filter((s) => s.id !== id));
-    showToast('Service deleted.');
-    await logActivity('Deleted Service', item?.title || id);
-
-    try {
-      await deleteDoc(doc(db, 'services', id));
-    } catch (e) {
-      console.warn('Firestore deleteService fallback:', e);
-    }
-  };
-
-  // Products
-  const addProduct = async (data: Omit<ProductCMS, 'id'>) => {
-    const id = `prod-${Date.now()}`;
-    const newProd: ProductCMS = { id, ...data };
-    setProducts((prev) => [...prev, newProd]);
-    showToast(`Product "${data.name}" added successfully!`);
-    await logActivity('Added Product', data.name);
-
-    try {
-      await setDoc(doc(db, 'products', id), newProd);
-    } catch (e) {
-      console.warn('Firestore addProduct fallback:', e);
-    }
-  };
-
-  const updateProduct = async (id: string, data: Partial<ProductCMS>) => {
-    setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, ...data } : p)));
-    showToast('Product updated successfully!');
-    await logActivity('Updated Product', data.name || id);
-
-    try {
-      await setDoc(doc(db, 'products', id), data, { merge: true });
-    } catch (e) {
-      console.warn('Firestore updateProduct fallback:', e);
-    }
-  };
-
-  const deleteProduct = async (id: string) => {
-    const item = products.find((p) => p.id === id);
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-    showToast('Product deleted.');
-    await logActivity('Deleted Product', item?.name || id);
-
-    try {
-      await deleteDoc(doc(db, 'products', id));
-    } catch (e) {
-      console.warn('Firestore deleteProduct fallback:', e);
-    }
-  };
-
-  // Solutions
-  const addSolution = async (data: Omit<SolutionCMS, 'id'>) => {
-    const id = `sol-${Date.now()}`;
-    const newSol: SolutionCMS = { id, ...data };
-    setSolutions((prev) => [...prev, newSol]);
-    showToast(`Solution "${data.title}" added!`);
-    await logActivity('Added Solution', data.title);
-
-    try {
-      await setDoc(doc(db, 'solutions', id), newSol);
-    } catch (e) {
-      console.warn('Firestore addSolution fallback:', e);
-    }
-  };
-
-  const updateSolution = async (id: string, data: Partial<SolutionCMS>) => {
-    setSolutions((prev) => prev.map((s) => (s.id === id ? { ...s, ...data } : s)));
-    showToast('Solution updated!');
-    await logActivity('Updated Solution', data.title || id);
-
-    try {
-      await setDoc(doc(db, 'solutions', id), data, { merge: true });
-    } catch (e) {
-      console.warn('Firestore updateSolution fallback:', e);
-    }
-  };
-
-  const deleteSolution = async (id: string) => {
-    const item = solutions.find((s) => s.id === id);
-    setSolutions((prev) => prev.filter((s) => s.id !== id));
-    showToast('Solution removed.');
-    await logActivity('Deleted Solution', item?.title || id);
-
-    try {
-      await deleteDoc(doc(db, 'solutions', id));
-    } catch (e) {
-      console.warn('Firestore deleteSolution fallback:', e);
-    }
-  };
-
-  // Projects
-  const addProject = async (data: Omit<ProjectCMS, 'id'>) => {
-    const id = `proj-${Date.now()}`;
-    const newProj: ProjectCMS = { id, ...data };
-    setProjects((prev) => [...prev, newProj]);
-    showToast(`Project "${data.name}" added successfully!`);
-    await logActivity('Added Project', data.name);
-
-    try {
-      await setDoc(doc(db, 'projects', id), newProj);
-    } catch (e) {
-      console.warn('Firestore addProject fallback:', e);
-    }
-  };
-
-  const updateProject = async (id: string, data: Partial<ProjectCMS>) => {
-    setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, ...data } : p)));
-    showToast('Project updated successfully!');
-    await logActivity('Updated Project', data.name || id);
-
-    try {
-      await setDoc(doc(db, 'projects', id), data, { merge: true });
-    } catch (e) {
-      console.warn('Firestore updateProject fallback:', e);
-    }
-  };
-
-  const deleteProject = async (id: string) => {
-    const item = projects.find((p) => p.id === id);
-    setProjects((prev) => prev.filter((p) => p.id !== id));
-    showToast('Project deleted.');
-    await logActivity('Deleted Project', item?.name || id);
-
-    try {
-      await deleteDoc(doc(db, 'projects', id));
-    } catch (e) {
-      console.warn('Firestore deleteProject fallback:', e);
-    }
-  };
-
-  // Built By ANIVEX
-  const addBuiltByAnivex = async (data: Omit<BuiltByAnivexItem, 'id'>) => {
-    const id = `built-${Date.now()}`;
-    const newItem: BuiltByAnivexItem = { id, ...data };
-    setBuiltByAnivex((prev) => [...prev, newItem]);
-    showToast('Showcase item added to "Built by ANIVEX".');
-    await logActivity('Added Built By Showcase', data.title);
-
-    try {
-      await setDoc(doc(db, 'builtByAnivex', id), newItem);
-    } catch (e) {
-      console.warn('Firestore addBuiltByAnivex fallback:', e);
-    }
-  };
-
-  const updateBuiltByAnivex = async (id: string, data: Partial<BuiltByAnivexItem>) => {
-    setBuiltByAnivex((prev) => prev.map((b) => (b.id === id ? { ...b, ...data } : b)));
-    showToast('Showcase item updated.');
-    await logActivity('Updated Built By Showcase', data.title || id);
-
-    try {
-      await setDoc(doc(db, 'builtByAnivex', id), data, { merge: true });
-    } catch (e) {
-      console.warn('Firestore updateBuiltByAnivex fallback:', e);
-    }
-  };
-
-  const deleteBuiltByAnivex = async (id: string) => {
-    const item = builtByAnivex.find((b) => b.id === id);
-    setBuiltByAnivex((prev) => prev.filter((b) => b.id !== id));
-    showToast('Showcase item removed.');
-    await logActivity('Deleted Built By Showcase', item?.title || id);
-
-    try {
-      await deleteDoc(doc(db, 'builtByAnivex', id));
-    } catch (e) {
-      console.warn('Firestore deleteBuiltByAnivex fallback:', e);
-    }
-  };
-
-  // Company Info, Payment Settings & Socials
   const updateCompanyInfo = async (data: CompanyInfo) => {
-    setCompanyInfo(data);
-    showToast('Company Settings updated successfully!');
-    await logActivity('Updated Company Information', data.name);
-
-    try {
-      await setDoc(doc(db, 'companyInfo', 'main'), data, { merge: true });
-    } catch (e) {
-      console.warn('Firestore updateCompanyInfo fallback:', e);
-    }
+    await updateWebsiteSettings({
+      phone: data.phone, whatsapp: data.phone, email: data.businessEmail,
+      companyName: data.name, tagline: data.tagline, description: data.description,
+      headquarters: data.headquarters, address: data.address, websiteUrl: data.websiteUrl,
+      businessHours: data.businessHours, logoUrl: data.logoUrl,
+    });
   };
 
   const updatePaymentSettings = async (data: PaymentSettings) => {
-    setPaymentSettings(data);
-    showToast('Payment Settings updated & synced live!');
-    await logActivity('Updated Payment Settings', 'UPI & Bank Details');
-
+    setIsLoading(true);
     try {
-      await setDoc(doc(db, 'paymentSettings', 'main'), data, { merge: true });
-    } catch (e) {
-      console.warn('Firestore updatePaymentSettings fallback:', e);
-    }
+      await commitSet('paymentSettings', 'main', data, true);
+      setPaymentSettings(data);
+      showToast('Payment Settings saved to Firestore!');
+      await logActivity('Updated Payment Settings', 'UPI & Bank Details');
+    } catch (error: any) {
+      showToast(`Failed to update payment settings: ${error.message}`, 'error');
+      throw error;
+    } finally { setIsLoading(false); }
   };
 
   const updateSocialLinks = async (data: SocialLinks) => {
-    setSocialLinks(data);
-    showToast('Social Links updated successfully!');
-    await logActivity('Updated Social Links', 'Social Channels');
-
+    setIsLoading(true);
     try {
-      await setDoc(doc(db, 'socialLinks', 'main'), data, { merge: true });
-    } catch (e) {
-      console.warn('Firestore updateSocialLinks fallback:', e);
-    }
+      await commitSet('socialLinks', 'main', data, true);
+      setSocialLinks(data);
+      showToast('Social Links saved to Firestore!');
+      await logActivity('Updated Social Links', 'Social Channels');
+    } catch (error: any) {
+      showToast(`Failed to update social links: ${error.message}`, 'error');
+      throw error;
+    } finally { setIsLoading(false); }
   };
 
-  // Contact Enquiry Submission
-  const submitContactEnquiry = async (data: {
-    fullName: string;
-    email: string;
-    phone?: string;
-    company?: string;
-    projectType: string;
-    budgetRange: string;
-    description: string;
-  }) => {
+  const submitContactEnquiry = async (data: { fullName: string; email: string; phone?: string; company?: string; projectType: string; budgetRange: string; description: string; }) => {
     const now = new Date();
     const id = `ANX-${now.getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
-    const dateStr = now.toISOString().slice(0, 10);
-    const timeStr = now.toTimeString().slice(0, 5);
-
     const enquiry: ContactEnquiry = {
-      id,
-      fullName: data.fullName,
-      email: data.email,
-      phone: data.phone || 'Not specified',
-      company: data.company || 'Independent / Startup',
-      projectType: data.projectType,
-      budgetRange: data.budgetRange || 'Flexible',
-      description: data.description,
-      date: dateStr,
-      time: timeStr,
-      submittedAt: now.toISOString(),
-      status: 'New',
-      read: false,
+      id, fullName: data.fullName.trim(), email: data.email.trim(), phone: data.phone || 'Not specified',
+      company: data.company || 'Independent / Startup', projectType: data.projectType,
+      budgetRange: data.budgetRange || 'Flexible', description: data.description,
+      date: now.toISOString().slice(0, 10), time: now.toTimeString().slice(0, 5),
+      submittedAt: now.toISOString(), status: 'New', read: false,
     };
 
-    const newNotification: AdminNotification = {
-      id: `notif-${Date.now()}`,
-      title: '🔔 New Contact Enquiry',
-      message: `New project enquiry received from ${data.fullName} (${data.company || 'Individual'}).`,
-      enquiryId: id,
-      email: data.email,
-      projectType: data.projectType,
-      date: dateStr,
-      time: timeStr,
-      read: false,
-      createdAt: now.toISOString(),
-    };
-
-    setContactEnquiries((prev) => [enquiry, ...prev]);
-    setNotifications((prev) => [newNotification, ...prev]);
-
-    // Non-blocking background sync so form submission NEVER hangs
-    Promise.resolve().then(async () => {
-      try {
-        await setDoc(doc(db, 'contactEnquiries', id), enquiry);
-        await setDoc(doc(db, 'notifications', newNotification.id), newNotification);
-      } catch (e) {
-        console.warn('Firestore contact enquiry write fallback:', e);
-      }
-
-      try {
-        await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-      } catch (err) {
-        console.warn('Server contact API call fallback:', err);
-      }
-    });
-
-    return {
-      success: true,
-      referenceId: id,
-      message: `Thank you, ${data.fullName}. Your project inquiry has been securely transmitted to Anivex Solution. Reference ID: ${id}`,
-    };
+    try {
+      await commitSet('contactEnquiries', id, enquiry);
+      setContactEnquiries((prev) => [enquiry, ...prev]);
+      return {
+        success: true,
+        referenceId: id,
+        message: `Thank you, ${data.fullName}. Your project inquiry has been securely transmitted to Anivex Solution. Reference ID: ${id}`,
+      };
+    } catch (error: any) {
+      console.error('Contact enquiry submission failed:', error);
+      return { success: false, message: 'We could not submit your enquiry right now. Please try again.' };
+    }
   };
 
   const markEnquiryRead = async (id: string, read: boolean) => {
-    setContactEnquiries((prev) => prev.map((e) => (e.id === id ? { ...e, read } : e)));
-    try {
-      await updateDoc(doc(db, 'contactEnquiries', id), { read });
-    } catch (e) {
-      console.warn('Firestore markEnquiryRead fallback:', e);
-    }
+    await updateDoc(doc(db, 'contactEnquiries', id), { read });
+    setContactEnquiries((prev) => prev.map((e) => e.id === id ? { ...e, read } : e));
   };
-
   const updateEnquiryStatus = async (id: string, status: ContactEnquiry['status']) => {
-    setContactEnquiries((prev) => prev.map((e) => (e.id === id ? { ...e, status } : e)));
+    await updateDoc(doc(db, 'contactEnquiries', id), { status });
+    setContactEnquiries((prev) => prev.map((e) => e.id === id ? { ...e, status } : e));
     showToast(`Enquiry status updated to "${status}".`);
     await logActivity('Updated Enquiry Status', `${id} -> ${status}`);
-
-    try {
-      await updateDoc(doc(db, 'contactEnquiries', id), { status });
-    } catch (e) {
-      console.warn('Firestore updateEnquiryStatus fallback:', e);
-    }
   };
-
   const deleteEnquiry = async (id: string) => {
+    await commitDelete('contactEnquiries', id);
     setContactEnquiries((prev) => prev.filter((e) => e.id !== id));
     showToast('Enquiry deleted.');
     await logActivity('Deleted Contact Enquiry', id);
-
-    try {
-      await deleteDoc(doc(db, 'contactEnquiries', id));
-    } catch (e) {
-      console.warn('Firestore deleteEnquiry fallback:', e);
-    }
   };
 
-  // Invoices
   const addInvoice = async (data: Omit<InvoiceRecord, 'id' | 'createdAt'>) => {
     const id = `inv-${Date.now()}`;
-    const newInvoice: InvoiceRecord = {
-      id,
-      ...data,
-      createdAt: new Date().toISOString(),
-    };
-    setInvoices((prev) => [newInvoice, ...prev]);
-    showToast(`Invoice ${newInvoice.invoiceNumber} created successfully!`);
-    await logActivity('Created Invoice', newInvoice.invoiceNumber);
-
-    try {
-      await setDoc(doc(db, 'invoices', id), newInvoice);
-    } catch (e) {
-      console.warn('Firestore addInvoice fallback:', e);
-    }
+    const item = { id, ...data, createdAt: new Date().toISOString() } as InvoiceRecord;
+    await commitSet('invoices', id, item);
+    setInvoices((prev) => [item, ...prev]);
+    showToast(`Invoice ${item.invoiceNumber} created successfully!`);
+    await logActivity('Created Invoice', item.invoiceNumber);
     return id;
   };
-
   const updateInvoice = async (id: string, data: Partial<InvoiceRecord>) => {
-    setInvoices((prev) => prev.map((inv) => (inv.id === id ? { ...inv, ...data } : inv)));
+    await commitSet('invoices', id, data, true);
+    setInvoices((prev) => prev.map((i) => i.id === id ? { ...i, ...data } : i));
     showToast('Invoice updated.');
     await logActivity('Updated Invoice', id);
-
-    try {
-      await updateDoc(doc(db, 'invoices', id), data);
-    } catch (e) {
-      console.warn('Firestore updateInvoice fallback:', e);
-    }
   };
-
   const deleteInvoice = async (id: string) => {
-    const inv = invoices.find((i) => i.id === id);
+    await commitDelete('invoices', id);
     setInvoices((prev) => prev.filter((i) => i.id !== id));
     showToast('Invoice deleted.');
-    await logActivity('Deleted Invoice', inv?.invoiceNumber || id);
-
-    try {
-      await deleteDoc(doc(db, 'invoices', id));
-    } catch (e) {
-      console.warn('Firestore deleteInvoice fallback:', e);
-    }
+    await logActivity('Deleted Invoice', id);
   };
 
-
-  // Notifications
   const markNotificationRead = async (id: string) => {
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-    try {
-      await updateDoc(doc(db, 'notifications', id), { read: true });
-    } catch (e) {
-      console.warn('Firestore markNotificationRead fallback:', e);
-    }
+    await updateDoc(doc(db, 'notifications', id), { read: true });
+    setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
   };
-
   const deleteNotification = async (id: string) => {
+    await commitDelete('notifications', id);
     setNotifications((prev) => prev.filter((n) => n.id !== id));
-    try {
-      await deleteDoc(doc(db, 'notifications', id));
-    } catch (e) {
-      console.warn('Firestore deleteNotification fallback:', e);
-    }
   };
 
-  // Media
   const addMedia = async (data: Omit<MediaItem, 'id'>) => {
     const id = `med-${Date.now()}`;
-    const newMedia: MediaItem = { id, ...data };
-    setMediaItems((prev) => [newMedia, ...prev]);
+    const item = { id, ...data } as MediaItem;
+    await commitSet('media', id, item);
+    setMediaItems((prev) => [item, ...prev]);
     showToast(`Media file "${data.fileName}" added to library.`);
     await logActivity('Uploaded Media Item', data.fileName);
-
-    try {
-      await setDoc(doc(db, 'media', id), newMedia);
-    } catch (e) {
-      console.warn('Firestore addMedia fallback:', e);
-    }
   };
-
   const deleteMedia = async (id: string) => {
-    const item = mediaItems.find((m) => m.id === id);
+    await commitDelete('media', id);
     setMediaItems((prev) => prev.filter((m) => m.id !== id));
     showToast('Media item deleted.');
-    await logActivity('Deleted Media Item', item?.fileName || id);
-
-    try {
-      await deleteDoc(doc(db, 'media', id));
-    } catch (e) {
-      console.warn('Firestore deleteMedia fallback:', e);
-    }
+    await logActivity('Deleted Media Item', id);
   };
 
-  // Testimonials
-  const addTestimonial = async (data: Omit<TestimonialCMS, 'id'>) => {
-    const id = `test-${Date.now()}`;
-    const newTestimonial: TestimonialCMS = { id, ...data };
-    setTestimonials((prev) => [...prev, newTestimonial]);
-    showToast(`Testimonial from "${data.customerName}" added.`);
-    await logActivity('Added Testimonial', data.customerName);
-
-    try {
-      await setDoc(doc(db, 'testimonials', id), newTestimonial);
-    } catch (e) {
-      console.warn('Firestore addTestimonial fallback:', e);
-    }
-  };
-
-  const updateTestimonial = async (id: string, data: Partial<TestimonialCMS>) => {
-    setTestimonials((prev) => prev.map((t) => (t.id === id ? { ...t, ...data } : t)));
-    showToast('Testimonial updated.');
-    await logActivity('Updated Testimonial', id);
-
-    try {
-      await updateDoc(doc(db, 'testimonials', id), data);
-    } catch (e) {
-      console.warn('Firestore updateTestimonial fallback:', e);
-    }
-  };
-
-  const deleteTestimonial = async (id: string) => {
-    const item = testimonials.find((t) => t.id === id);
-    setTestimonials((prev) => prev.filter((t) => t.id !== id));
-    showToast('Testimonial deleted.');
-    await logActivity('Deleted Testimonial', item?.customerName || id);
-
-    try {
-      await deleteDoc(doc(db, 'testimonials', id));
-    } catch (e) {
-      console.warn('Firestore deleteTestimonial fallback:', e);
-    }
-  };
-
-  // FAQs
-  const addFaq = async (data: Omit<FaqCMS, 'id'>) => {
-    const id = `faq-${Date.now()}`;
-    const newFaq: FaqCMS = { id, ...data };
-    setFaqs((prev) => [...prev, newFaq]);
-    showToast(`FAQ question added.`);
-    await logActivity('Added FAQ', data.question);
-
-    try {
-      await setDoc(doc(db, 'faqs', id), newFaq);
-    } catch (e) {
-      console.warn('Firestore addFaq fallback:', e);
-    }
-  };
-
-  const updateFaq = async (id: string, data: Partial<FaqCMS>) => {
-    setFaqs((prev) => prev.map((f) => (f.id === id ? { ...f, ...data } : f)));
-    showToast('FAQ updated.');
-    await logActivity('Updated FAQ', id);
-
-    try {
-      await updateDoc(doc(db, 'faqs', id), data);
-    } catch (e) {
-      console.warn('Firestore updateFaq fallback:', e);
-    }
-  };
-
-  const deleteFaq = async (id: string) => {
-    const item = faqs.find((f) => f.id === id);
-    setFaqs((prev) => prev.filter((f) => f.id !== id));
-    showToast('FAQ deleted.');
-    await logActivity('Deleted FAQ', item?.question || id);
-
-    try {
-      await deleteDoc(doc(db, 'faqs', id));
-    } catch (e) {
-      console.warn('Firestore deleteFaq fallback:', e);
-    }
-  };
-
-  // Clients
-  const addClient = async (data: Omit<ClientRecord, 'id' | 'createdAt'>): Promise<string> => {
+  const addClient = async (data: Omit<ClientRecord, 'id' | 'createdAt'>) => {
     const id = `cli-${Date.now()}`;
-    const newClient: ClientRecord = {
-      id,
-      ...data,
-      createdAt: new Date().toISOString(),
-    };
-    setClients((prev) => [newClient, ...prev]);
+    const item = { id, ...data, createdAt: new Date().toISOString() } as ClientRecord;
+    await commitSet('clients', id, item);
+    setClients((prev) => [item, ...prev]);
     showToast(`Client "${data.name}" added.`);
     await logActivity('Added Client', data.name);
-    try {
-      await setDoc(doc(db, 'clients', id), newClient);
-    } catch (e) {
-      console.warn('Firestore addClient fallback:', e);
-    }
     return id;
   };
-
   const updateClient = async (id: string, data: Partial<ClientRecord>) => {
-    setClients((prev) => prev.map((c) => (c.id === id ? { ...c, ...data } : c)));
+    await commitSet('clients', id, data, true);
+    setClients((prev) => prev.map((c) => c.id === id ? { ...c, ...data } : c));
     showToast('Client updated.');
     await logActivity('Updated Client', id);
-    try {
-      await updateDoc(doc(db, 'clients', id), data);
-    } catch (e) {
-      console.warn('Firestore updateClient fallback:', e);
-    }
   };
-
   const deleteClient = async (id: string) => {
-    const c = clients.find((item) => item.id === id);
-    setClients((prev) => prev.filter((item) => item.id !== id));
+    await commitDelete('clients', id);
+    setClients((prev) => prev.filter((c) => c.id !== id));
     showToast('Client deleted.');
-    await logActivity('Deleted Client', c?.name || id);
-    try {
-      await deleteDoc(doc(db, 'clients', id));
-    } catch (e) {
-      console.warn('Firestore deleteClient fallback:', e);
-    }
+    await logActivity('Deleted Client', id);
   };
 
-  // Contracts
-  const addContract = async (data: Omit<ContractRecord, 'id' | 'createdAt'>): Promise<string> => {
+  const addContract = async (data: Omit<ContractRecord, 'id' | 'createdAt'>) => {
     const id = `ctr-${Date.now()}`;
-    const newContract: ContractRecord = {
-      id,
-      ...data,
-      createdAt: new Date().toISOString(),
-    };
-    setContracts((prev) => [newContract, ...prev]);
+    const item = { id, ...data, createdAt: new Date().toISOString() } as ContractRecord;
+    await commitSet('contracts', id, item);
+    setContracts((prev) => [item, ...prev]);
     showToast(`Contract "${data.contractNumber}" created.`);
     await logActivity('Created Contract', data.contractNumber);
-    try {
-      await setDoc(doc(db, 'contracts', id), newContract);
-    } catch (e) {
-      console.warn('Firestore addContract fallback:', e);
-    }
     return id;
   };
-
   const updateContract = async (id: string, data: Partial<ContractRecord>) => {
-    setContracts((prev) => prev.map((c) => (c.id === id ? { ...c, ...data } : c)));
+    await commitSet('contracts', id, data, true);
+    setContracts((prev) => prev.map((c) => c.id === id ? { ...c, ...data } : c));
     showToast('Contract updated.');
     await logActivity('Updated Contract', id);
-    try {
-      await updateDoc(doc(db, 'contracts', id), data);
-    } catch (e) {
-      console.warn('Firestore updateContract fallback:', e);
-    }
   };
-
   const deleteContract = async (id: string) => {
-    const c = contracts.find((item) => item.id === id);
-    setContracts((prev) => prev.filter((item) => item.id !== id));
+    await commitDelete('contracts', id);
+    setContracts((prev) => prev.filter((c) => c.id !== id));
     showToast('Contract deleted.');
-    await logActivity('Deleted Contract', c?.contractNumber || id);
-    try {
-      await deleteDoc(doc(db, 'contracts', id));
-    } catch (e) {
-      console.warn('Firestore deleteContract fallback:', e);
-    }
+    await logActivity('Deleted Contract', id);
   };
 
-  // Quotations
-  const addQuotation = async (data: Omit<QuotationRecord, 'id' | 'createdAt'>): Promise<string> => {
+  const addQuotation = async (data: Omit<QuotationRecord, 'id' | 'createdAt'>) => {
     const id = `qtn-${Date.now()}`;
-    const newQuotation: QuotationRecord = {
-      id,
-      ...data,
-      createdAt: new Date().toISOString(),
-    };
-    setQuotations((prev) => [newQuotation, ...prev]);
+    const item = { id, ...data, createdAt: new Date().toISOString() } as QuotationRecord;
+    await commitSet('quotations', id, item);
+    setQuotations((prev) => [item, ...prev]);
     showToast(`Quotation "${data.quotationNumber}" generated.`);
     await logActivity('Generated Quotation', data.quotationNumber);
-    try {
-      await setDoc(doc(db, 'quotations', id), newQuotation);
-    } catch (e) {
-      console.warn('Firestore addQuotation fallback:', e);
-    }
     return id;
   };
-
   const updateQuotation = async (id: string, data: Partial<QuotationRecord>) => {
-    setQuotations((prev) => prev.map((q) => (q.id === id ? { ...q, ...data } : q)));
+    await commitSet('quotations', id, data, true);
+    setQuotations((prev) => prev.map((q) => q.id === id ? { ...q, ...data } : q));
     showToast('Quotation updated.');
     await logActivity('Updated Quotation', id);
-    try {
-      await updateDoc(doc(db, 'quotations', id), data);
-    } catch (e) {
-      console.warn('Firestore updateQuotation fallback:', e);
-    }
   };
-
   const deleteQuotation = async (id: string) => {
-    const q = quotations.find((item) => item.id === id);
-    setQuotations((prev) => prev.filter((item) => item.id !== id));
+    await commitDelete('quotations', id);
+    setQuotations((prev) => prev.filter((q) => q.id !== id));
     showToast('Quotation deleted.');
-    await logActivity('Deleted Quotation', q?.quotationNumber || id);
-    try {
-      await deleteDoc(doc(db, 'quotations', id));
-    } catch (e) {
-      console.warn('Firestore deleteQuotation fallback:', e);
-    }
+    await logActivity('Deleted Quotation', id);
   };
 
   return (
-    <CmsContext.Provider
-      value={{
-        siteContent,
-        services,
-        products,
-        solutions,
-        projects,
-        builtByAnivex,
-        testimonials,
-        faqs,
-        clients,
-        contracts,
-        quotations,
-        companyInfo,
-        paymentSettings,
-        socialLinks,
-        contactEnquiries,
-        notifications,
-        activityLogs,
-        mediaItems,
-        invoices,
-        isLoading,
-        toast,
-        showToast,
-        updateSiteContent,
-        addService,
-        updateService,
-        deleteService,
-        addProduct,
-        updateProduct,
-        deleteProduct,
-        addSolution,
-        updateSolution,
-        deleteSolution,
-        addProject,
-        updateProject,
-        deleteProject,
-        addBuiltByAnivex,
-        updateBuiltByAnivex,
-        deleteBuiltByAnivex,
-        addTestimonial,
-        updateTestimonial,
-        deleteTestimonial,
-        addFaq,
-        updateFaq,
-        deleteFaq,
-        addClient,
-        updateClient,
-        deleteClient,
-        addContract,
-        updateContract,
-        deleteContract,
-        addQuotation,
-        updateQuotation,
-        deleteQuotation,
-        updateCompanyInfo,
-        updatePaymentSettings,
-        updateSocialLinks,
-        submitContactEnquiry,
-        markEnquiryRead,
-        updateEnquiryStatus,
-        deleteEnquiry,
-        markNotificationRead,
-        deleteNotification,
-        addMedia,
-        deleteMedia,
-        addInvoice,
-        updateInvoice,
-        deleteInvoice,
-        logActivity,
-      }}
-    >
+    <CmsContext.Provider value={{
+      siteContent, services, products, solutions, projects, builtByAnivex, testimonials, faqs,
+      clients, contracts, quotations, companyInfo, websiteSettings, isLoadingSettings, settingsError,
+      paymentSettings, socialLinks, contactEnquiries, notifications, activityLogs, mediaItems, invoices,
+      isLoading, toast, showToast, updateWebsiteSettings, updateSiteContent,
+      addService: servicesCrud.add, updateService: servicesCrud.update, deleteService: servicesCrud.remove,
+      addProduct: productsCrud.add, updateProduct: productsCrud.update, deleteProduct: productsCrud.remove,
+      addSolution: solutionsCrud.add, updateSolution: solutionsCrud.update, deleteSolution: solutionsCrud.remove,
+      addProject: projectsCrud.add, updateProject: projectsCrud.update, deleteProject: projectsCrud.remove,
+      addBuiltByAnivex: builtCrud.add, updateBuiltByAnivex: builtCrud.update, deleteBuiltByAnivex: builtCrud.remove,
+      addTestimonial: testimonialCrud.add, updateTestimonial: testimonialCrud.update, deleteTestimonial: testimonialCrud.remove,
+      addFaq: faqCrud.add, updateFaq: faqCrud.update, deleteFaq: faqCrud.remove,
+      addClient, updateClient, deleteClient, addContract, updateContract, deleteContract,
+      addQuotation, updateQuotation, deleteQuotation, updateCompanyInfo, updatePaymentSettings, updateSocialLinks,
+      submitContactEnquiry, markEnquiryRead, updateEnquiryStatus, deleteEnquiry,
+      markNotificationRead, deleteNotification, addMedia, deleteMedia,
+      addInvoice, updateInvoice, deleteInvoice, logActivity,
+    }}>
       {children}
     </CmsContext.Provider>
   );
@@ -1246,8 +604,6 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
 export const useCms = () => {
   const context = useContext(CmsContext);
-  if (!context) {
-    throw new Error('useCms must be used within a CmsProvider');
-  }
+  if (!context) throw new Error('useCms must be used within a CmsProvider');
   return context;
 };

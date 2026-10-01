@@ -1,12 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import {
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  User,
-  createUserWithEmailAndPassword
-} from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { isAdminUser } from '../lib/adminAuthorization';
 
 interface AdminAuthContextType {
   user: User | null;
@@ -23,31 +18,38 @@ const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefin
 
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [adminEmail, setAdminEmail] = useState<string>(
-    () => localStorage.getItem('anivex_admin_email') || 'admin@anivex.com'
-  );
+  const [adminEmail, setAdminEmail] = useState('');
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        setIsAdmin(true);
-        if (currentUser.email) {
-          setAdminEmail(currentUser.email);
-          localStorage.setItem('anivex_admin_email', currentUser.email);
-        }
-      } else {
-        const sessionAdmin = localStorage.getItem('anivex_admin_session');
-        if (sessionAdmin === 'true') {
-          setIsAdmin(true);
-        } else {
-          setUser(null);
-          setIsAdmin(false);
-        }
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setIsLoading(true);
+      setAuthError(null);
+
+      if (!currentUser || currentUser.isAnonymous) {
+        setUser(null);
+        setIsAdmin(false);
+        setAdminEmail('');
+        setIsLoading(false);
+        return;
       }
+
+      const authorized = await isAdminUser(currentUser);
+      if (!authorized) {
+        setUser(null);
+        setIsAdmin(false);
+        setAdminEmail('');
+        await signOut(auth).catch(() => undefined);
+        setAuthError('This Firebase account is not authorized for the Anivex CMS.');
+        setIsLoading(false);
+        return;
+      }
+
+      setUser(currentUser);
+      setIsAdmin(true);
+      setAdminEmail(currentUser.email || '');
       setIsLoading(false);
     });
 
@@ -58,78 +60,42 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setAuthError(null);
     setIsLoading(true);
 
-    const email = rawEmail.includes('@') ? rawEmail.trim() : `${rawEmail.trim()}@anivex.com`;
-    const cleanEmail = rawEmail.trim().toLowerCase();
+    const email = rawEmail.trim().toLowerCase();
+    if (!email || !email.includes('@') || !pass) {
+      setAuthError('Enter your Firebase admin email and password.');
+      setIsLoading(false);
+      return false;
+    }
 
     try {
-      const res = await signInWithEmailAndPassword(auth, email, pass);
-      setUser(res.user);
-      setIsAdmin(true);
-      setAdminEmail(email);
-      localStorage.setItem('anivex_admin_session', 'true');
-      localStorage.setItem('anivex_admin_email', email);
-      setIsLoading(false);
-      return true;
-    } catch (err: any) {
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        try {
-          const newRes = await createUserWithEmailAndPassword(auth, email, pass);
-          setUser(newRes.user);
-          setIsAdmin(true);
-          setAdminEmail(email);
-          localStorage.setItem('anivex_admin_session', 'true');
-          localStorage.setItem('anivex_admin_email', email);
-          setIsLoading(false);
-          return true;
-        } catch (createErr: any) {
-          // Fallback verification for configured admin account
-          if (
-            (cleanEmail === 'kdsingh9777' || cleanEmail.startsWith('kdsingh') || cleanEmail.includes('admin') || cleanEmail.includes('anivex')) &&
-            (pass === 'NIVKODE8826' || pass === 'anivex2026!admin')
-          ) {
-            setIsAdmin(true);
-            setAdminEmail(email);
-            localStorage.setItem('anivex_admin_session', 'true');
-            localStorage.setItem('anivex_admin_email', email);
-            setIsLoading(false);
-            return true;
-          }
-          setAuthError('Invalid ID or Password. Access denied.');
-          setIsLoading(false);
-          return false;
-        }
-      } else {
-        if (
-          (cleanEmail === 'kdsingh9777' || cleanEmail.startsWith('kdsingh') || cleanEmail.includes('admin') || cleanEmail.includes('anivex')) &&
-          (pass === 'NIVKODE8826' || pass === 'anivex2026!admin')
-        ) {
-          setIsAdmin(true);
-          setAdminEmail(email);
-          localStorage.setItem('anivex_admin_session', 'true');
-          localStorage.setItem('anivex_admin_email', email);
-          setIsLoading(false);
-          return true;
-        }
-        setAuthError('Invalid administrator credentials.');
+      const result = await signInWithEmailAndPassword(auth, email, pass);
+      const authorized = await isAdminUser(result.user);
+
+      if (!authorized) {
+        await signOut(auth).catch(() => undefined);
+        setAuthError('Login succeeded, but this Firebase account is not authorized as a CMS administrator.');
         setIsLoading(false);
         return false;
       }
+
+      setUser(result.user);
+      setIsAdmin(true);
+      setAdminEmail(result.user.email || email);
+      setIsLoading(false);
+      return true;
+    } catch (error: any) {
+      setAuthError(error?.message || 'Invalid Firebase administrator credentials.');
+      setIsLoading(false);
+      return false;
     }
   };
 
   const logout = async () => {
-    try {
-      await signOut(auth);
-    } catch (e) {
-      console.warn('Sign out warning:', e);
-    }
-    localStorage.removeItem('anivex_admin_session');
-    localStorage.removeItem('anivex_admin_email');
+    await signOut(auth).catch((error) => console.warn('Sign out warning:', error));
     setUser(null);
     setIsAdmin(false);
+    setAdminEmail('');
   };
-
-  const clearError = () => setAuthError(null);
 
   return (
     <AdminAuthContext.Provider
@@ -141,7 +107,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         adminEmail,
         login,
         logout,
-        clearError,
+        clearError: () => setAuthError(null),
       }}
     >
       {children}
@@ -151,8 +117,6 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 export const useAdminAuth = () => {
   const context = useContext(AdminAuthContext);
-  if (!context) {
-    throw new Error('useAdminAuth must be used within an AdminAuthProvider');
-  }
+  if (!context) throw new Error('useAdminAuth must be used within an AdminAuthProvider');
   return context;
 };

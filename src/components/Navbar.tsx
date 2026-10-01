@@ -2,20 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, ArrowRight, MessageCircle } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { formatWhatsAppUrl } from '../services/websiteSettings';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
-  const { siteContent, companyInfo } = useCms();
+  const { siteContent, websiteSettings, companyInfo } = useCms();
 
-  const rawPhone = companyInfo?.phone || '+91 98765 43210';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-  const phoneToUse = cleanPhone.length >= 10 ? cleanPhone : '919876543210';
-
-  const whatsappUrl = `https://wa.me/${phoneToUse}?text=${encodeURIComponent(
+  const phone = websiteSettings?.phone || companyInfo?.phone || '';
+  const whatsappUrl = formatWhatsAppUrl(
+    websiteSettings?.whatsapp || phone,
     'Namaste Anivex Solution! I would like to inquire about your software engineering and digital solutions.'
-  )}`;
+  );
 
   useEffect(() => {
     if (window.location.hash) {

@@ -1,12 +1,17 @@
 import React, { useEffect } from 'react';
 import { ArrowLeft, ShieldCheck, Mail, Phone, Lock, FileText } from 'lucide-react';
 import { Footer } from './Footer';
+import { useCms } from '../context/CmsContext';
 
 interface PrivacyPolicyPageProps {
   onBackToHome: () => void;
 }
 
 export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onBackToHome }) => {
+  const { websiteSettings, companyInfo } = useCms();
+  const phone = websiteSettings?.phone || companyInfo?.phone || '';
+  const email = websiteSettings?.email || companyInfo?.businessEmail || '';
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     document.title = "Privacy Policy | Anivex Solution";
@@ -131,10 +136,10 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onBackToHo
               For any privacy-related requests, questions regarding data handling, or grievance redressal, please write directly to our designated compliance desk:
             </p>
             <div className="pt-2 text-xs space-y-1">
-              <p><strong>Entity:</strong> Anivex Solution</p>
+              <p><strong>Entity:</strong> {websiteSettings?.companyName || 'Anivex Solution'}</p>
               <p><strong>Designation:</strong> Data Grievance Redressal Officer</p>
-              <p><strong>Official Email:</strong> <a href="mailto:anivexsolution@gmail.com" className="text-[#F97316] font-semibold underline">anivexsolution@gmail.com</a></p>
-              <p><strong>Direct WhatsApp / Helpline:</strong> +91 98765 43210</p>
+              <p><strong>Official Email:</strong> <a href={`mailto:${email}`} className="text-[#F97316] font-semibold underline">{email}</a></p>
+              <p><strong>Direct WhatsApp / Helpline:</strong> {phone}</p>
               <p><strong>Jurisdiction:</strong> India</p>
             </div>
           </section>

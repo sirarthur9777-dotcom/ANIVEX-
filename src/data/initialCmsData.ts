@@ -543,13 +543,13 @@ export const initialBuiltByAnivex: BuiltByAnivexItem[] = [
 
 export const initialCompanyInfo: CompanyInfo = {
   name: "Anivex Solution",
-  tagline: "Innovate. Develop. Deliver.",
-  description: "Building scalable custom software, web platforms, mobile applications and digital enterprise systems for forward-thinking businesses.",
+  tagline: "Technology. Designed for Growth.",
+  description: "Anivex Solution builds modern websites, enterprise software, ERP systems, mobile applications and intelligent digital solutions for growing businesses.",
   businessEmail: "anivexsolution@gmail.com",
-  phone: "+91 98765 43210",
-  headquarters: "India",
-  address: "Technology Engineering Studio, India",
-  websiteUrl: "https://anivex.com",
+  phone: "7905668826",
+  headquarters: "Lucknow, Uttar Pradesh, India",
+  address: "Lucknow, Uttar Pradesh, India - 226010",
+  websiteUrl: "https://anivexsolution.in",
   businessHours: "Mon - Sat: 9:00 AM - 7:00 PM IST",
   logoUrl: "",
 };
