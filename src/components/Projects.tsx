@@ -105,7 +105,7 @@ export const Projects: React.FC = () => {
         {/* Case Study Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {activeProjects.map((project, index) => {
-            const projectImg = project.image || project.imageUrl || '/src/assets/images/hero_indian_tech_business_1790750492543.jpg';
+            const projectImg = project.image || project.imageUrl || '/images/hero_indian_tech_business_1790750492543.jpg';
 
             return (
               <motion.div

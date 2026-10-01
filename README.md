@@ -22,3 +22,11 @@ View your app in AI Studio: https://ai.studio/apps/45b96767-c964-4579-a356-8b38e
 ## Production data architecture
 
 CMS-managed data is persisted in Cloud Firestore. Browser localStorage is not used as the CMS source of truth. Public content uses Firestore listeners; admin mutations wait for Firestore acknowledgement. Admin authorization is controlled by Firebase Authentication plus an `adminUsers/{uid}` authorization document.
+
+
+## Security notes
+
+- Firebase Web API keys used by browser apps are client identifiers, not service-account private keys. Keep Firestore Security Rules and Authentication as the actual authorization boundary.
+- This repository contains the Firebase Web app configuration for the `anivexsolutiondatabase` project. Restrict the Google API key in Google Cloud Console to the APIs required by this Firebase web app.
+- Never commit Firebase service-account JSON files, private keys, Gemini API keys, OAuth client secrets, GitHub tokens, or passwords.
+- The CMS password-change screen uses Firebase Email/Password re-authentication and `updatePassword`; it does not store or simulate passwords in Firestore/local state.

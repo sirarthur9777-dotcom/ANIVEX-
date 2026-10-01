@@ -89,7 +89,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
 *Project Type:* ${selectedType}
 *Message:* ${formData.message || 'I would like to discuss my project requirements.'}`;
 
-    window.open(formatWhatsAppUrl(whatsappNumber, text), '_blank');
+    window.open(formatWhatsAppUrl(whatsappNumber, text), '_blank', 'noopener,noreferrer');
   };
 
   const handleCopyUpi = () => {
@@ -178,6 +178,8 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                   <input
                     type="text"
                     required
+                    minLength={2}
+                    maxLength={120}
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     placeholder="e.g. Ramesh Kumar"
@@ -192,6 +194,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                   <input
                     type="email"
                     required
+                    maxLength={160}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="e.g. ramesh@company.com"
@@ -207,6 +210,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                   </label>
                   <input
                     type="tel"
+                    maxLength={40}
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     placeholder="+91 79056 68826"
@@ -220,6 +224,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                   </label>
                   <input
                     type="text"
+                    maxLength={160}
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     placeholder="e.g. Apex Industries"
@@ -235,6 +240,8 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                 <textarea
                   rows={4}
                   required
+                  minLength={5}
+                  maxLength={5000}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Tell us about the key features, expected timeline, or business problem you want to solve..."
@@ -374,7 +381,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                 </span>
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-sm font-bold text-[#0B1F3A]">
-                    {paymentSettings?.upiId || 'krishndas@okaxis'}
+                    {paymentSettings?.upiId || 'Payment details unavailable'}
                   </span>
                   <button
                     onClick={handleCopyUpi}
@@ -392,19 +399,19 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                 </span>
                 <div className="flex justify-between">
                   <span className="text-[#0B1F3A]/70">Account Name:</span>
-                  <span className="font-semibold text-[#0B1F3A]">{paymentSettings?.accountHolderName || 'Anivex Solution'}</span>
+                  <span className="font-semibold text-[#0B1F3A]">{paymentSettings?.accountHolderName || 'Not available'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#0B1F3A]/70">Bank Name:</span>
-                  <span className="font-semibold text-[#0B1F3A]">{paymentSettings?.bankName || 'State Bank of India'}</span>
+                  <span className="font-semibold text-[#0B1F3A]">{paymentSettings?.bankName || 'Not available'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#0B1F3A]/70">Account Number:</span>
-                  <span className="font-mono font-semibold text-[#0B1F3A]">{paymentSettings?.accountNumber || '39820019284'}</span>
+                  <span className="font-mono font-semibold text-[#0B1F3A]">{paymentSettings?.accountNumber || 'Not available'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#0B1F3A]/70">IFSC Code:</span>
-                  <span className="font-mono font-semibold text-[#0B1F3A]">{paymentSettings?.ifscCode || 'SBIN0001824'}</span>
+                  <span className="font-mono font-semibold text-[#0B1F3A]">{paymentSettings?.ifscCode || 'Not available'}</span>
                 </div>
               </div>
             </div>

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useCms } from '../../context/CmsContext';
 import { UserCheck, ShieldCheck, Key, Lock, Mail, CheckCircle2, User } from 'lucide-react';
@@ -11,20 +13,52 @@ export const AdminProfileManager: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handlePasswordChange = (e: React.FormEvent) => {
+  const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const user = auth.currentUser;
+    if (!user?.email) {
+      showToast('No authenticated admin session found.', 'error');
+      return;
+    }
+
+    if (!currentPassword) {
+      showToast('Enter your current Firebase password.', 'error');
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      showToast('New password must be at least 8 characters.', 'error');
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       showToast('New passwords do not match!', 'error');
       return;
     }
-    if (newPassword.length < 6) {
-      showToast('Password must be at least 6 characters.', 'error');
-      return;
+
+    try {
+      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+      await reauthenticateWithCredential(user, credential);
+      await updatePassword(user, newPassword);
+
+      showToast('Firebase admin password updated successfully!');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error: any) {
+      console.error('Firebase password update failed:', error);
+      const code = error?.code;
+      const message =
+        code === 'auth/wrong-password' || code === 'auth/invalid-credential'
+          ? 'Current password is incorrect.'
+          : code === 'auth/weak-password'
+            ? 'Choose a stronger password.'
+            : code === 'auth/requires-recent-login'
+              ? 'Please log out and log in again, then retry.'
+              : 'Password update failed. Please try again.';
+      showToast(message, 'error');
     }
-    showToast('Admin security password updated successfully!');
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
   };
 
   return (
@@ -59,7 +93,7 @@ export const AdminProfileManager: React.FC = () => {
           </div>
           <div>
             <h3 className="font-display font-bold text-lg text-white">Security & Credential Management</h3>
-            <p className="text-xs text-slate-400">Update your primary admin login credentials.</p>
+            <p className="text-xs text-slate-400">Change the password for your Firebase Email/Password admin account.</p>
           </div>
         </div>
 

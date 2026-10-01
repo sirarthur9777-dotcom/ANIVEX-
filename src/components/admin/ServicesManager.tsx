@@ -339,7 +339,7 @@ export const ServicesManager: React.FC<ServicesManagerProps> = ({ initialOpenAdd
                     type="text"
                     value={formData.coverImage}
                     onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                    placeholder="https://... or /src/assets/..."
+                    placeholder="https://... or /images/..."
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
                   />
                 </div>

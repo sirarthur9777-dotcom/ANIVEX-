@@ -75,7 +75,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onBackToHo
               Welcome to <strong>Anivex Solution</strong> ("we", "our", or "us"). We provide bespoke software engineering, enterprise web applications, ERP systems, mobile application development, and technological consulting services to Indian and global businesses.
             </p>
             <p>
-              This Privacy Policy explains how we collect, store, handle, and protect your information when you access our website (<strong>https://anivex.com</strong>), submit project inquiries, communicate through WhatsApp/email, or contract our engineering services.
+              This Privacy Policy explains how we collect, store, handle, and protect your information when you access our website (<strong>https://anivexsolution.in</strong>), submit project inquiries, communicate through WhatsApp/email, or contract our engineering services.
             </p>
           </section>
 

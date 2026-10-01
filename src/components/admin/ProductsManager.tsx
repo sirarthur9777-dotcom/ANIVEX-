@@ -361,7 +361,7 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({ initialOpenAdd
                     type="text"
                     value={formData.image}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    placeholder="https://... or /src/assets/images/..."
+                    placeholder="https://... or /images/..."
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
                   />
                 </div>

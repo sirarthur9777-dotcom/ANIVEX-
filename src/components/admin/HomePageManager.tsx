@@ -32,7 +32,7 @@ export const HomePageManager: React.FC = () => {
     primaryButtonLink: siteContent.primaryButtonLink || '#contact',
     secondaryButtonText: siteContent.secondaryButtonText || 'Explore Solutions',
     secondaryButtonLink: siteContent.secondaryButtonLink || '#services',
-    heroImage: siteContent.heroImage || '/src/assets/images/hero_indian_tech_business_1790750492543.jpg',
+    heroImage: siteContent.heroImage || '/images/hero_indian_tech_business_1790750492543.jpg',
     heroVisible: siteContent.heroVisible !== false,
   });
 

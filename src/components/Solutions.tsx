@@ -35,7 +35,7 @@ export const Solutions: React.FC<SolutionsProps> = ({ onSelectSolution }) => {
 
   const handleWhatsappSolution = (title: string) => {
     const text = `Namaste Anivex Solution! I want to discuss a tailored solution: "${title}".`;
-    window.open(formatWhatsAppUrl(phone, text), '_blank');
+    window.open(formatWhatsAppUrl(phone, text), '_blank', 'noopener,noreferrer');
   };
 
   return (

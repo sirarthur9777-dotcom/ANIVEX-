@@ -15,7 +15,7 @@ export const About: React.FC = () => {
   const founderName = siteContent.founderName || "Krishndas Chauhan";
   const founderRole = siteContent.founderRole || "Founder & Lead Architect";
   const founderDesc = siteContent.founderDescription || "Krishndas Chauhan is the Founder of Anivex Solution, dedicated to architecting high-performance digital products, enterprise systems, and scalable technology for forward-looking enterprises.";
-  const companyImg = siteContent.companyImage || "/src/assets/images/about_indian_tech_office_1790750532643.jpg";
+  const companyImg = siteContent.companyImage || "/images/about_indian_tech_office_1790750532643.jpg";
 
   const values = siteContent.values || [
     { title: "Business First", description: "Every line of code must create real operational efficiency or revenue growth." },

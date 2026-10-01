@@ -26,7 +26,6 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setIsLoading(true);
-      setAuthError(null);
 
       if (!currentUser || currentUser.isAnonymous) {
         setUser(null);
@@ -47,6 +46,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         return;
       }
 
+      setAuthError(null);
       setUser(currentUser);
       setIsAdmin(true);
       setAdminEmail(currentUser.email || '');
@@ -84,7 +84,16 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setIsLoading(false);
       return true;
     } catch (error: any) {
-      setAuthError(error?.message || 'Invalid Firebase administrator credentials.');
+      const code: string = error?.code || '';
+      if (code === 'auth/too-many-requests') {
+        setAuthError('Too many failed attempts. Please wait a few minutes and try again.');
+      } else if (code === 'auth/network-request-failed') {
+        setAuthError('Network error. Check your internet connection and try again.');
+      } else if (code === 'auth/user-disabled') {
+        setAuthError('This account has been disabled.');
+      } else {
+        setAuthError('Invalid email or password.');
+      }
       setIsLoading(false);
       return false;
     }

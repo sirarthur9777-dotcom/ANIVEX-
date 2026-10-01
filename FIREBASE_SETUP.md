@@ -18,7 +18,7 @@ In Firebase Console:
 3. Create the CMS administrator account in **Authentication → Users**.
 4. Copy that user's UID.
 
-Do not put an admin password in source code, environment variables, or Firestore.
+Do not put an admin password in source code, environment variables, or Firestore. The CMS password-change UI updates the Firebase Authentication password through re-authentication.
 
 ## 3. Bootstrap the CMS administrator
 
@@ -70,3 +70,10 @@ Test after deployment:
 4. Open the public site in another browser/incognito/mobile.
 5. Confirm the same value appears.
 6. Change the value again and verify the other browser receives it through `onSnapshot`.
+
+
+## GitHub secret-scanning alert
+
+`firebase-applet-config.json` contains the Firebase Web API key generated for the web app. Firebase Web API keys are not equivalent to service-account private keys and are expected to be present in browser applications. The important controls are API-key restrictions, Firebase Authentication, and Firestore Security Rules.
+
+If GitHub reports this key, verify that the detected value is the Firebase browser key and that no private key/service-account credential is present. Do not publish any Firebase Admin SDK private key.

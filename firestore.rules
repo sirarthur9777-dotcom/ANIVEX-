@@ -3,7 +3,6 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function isAdmin() {
       return request.auth != null
-        && exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid))
         && get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.role == 'admin'
         && get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.active == true;
     }
@@ -63,8 +62,46 @@ service cloud.firestore {
     }
 
     // Public enquiry submission. Reading and moderation are admin-only.
+    // The create rule validates the shape/size of public input to reduce abuse;
+    // it does not replace application-level anti-spam/rate limiting.
+    function validPublicEnquiry() {
+      return request.resource.data.keys().hasAll([
+          'id', 'fullName', 'email', 'phone', 'company', 'projectType',
+          'budgetRange', 'description', 'date', 'time', 'submittedAt',
+          'status', 'read'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'id', 'fullName', 'email', 'phone', 'company', 'projectType',
+          'budgetRange', 'description', 'date', 'time', 'submittedAt',
+          'status', 'read'
+        ])
+        && request.resource.data.id == docId
+        && request.resource.data.fullName is string
+        && request.resource.data.fullName.size() >= 2
+        && request.resource.data.fullName.size() <= 120
+        && request.resource.data.email is string
+        && request.resource.data.email.size() >= 5
+        && request.resource.data.email.size() <= 160
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() <= 40
+        && request.resource.data.company is string
+        && request.resource.data.company.size() <= 160
+        && request.resource.data.projectType is string
+        && request.resource.data.projectType.size() <= 120
+        && request.resource.data.budgetRange is string
+        && request.resource.data.budgetRange.size() <= 120
+        && request.resource.data.description is string
+        && request.resource.data.description.size() >= 5
+        && request.resource.data.description.size() <= 5000
+        && request.resource.data.date is string
+        && request.resource.data.time is string
+        && request.resource.data.submittedAt is string
+        && request.resource.data.status == 'New'
+        && request.resource.data.read == false;
+    }
+
     match /contactEnquiries/{docId} {
-      allow create: if true;
+      allow create: if validPublicEnquiry();
       allow read, update, delete: if isAdmin();
     }
 

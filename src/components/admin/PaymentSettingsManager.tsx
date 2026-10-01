@@ -6,28 +6,28 @@ export const PaymentSettingsManager: React.FC = () => {
   const { paymentSettings, updatePaymentSettings, showToast } = useCms();
 
   const [formData, setFormData] = useState({
-    upiId: paymentSettings.upiId || '7985668826-2@bybl',
+    upiId: paymentSettings.upiId || '',
     upiName: paymentSettings.upiName || 'Anivex Solution',
     qrCodeUrl: paymentSettings.qrCodeUrl || '',
-    bankName: paymentSettings.bankName || 'Bank of Baroda',
+    bankName: paymentSettings.bankName || '',
     accountHolderName: paymentSettings.accountHolderName || 'Anivex Solution',
-    accountNumber: paymentSettings.accountNumber || '45950100023052',
-    ifscCode: paymentSettings.ifscCode || 'BARBOMACHHA',
-    paymentInstructions: paymentSettings.paymentInstructions || 'Scan the UPI QR code using any payment app or transfer directly to our Bank of Baroda account.',
+    accountNumber: paymentSettings.accountNumber || '',
+    ifscCode: paymentSettings.ifscCode || '',
+    paymentInstructions: paymentSettings.paymentInstructions || 'Scan the UPI QR code using any payment app or transfer directly to our bank account.',
     paymentButtonText: paymentSettings.paymentButtonText || 'Make Direct Payment / View QR',
     enabled: paymentSettings.enabled !== false,
   });
 
   useEffect(() => {
     setFormData({
-      upiId: paymentSettings.upiId || '7985668826-2@bybl',
+      upiId: paymentSettings.upiId || '',
       upiName: paymentSettings.upiName || 'Anivex Solution',
       qrCodeUrl: paymentSettings.qrCodeUrl || '',
-      bankName: paymentSettings.bankName || 'Bank of Baroda',
+      bankName: paymentSettings.bankName || '',
       accountHolderName: paymentSettings.accountHolderName || 'Anivex Solution',
-      accountNumber: paymentSettings.accountNumber || '45950100023052',
-      ifscCode: paymentSettings.ifscCode || 'BARBOMACHHA',
-      paymentInstructions: paymentSettings.paymentInstructions || 'Scan the UPI QR code using any payment app or transfer directly to our Bank of Baroda account.',
+      accountNumber: paymentSettings.accountNumber || '',
+      ifscCode: paymentSettings.ifscCode || '',
+      paymentInstructions: paymentSettings.paymentInstructions || 'Scan the UPI QR code using any payment app or transfer directly to our bank account.',
       paymentButtonText: paymentSettings.paymentButtonText || 'Make Direct Payment / View QR',
       enabled: paymentSettings.enabled !== false,
     });
@@ -89,7 +89,7 @@ export const PaymentSettingsManager: React.FC = () => {
                     required
                     value={formData.upiId}
                     onChange={(e) => setFormData({ ...formData, upiId: e.target.value })}
-                    placeholder="7985668826-2@bybl"
+                    placeholder="yourname@bank"
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl p-3 text-white font-mono focus:border-[#D6A84F] focus:outline-none"
                   />
                 </div>
@@ -142,7 +142,7 @@ export const PaymentSettingsManager: React.FC = () => {
                     required
                     value={formData.bankName}
                     onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
-                    placeholder="Bank of Baroda"
+                    placeholder="Your bank name"
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl p-3 text-white focus:border-[#D6A84F] focus:outline-none"
                   />
                 </div>
@@ -166,7 +166,7 @@ export const PaymentSettingsManager: React.FC = () => {
                     required
                     value={formData.accountNumber}
                     onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })}
-                    placeholder="45950100023052"
+                    placeholder="Bank account number"
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl p-3 text-white font-mono focus:border-[#D6A84F] focus:outline-none"
                   />
                 </div>
@@ -178,7 +178,7 @@ export const PaymentSettingsManager: React.FC = () => {
                     required
                     value={formData.ifscCode}
                     onChange={(e) => setFormData({ ...formData, ifscCode: e.target.value })}
-                    placeholder="BARBOMACHHA"
+                    placeholder="IFSC code (e.g. ABCD0123456)"
                     className="w-full bg-[#05070B] border border-white/10 rounded-xl p-3 text-white font-mono focus:border-[#D6A84F] focus:outline-none"
                   />
                 </div>
@@ -243,7 +243,7 @@ export const PaymentSettingsManager: React.FC = () => {
                 </div>
                 <div>
                   <div className="text-xs font-mono font-bold text-white uppercase tracking-wider">{formData.upiName || 'Anivex Solution'}</div>
-                  <div className="text-sm font-mono font-extrabold text-[#F5C85B] mt-0.5">{formData.upiId || '7985668826-2@bybl'}</div>
+                  <div className="text-sm font-mono font-extrabold text-[#F5C85B] mt-0.5">{formData.upiId || 'Not set'}</div>
                 </div>
                 <div className="text-[10px] text-slate-400 font-mono uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/5">
                   SCAN WITH ANY UPI APP (GPAY, PHONEPE, PAYTM, BHIM)

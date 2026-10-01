@@ -98,6 +98,19 @@ const CmsContext = createContext<CmsContextType | undefined>(undefined);
 const sortByOrder = <T extends { displayOrder?: number }>(items: T[]) =>
   [...items].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
+// Older Firestore documents were seeded with dev-only paths (/src/assets/images/...)
+// which do not exist in a production build. Map them to the files in /public/images.
+const fixAssetPaths = (value: any): any => {
+  if (typeof value === 'string') return value.replace('/src/assets/images/', '/images/');
+  if (Array.isArray(value)) return value.map(fixAssetPaths);
+  if (value && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype) {
+    const out: Record<string, any> = {};
+    for (const key of Object.keys(value)) out[key] = fixAssetPaths(value[key]);
+    return out;
+  }
+  return value;
+};
+
 const sortByDateDesc = <T extends { createdAt?: string; submittedAt?: string; timestamp?: string }>(items: T[]) =>
   [...items].sort((a, b) => {
     const av = a.createdAt || a.submittedAt || a.timestamp || '';
@@ -141,13 +154,13 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const watchDoc = <T,>(collectionName: string, id: string, setter: React.Dispatch<React.SetStateAction<T>>, mapper: (data: any) => T) => {
       unsubs.push(onSnapshot(doc(db, collectionName, id), (snap) => {
-        if (snap.exists()) setter(mapper(snap.data()));
+        if (snap.exists()) setter(mapper(fixAssetPaths(snap.data())));
       }, (error) => console.warn(`Firestore ${collectionName}/${id} sync:`, error)));
     };
 
     const watchCollection = <T,>(collectionName: string, setter: React.Dispatch<React.SetStateAction<T[]>>, mapper: (id: string, data: any) => T, sort?: (items: T[]) => T[]) => {
       unsubs.push(onSnapshot(collection(db, collectionName), (snap) => {
-        const items = snap.docs.map((d) => mapper(d.id, d.data()));
+        const items = snap.docs.map((d) => mapper(d.id, fixAssetPaths(d.data())));
         setter(sort ? sort(items) : items);
       }, (error) => console.warn(`Firestore ${collectionName} sync:`, error)));
     };
@@ -204,6 +217,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       // Seed the new Firebase project only when public CMS collections are empty/missing.
       // Existing Firestore data is never overwritten.
       const seedIfMissing = async () => {
+        // Run the seed only once per Firebase project. Without this marker, deleting every item in a
+        // collection (e.g. all FAQs) made the demo content reappear on the next admin login.
+        const markerRef = doc(db, 'siteContent', 'seedMeta');
+        if ((await getDoc(markerRef)).exists()) return;
+
         const batch = writeBatch(db);
         let writes = 0;
 
@@ -237,7 +255,8 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           }
         }
 
-        if (writes > 0) await batch.commit();
+        batch.set(markerRef, { seeded: true, seededAt: new Date().toISOString() });
+        await batch.commit();
       };
 
       try {
@@ -426,11 +445,18 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const submitContactEnquiry = async (data: { fullName: string; email: string; phone?: string; company?: string; projectType: string; budgetRange: string; description: string; }) => {
     const now = new Date();
-    const id = `ANX-${now.getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    // 4-digit random IDs collided after only a few dozen enquiries (birthday paradox) and a collision
+    // makes Firestore reject the write. Use 8 random base-36 chars instead (~2.8 trillion combinations).
+    const randomBytes = new Uint8Array(8);
+    crypto.getRandomValues(randomBytes);
+    const suffix = Array.from(randomBytes, (b) => (b % 36).toString(36)).join('').toUpperCase();
+    const id = `ANX-${now.getFullYear()}-${suffix}`;
     const enquiry: ContactEnquiry = {
-      id, fullName: data.fullName.trim(), email: data.email.trim(), phone: data.phone || 'Not specified',
-      company: data.company || 'Independent / Startup', projectType: data.projectType,
-      budgetRange: data.budgetRange || 'Flexible', description: data.description,
+      id, fullName: data.fullName.trim().slice(0, 120), email: data.email.trim().slice(0, 160),
+      phone: (data.phone || '').trim().slice(0, 40) || 'Not specified',
+      company: (data.company || '').trim().slice(0, 160) || 'Independent / Startup',
+      projectType: data.projectType.slice(0, 120),
+      budgetRange: (data.budgetRange || 'Flexible').slice(0, 120), description: data.description.trim().slice(0, 5000),
       date: now.toISOString().slice(0, 10), time: now.toTimeString().slice(0, 5),
       submittedAt: now.toISOString(), status: 'New', read: false,
     };

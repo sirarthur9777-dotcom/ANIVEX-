@@ -708,7 +708,7 @@ export const ContractsManager: React.FC = () => {
                     Software Development, Custom Engineering & Cloud Solutions
                   </p>
                   <p className="text-[11px] text-[#0B1F3A]/60">
-                    Email: anivexsolution@gmail.com | Web: https://anivex.com
+                    Email: {websiteSettings?.email || companyInfo?.businessEmail || ''} | Web: {websiteSettings?.websiteUrl || companyInfo?.websiteUrl || ''}
                   </p>
                 </div>
 

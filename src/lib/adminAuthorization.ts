@@ -14,7 +14,7 @@ export async function isAdminUser(user: User | null): Promise<boolean> {
     if (!snap.exists()) return false;
 
     const data = snap.data() as { role?: string; active?: boolean };
-    return data.role === 'admin' && data.active !== false;
+    return data.role === 'admin' && data.active === true;
   } catch (error) {
     console.error('Admin authorization check failed:', error);
     return false;

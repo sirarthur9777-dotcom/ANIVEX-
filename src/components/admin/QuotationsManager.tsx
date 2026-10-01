@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 export const QuotationsManager: React.FC = () => {
-  const { quotations, clients, websiteSettings, companyInfo, addQuotation, updateQuotation, deleteQuotation } = useCms();
+  const { quotations, clients, websiteSettings, companyInfo, paymentSettings, addQuotation, updateQuotation, deleteQuotation } = useCms();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
@@ -757,7 +757,7 @@ export const QuotationsManager: React.FC = () => {
                     Software Development, Custom Engineering & Cloud Solutions
                   </p>
                   <p className="text-[11px] text-[#0B1F3A]/60">
-                    Email: anivexsolution@gmail.com | Web: https://anivex.com
+                    Email: {websiteSettings?.email || companyInfo?.businessEmail || ''} | Web: {websiteSettings?.websiteUrl || companyInfo?.websiteUrl || ''}
                   </p>
                 </div>
 
@@ -883,10 +883,10 @@ export const QuotationsManager: React.FC = () => {
                   <h4 className="font-bold text-[#0B1F3A] uppercase text-[11px] mb-2">Official Bank & UPI Details</h4>
                   <div className="p-3 rounded-lg bg-slate-50 border border-[#0B1F3A]/10 space-y-1 text-[11px]">
                     <p><strong>Account Name:</strong> Anivex Solution</p>
-                    <p><strong>Bank:</strong> Bank of Baroda</p>
-                    <p><strong>Account Number:</strong> 45950100023052</p>
-                    <p><strong>IFSC Code:</strong> BARBOMACHHA</p>
-                    <p><strong>UPI ID:</strong> 7985668826-2@bybl</p>
+                    <p><strong>Bank:</strong> {paymentSettings?.bankName || 'Not specified'}</p>
+                    <p><strong>Account Number:</strong> {paymentSettings?.accountNumber || 'Not specified'}</p>
+                    <p><strong>IFSC Code:</strong> {paymentSettings?.ifscCode || 'Not specified'}</p>
+                    <p><strong>UPI ID:</strong> {paymentSettings?.upiId || 'Not specified'}</p>
                   </div>
                 </div>
               </div>

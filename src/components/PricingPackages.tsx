@@ -106,7 +106,7 @@ export const PricingPackages: React.FC<PricingPackagesProps> = ({ onSelectPackag
 
   const handleWhatsappInquiry = (pkgName: string) => {
     const text = `Namaste Anivex Solution! I am interested in the ${pkgName} package. Please share a detailed quotation.`;
-    window.open(formatWhatsAppUrl(phone, text), '_blank');
+    window.open(formatWhatsAppUrl(phone, text), '_blank', 'noopener,noreferrer');
   };
 
   return (
