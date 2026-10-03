@@ -3,32 +3,27 @@ import { reauthenticateWithCredential, EmailAuthProvider, updatePassword } from 
 import { auth } from '../../lib/firebase';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useCms } from '../../context/CmsContext';
-import { UserCheck, ShieldCheck, Key, Lock, Mail, CheckCircle2, User } from 'lucide-react';
+import { ShieldCheck, Key, CheckCircle2 } from 'lucide-react';
 
 export const AdminProfileManager: React.FC = () => {
-  const { adminEmail } = useAdminAuth();
+  const { user, adminEmail } = useAdminAuth();
   const { showToast } = useCms();
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const user = auth.currentUser;
-    if (!user?.email) {
-      showToast('No authenticated admin session found.', 'error');
-      return;
-    }
-
     if (!currentPassword) {
-      showToast('Enter your current Firebase password.', 'error');
+      showToast('Enter your current administrator password.', 'error');
       return;
     }
 
-    if (newPassword.length < 8) {
-      showToast('New password must be at least 8 characters.', 'error');
+    if (newPassword.length < 6) {
+      showToast('New password must be at least 6 characters.', 'error');
       return;
     }
 
@@ -37,27 +32,34 @@ export const AdminProfileManager: React.FC = () => {
       return;
     }
 
-    try {
-      const credential = EmailAuthProvider.credential(user.email, currentPassword);
-      await reauthenticateWithCredential(user, credential);
-      await updatePassword(user, newPassword);
+    const currentUser = auth.currentUser || user;
+    if (!currentUser || !currentUser.email) {
+      showToast('No active authenticated session found. Please sign in again.', 'error');
+      return;
+    }
 
-      showToast('Firebase admin password updated successfully!');
+    setIsUpdating(true);
+    try {
+      const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+      await reauthenticateWithCredential(currentUser, credential);
+      await updatePassword(currentUser, newPassword);
+      showToast('Administrator password updated successfully in Firebase!');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (error: any) {
-      console.error('Firebase password update failed:', error);
-      const code = error?.code;
-      const message =
-        code === 'auth/wrong-password' || code === 'auth/invalid-credential'
-          ? 'Current password is incorrect.'
-          : code === 'auth/weak-password'
-            ? 'Choose a stronger password.'
-            : code === 'auth/requires-recent-login'
-              ? 'Please log out and log in again, then retry.'
-              : 'Password update failed. Please try again.';
-      showToast(message, 'error');
+      const code = error?.code || '';
+      if (code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+        showToast('Current password is incorrect.', 'error');
+      } else if (code === 'auth/weak-password') {
+        showToast('New password is too weak. Please use at least 6 characters.', 'error');
+      } else if (code === 'auth/requires-recent-login') {
+        showToast('Session expired. Please log out and sign back in before updating password.', 'error');
+      } else {
+        showToast('Failed to update password. Please check your current password.', 'error');
+      }
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -74,7 +76,7 @@ export const AdminProfileManager: React.FC = () => {
               <span>SUPER ADMIN & FOUNDER</span>
             </div>
             <h2 className="font-display font-bold text-2xl text-white">Krishndas Chauhan</h2>
-            <p className="text-xs text-slate-400 mt-0.5">{adminEmail || 'admin@anivex.com'}</p>
+            <p className="text-xs text-slate-400 mt-0.5">{adminEmail || user?.email || 'admin@anivex.com'}</p>
           </div>
         </div>
 
@@ -93,7 +95,7 @@ export const AdminProfileManager: React.FC = () => {
           </div>
           <div>
             <h3 className="font-display font-bold text-lg text-white">Security & Credential Management</h3>
-            <p className="text-xs text-slate-400">Change the password for your Firebase Email/Password admin account.</p>
+            <p className="text-xs text-slate-400">Update the password for your Firebase Email/Password administrator account.</p>
           </div>
         </div>
 
@@ -137,9 +139,10 @@ export const AdminProfileManager: React.FC = () => {
           <div className="pt-2">
             <button
               type="submit"
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D6A84F] via-[#F5C85B] to-[#D6A84F] text-[#05070B] font-extrabold text-xs uppercase tracking-wider cursor-pointer shadow-md hover:shadow-[0_0_20px_rgba(245,200,91,0.4)] transition-all"
+              disabled={isUpdating}
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D6A84F] via-[#F5C85B] to-[#D6A84F] text-[#05070B] font-extrabold text-xs uppercase tracking-wider cursor-pointer shadow-md hover:shadow-[0_0_20px_rgba(245,200,91,0.4)] transition-all disabled:opacity-50"
             >
-              Update Password
+              {isUpdating ? 'Updating...' : 'Update Password'}
             </button>
           </div>
         </form>

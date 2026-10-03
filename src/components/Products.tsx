@@ -115,7 +115,9 @@ export const Products: React.FC = () => {
                   ) : prod.image && !prod.image.includes('_') ? (
                     <img
                       src={prod.image}
-                      alt={prod.name}
+                      alt={`${prod.name} – ${prod.tagline || 'Software Solution by Anivex Solution'}`}
+                      width={600}
+                      height={375}
                       className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-300"
                       referrerPolicy="no-referrer"
                       loading="lazy"

@@ -1,0 +1,18 @@
+# robots.txt for Anivex Solution
+# Primary domain: https://anivexsolution.in/
+
+User-agent: *
+Allow: /
+Allow: /images/
+Allow: /assets/
+
+# Disallow private and administrative portals
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
+# Host
+Host: https://anivexsolution.in
+
+# Sitemap reference
+Sitemap: https://anivexsolution.in/sitemap.xml

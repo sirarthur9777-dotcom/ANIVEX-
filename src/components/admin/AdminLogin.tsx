@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { Lock, Mail, ShieldAlert, ArrowRight, KeyRound } from 'lucide-react';
+import { Lock, Mail, ShieldAlert, ArrowRight, KeyRound, CheckCircle2, HelpCircle } from 'lucide-react';
 
 interface AdminLoginProps {
   onSuccess?: () => void;
 }
 
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
-  const { login, authError, clearError } = useAdminAuth();
+  const { login, sendPasswordReset, authError, clearError } = useAdminAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Forgot Password state
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetMessage, setResetMessage] = useState<string | null>(null);
+  const [isSendingReset, setIsSendingReset] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +30,15 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
         onSuccess();
       }
     }
+  };
+
+  const handlePasswordResetSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSendingReset(true);
+    const targetEmail = resetEmail.trim() || email.trim();
+    const result = await sendPasswordReset(targetEmail);
+    setIsSendingReset(false);
+    setResetMessage(result.message);
   };
 
   return (
@@ -95,11 +110,12 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
               <div className="relative">
                 <Mail className="w-4 h-4 text-[#0B1F3A]/40 absolute left-3.5 top-3.5" />
                 <input
-                  type="text"
+                  type="email"
                   required
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your Firebase admin email"
+                  placeholder="admin@example.com"
                   className="w-full bg-[#FFFDF7] border border-[#0B1F3A]/15 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-[#0B1F3A] placeholder:text-[#0B1F3A]/40 focus:outline-none focus:border-[#F97316] transition-colors"
                 />
               </div>
@@ -107,17 +123,31 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-bold text-[#0B1F3A] uppercase mb-1.5">
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-bold text-[#0B1F3A] uppercase">
+                  Password
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForgotModal(true);
+                    setResetEmail(email);
+                    setResetMessage(null);
+                  }}
+                  className="text-[11px] text-[#F97316] hover:text-[#EA580C] font-semibold transition-colors cursor-pointer"
+                >
+                  Forgot Password?
+                </button>
+              </div>
               <div className="relative">
                 <KeyRound className="w-4 h-4 text-[#0B1F3A]/40 absolute left-3.5 top-3.5" />
                 <input
                   type="password"
                   required
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter Password"
+                  placeholder="••••••••••••"
                   className="w-full bg-[#FFFDF7] border border-[#0B1F3A]/15 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-[#0B1F3A] placeholder:text-[#0B1F3A]/40 focus:outline-none focus:border-[#F97316] transition-colors"
                 />
               </div>
@@ -147,6 +177,80 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
         </p>
 
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-sm p-6 bg-white rounded-2xl border border-[#0B1F3A]/10 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#0B1F3A]/10">
+              <div className="flex items-center gap-2">
+                <HelpCircle className="w-4 h-4 text-[#F97316]" />
+                <h3 className="font-heading font-bold text-sm text-[#0B1F3A]">Password Reset</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowForgotModal(false)}
+                className="text-[#0B1F3A]/50 hover:text-[#0B1F3A] text-xs font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-[#0B1F3A]/70 leading-relaxed">
+              Enter your administrator email address below. A password reset link will be dispatched via Firebase Authentication.
+            </p>
+
+            {resetMessage ? (
+              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-start gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span>{resetMessage}</span>
+              </div>
+            ) : (
+              <form onSubmit={handlePasswordResetSubmit} className="space-y-3">
+                <div>
+                  <label className="block text-[11px] font-bold text-[#0B1F3A] uppercase mb-1">
+                    Administrator Email
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    placeholder="admin@example.com"
+                    className="w-full bg-[#FFFDF7] border border-[#0B1F3A]/15 rounded-xl px-3 py-2 text-xs text-[#0B1F3A] focus:outline-none focus:border-[#F97316]"
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotModal(false)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[#0B1F3A]/70 hover:bg-[#0B1F3A]/5"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSendingReset}
+                    className="px-4 py-1.5 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold disabled:opacity-50"
+                  >
+                    {isSendingReset ? 'Sending...' : 'Send Reset Link'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {resetMessage && (
+              <button
+                type="button"
+                onClick={() => setShowForgotModal(false)}
+                className="w-full py-2 rounded-lg bg-[#0B1F3A] text-white text-xs font-bold"
+              >
+                Close
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

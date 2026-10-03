@@ -1,10 +1,22 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isBootstrappedAdmin() {
+      return request.auth != null
+        && (request.auth.token.email == 'sirarthur9777@gmail.com'
+            || request.auth.token.email == 'kdsingh9777@gmail.com');
+    }
+
     function isAdmin() {
       return request.auth != null
-        && get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.role == 'admin'
-        && get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.active == true;
+        && (
+          isBootstrappedAdmin()
+          || (
+            exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid))
+            && get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.role == 'admin'
+            && get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.active == true
+          )
+        );
     }
 
     // Public CMS content: everyone may read, only registered CMS admins may write.
@@ -125,11 +137,11 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
-    // Admin identity records are provisioned manually in Firebase Console.
-    // A signed-in user may read only their own authorization record.
+    // Admin identity records are provisioned in Firebase Console or managed by active admins.
+    // A signed-in user may read their own authorization record.
     match /adminUsers/{userId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if false;
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
     }
 
     // Explicitly deny unknown collections.

@@ -75,6 +75,8 @@ export function subscribeToWebsiteSettings(
         : DEFAULT_WEBSITE_SETTINGS);
     },
     (error) => {
+      console.warn('websiteSettings Firestore subscription notice (using defaults):', error?.message);
+      onData(DEFAULT_WEBSITE_SETTINGS);
       try {
         handleFirestoreError(error, OperationType.GET, `${SETTINGS_COLLECTION}/${SETTINGS_DOC_ID}`);
       } catch (formattedError) {

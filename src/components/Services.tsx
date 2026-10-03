@@ -112,6 +112,16 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
     }
   };
 
+  const getServicePath = (service: ServiceCMS): string => {
+    const id = service.id?.toLowerCase() || '';
+    if (id.includes('web-dev') || id.includes('website')) return '/web-development';
+    if (id.includes('ui-ux') || id.includes('design')) return '/web-design';
+    if (id.includes('erp') || id.includes('billing')) return '/erp-development';
+    if (id.includes('mobile') || id.includes('app')) return '/web-application-development';
+    if (id.includes('custom') || id.includes('software')) return '/custom-software';
+    return '/software-development';
+  };
+
   const handleCardClick = (service: ServiceCMS) => {
     if (onSelectService) {
       onSelectService(service.title);
@@ -188,10 +198,23 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
               </div>
 
               {/* Bottom Action Footer */}
-              <div className="pt-4 border-t border-[#0B1F3A]/6 flex items-center justify-between text-xs font-bold text-[#0B1F3A] group-hover:text-[#F97316] transition-colors">
-                <span>Start a Project</span>
-                <div className="w-7 h-7 rounded-full bg-[#0B1F3A]/5 group-hover:bg-[#F97316] group-hover:text-white flex items-center justify-center transition-all">
-                  <ArrowRight className="w-3.5 h-3.5" />
+              <div className="pt-4 border-t border-[#0B1F3A]/6 flex items-center justify-between text-xs font-bold text-[#0B1F3A]">
+                <a
+                  href={getServicePath(service)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.history.pushState({}, '', getServicePath(service));
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  className="text-[11px] text-[#F97316] hover:text-[#EA580C] hover:underline cursor-pointer"
+                >
+                  Explore Details →
+                </a>
+                <div className="flex items-center gap-1.5 group-hover:text-[#F97316] transition-colors">
+                  <span>Start Project</span>
+                  <div className="w-6 h-6 rounded-full bg-[#0B1F3A]/5 group-hover:bg-[#F97316] group-hover:text-white flex items-center justify-center transition-all">
+                    <ArrowRight className="w-3 h-3" />
+                  </div>
                 </div>
               </div>
             </motion.div>

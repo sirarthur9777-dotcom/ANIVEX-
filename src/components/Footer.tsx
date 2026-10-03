@@ -6,10 +6,11 @@ import { formatWhatsAppUrl, formatPhoneTel } from '../services/websiteSettings';
 interface FooterProps {
   onNavigateToPrivacy?: () => void;
   onNavigateToTerms?: () => void;
+  onNavigateToService?: (path: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateToTerms }) => {
-  const { companyInfo, websiteSettings, socialLinks } = useCms();
+export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateToTerms, onNavigateToService }) => {
+  const { companyInfo, websiteSettings } = useCms();
   const phone = websiteSettings?.phone || companyInfo?.phone || '';
   const email = websiteSettings?.email || companyInfo?.businessEmail || '';
   const whatsappUrl = formatWhatsAppUrl(websiteSettings?.whatsapp || phone, 'Namaste Anivex Solution!');
@@ -17,6 +18,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleServiceClick = (e: React.MouseEvent, path: string) => {
+    e.preventDefault();
+    if (onNavigateToService) {
+      onNavigateToService(path);
+    } else {
+      window.history.pushState({}, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
   };
 
   const handlePrivacyClick = (e: React.MouseEvent) => {
@@ -119,12 +130,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-white uppercase tracking-wider">Services</h4>
             <ul className="space-y-2 text-xs">
-              <li><a href="#services" className="hover:text-white transition-colors">Web Development</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">Mobile Applications</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">ERP & Business Software</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">Custom Software Engineering</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">UI/UX Design</a></li>
-              <li><a href="#services" className="hover:text-white transition-colors">Cloud & Digital Solutions</a></li>
+              <li><a href="/web-development" onClick={(e) => handleServiceClick(e, '/web-development')} className="hover:text-white transition-colors">Web Development</a></li>
+              <li><a href="/web-design" onClick={(e) => handleServiceClick(e, '/web-design')} className="hover:text-white transition-colors">UI/UX Web Design</a></li>
+              <li><a href="/software-development" onClick={(e) => handleServiceClick(e, '/software-development')} className="hover:text-white transition-colors">Software Development</a></li>
+              <li><a href="/web-application-development" onClick={(e) => handleServiceClick(e, '/web-application-development')} className="hover:text-white transition-colors">Web Applications</a></li>
+              <li><a href="/erp-development" onClick={(e) => handleServiceClick(e, '/erp-development')} className="hover:text-white transition-colors">ERP & Business Software</a></li>
+              <li><a href="/custom-software" onClick={(e) => handleServiceClick(e, '/custom-software')} className="hover:text-white transition-colors">Custom Software</a></li>
             </ul>
           </div>
 

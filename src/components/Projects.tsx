@@ -128,7 +128,9 @@ export const Projects: React.FC = () => {
                     ) : project.image && !project.image.includes('_') ? (
                       <img
                         src={project.image}
-                        alt={project.name}
+                        alt={`${project.name} – ${project.category || 'Digital Engineering Project by Anivex Solution'}`}
+                        width={600}
+                        height={375}
                         className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-300"
                         referrerPolicy="no-referrer"
                         loading="lazy"

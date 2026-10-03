@@ -4,7 +4,11 @@ import { Menu, X, ArrowRight, MessageCircle } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  onNavigateService?: (path: string) => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');

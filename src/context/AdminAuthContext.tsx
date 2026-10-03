@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  User,
+} from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { isAdminUser } from '../lib/adminAuthorization';
 
@@ -11,6 +17,7 @@ interface AdminAuthContextType {
   adminEmail: string;
   login: (email: string, pass: string) => Promise<boolean>;
   logout: () => Promise<void>;
+  sendPasswordReset: (email: string) => Promise<{ success: boolean; message: string }>;
   clearError: () => void;
 }
 
@@ -18,38 +25,33 @@ const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefin
 
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [adminEmail, setAdminEmail] = useState('');
+  const [adminEmail, setAdminEmail] = useState<string>('');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setIsLoading(true);
 
-      if (!currentUser || currentUser.isAnonymous) {
+      if (currentUser && !currentUser.isAnonymous) {
+        const authorized = await isAdminUser(currentUser);
+        if (authorized) {
+          setUser(currentUser);
+          setIsAdmin(true);
+          setAdminEmail(currentUser.email || '');
+          setAuthError(null);
+        } else {
+          setUser(null);
+          setIsAdmin(false);
+          setAdminEmail('');
+        }
+      } else {
         setUser(null);
         setIsAdmin(false);
         setAdminEmail('');
-        setIsLoading(false);
-        return;
       }
 
-      const authorized = await isAdminUser(currentUser);
-      if (!authorized) {
-        setUser(null);
-        setIsAdmin(false);
-        setAdminEmail('');
-        await signOut(auth).catch(() => undefined);
-        setAuthError('This Firebase account is not authorized for the Anivex CMS.');
-        setIsLoading(false);
-        return;
-      }
-
-      setAuthError(null);
-      setUser(currentUser);
-      setIsAdmin(true);
-      setAdminEmail(currentUser.email || '');
       setIsLoading(false);
     });
 
@@ -61,37 +63,40 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setIsLoading(true);
 
     const email = rawEmail.trim().toLowerCase();
-    if (!email || !email.includes('@') || !pass) {
-      setAuthError('Enter your Firebase admin email and password.');
+    const cleanPass = pass.trim();
+
+    if (!email || !cleanPass) {
+      setAuthError('Please enter both your administrator email and password.');
       setIsLoading(false);
       return false;
     }
 
     try {
-      const result = await signInWithEmailAndPassword(auth, email, pass);
-      const authorized = await isAdminUser(result.user);
+      const userCredential = await signInWithEmailAndPassword(auth, email, cleanPass);
+      const authorized = await isAdminUser(userCredential.user);
 
       if (!authorized) {
         await signOut(auth).catch(() => undefined);
-        setAuthError('Login succeeded, but this Firebase account is not authorized as a CMS administrator.');
+        setUser(null);
+        setIsAdmin(false);
+        setAdminEmail('');
+        setAuthError('Access denied: this account is not authorized as an administrator.');
         setIsLoading(false);
         return false;
       }
 
-      setUser(result.user);
+      setUser(userCredential.user);
       setIsAdmin(true);
-      setAdminEmail(result.user.email || email);
+      setAdminEmail(userCredential.user.email || email);
+      setAuthError(null);
       setIsLoading(false);
       return true;
     } catch (error: any) {
       const code: string = error?.code || '';
       if (code === 'auth/too-many-requests') {
         setAuthError('Too many failed attempts. Please wait a few minutes and try again.');
-      } else if (code === 'auth/network-request-failed') {
-        setAuthError('Network error. Check your internet connection and try again.');
-      } else if (code === 'auth/user-disabled') {
-        setAuthError('This account has been disabled.');
       } else {
+        // Generic response avoids username/email enumeration
         setAuthError('Invalid email or password.');
       }
       setIsLoading(false);
@@ -99,8 +104,47 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
+  const sendPasswordReset = async (rawEmail: string): Promise<{ success: boolean; message: string }> => {
+    const email = rawEmail.trim().toLowerCase();
+    if (!email || !email.includes('@')) {
+      return { success: false, message: 'Please enter a valid administrator email address.' };
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return {
+        success: true,
+        message: 'Password reset link has been dispatched to your email address. Please check your Inbox and Spam folders.',
+      };
+    } catch (error: any) {
+      const code = error?.code || '';
+      console.warn('Password reset notification notice:', code);
+      if (code === 'auth/too-many-requests') {
+        return {
+          success: false,
+          message: 'Too many requests. Please wait a few minutes before trying again.',
+        };
+      }
+      if (code === 'auth/network-request-failed') {
+        return {
+          success: false,
+          message: 'Network error. Please check your connection and try again.',
+        };
+      }
+      // For security (avoid user enumeration)
+      return {
+        success: true,
+        message: 'Password reset link has been dispatched to your email address. Please check your Inbox and Spam folders.',
+      };
+    }
+  };
+
   const logout = async () => {
-    await signOut(auth).catch((error) => console.warn('Sign out warning:', error));
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.warn('Sign out warning:', error);
+    }
     setUser(null);
     setIsAdmin(false);
     setAdminEmail('');
@@ -116,6 +160,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         adminEmail,
         login,
         logout,
+        sendPasswordReset,
         clearError: () => setAuthError(null),
       }}
     >

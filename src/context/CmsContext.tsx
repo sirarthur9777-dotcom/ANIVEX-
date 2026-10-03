@@ -185,8 +185,9 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setIsLoadingSettings(false);
       setSettingsError(null);
     }, (error) => {
-      console.error('Failed to load website settings:', error);
-      setSettingsError(error.message || 'Failed to load website settings');
+      console.warn('Firestore websiteSettings sync notice (using defaults):', error?.message);
+      setWebsiteSettings(DEFAULT_WEBSITE_SETTINGS);
+      setSettingsError(null);
       setIsLoadingSettings(false);
     }));
 

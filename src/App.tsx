@@ -23,6 +23,9 @@ import { Footer } from './components/Footer';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { PrivacyPolicyPage } from './components/PrivacyPolicyPage';
 import { TermsAndConditionsPage } from './components/TermsAndConditionsPage';
+import { ServicePage } from './components/ServicePage';
+import { SeoHead } from './components/SeoHead';
+import { SERVICES_SEO_DATA } from './data/servicesSeoData';
 
 import { AdminLogin } from './components/admin/AdminLogin';
 import { AdminDashboard } from './components/admin/AdminDashboard';
@@ -31,24 +34,32 @@ import { AdminDashboard } from './components/admin/AdminDashboard';
 function AdminRouteWrapper() {
   const { isAdmin, isLoading } = useAdminAuth();
 
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#FFFDF7] text-[#0B1F3A] font-semibold">Checking administrator access...</div>;
-  }
-
-  if (isAdmin) {
-    return <AdminDashboard />;
-  }
-
-  return <AdminLogin />;
+  return (
+    <>
+      <SeoHead
+        title="Admin Console | Anivex Solution"
+        description="Administrative portal for Anivex Solution."
+        isNoIndex={true}
+      />
+      {isLoading ? (
+        <div className="min-h-screen flex items-center justify-center bg-[#FFFDF7] text-[#0B1F3A] font-semibold">Checking administrator access...</div>
+      ) : isAdmin ? (
+        <AdminDashboard />
+      ) : (
+        <AdminLogin />
+      )}
+    </>
+  );
 }
 
 interface PublicWebsiteProps {
   onNavigatePrivacy: () => void;
   onNavigateTerms: () => void;
+  onNavigateService?: (path: string) => void;
 }
 
 // Inner component for Public Anivex Solution Website
-function PublicWebsite({ onNavigatePrivacy, onNavigateTerms }: PublicWebsiteProps) {
+function PublicWebsite({ onNavigatePrivacy, onNavigateTerms, onNavigateService }: PublicWebsiteProps) {
   const [selectedProjectType, setSelectedProjectType] = useState<string>('Website');
   const [selectedBudget, setSelectedBudget] = useState<string>('₹15,000 - ₹50,000');
 
@@ -87,8 +98,15 @@ function PublicWebsite({ onNavigatePrivacy, onNavigateTerms }: PublicWebsiteProp
 
   return (
     <div className="min-h-screen bg-[#FFFDF7] text-[#0B1F3A] selection:bg-[#F97316]/20 selection:text-[#F97316]">
+      {/* Homepage SEO Head */}
+      <SeoHead
+        title="Anivex Solution | Web Development & IT Solutions"
+        description="Anivex Solution provides professional website development, web applications, custom software, ERP systems, and IT solutions for businesses in India."
+        canonicalPath="/"
+      />
+
       {/* Navigation */}
-      <Navbar />
+      <Navbar onNavigateService={onNavigateService} />
 
       {/* Main Page Content */}
       <main id="main-content">
@@ -129,6 +147,7 @@ function PublicWebsite({ onNavigatePrivacy, onNavigateTerms }: PublicWebsiteProp
       <Footer
         onNavigateToPrivacy={onNavigatePrivacy}
         onNavigateToTerms={onNavigateTerms}
+        onNavigateToService={onNavigateService}
       />
 
       {/* Pinned Floating WhatsApp Contact Button for Instant Indian User Interaction */}
@@ -143,29 +162,53 @@ export default function App() {
   useEffect(() => {
     const handleLocationChange = () => {
       setCurrentPath(window.location.pathname);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     window.addEventListener('popstate', handleLocationChange);
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
 
+  const cleanPath = currentPath.replace(/\/$/, '').toLowerCase() || '/';
+  const serviceSlug = cleanPath.replace(/^\//, '');
+  const isServiceRoute = Boolean(SERVICES_SEO_DATA[serviceSlug]);
+
   const isAdminRoute = currentPath.startsWith('/admin');
-  const isPrivacyRoute = currentPath === '/privacy-policy' || currentPath === '/privacy';
-  const isTermsRoute = currentPath === '/terms-and-conditions' || currentPath === '/terms';
+  const isPrivacyRoute = cleanPath === '/privacy-policy' || cleanPath === '/privacy';
+  const isTermsRoute = cleanPath === '/terms-and-conditions' || cleanPath === '/terms';
 
   const navigateToHome = () => {
     window.history.pushState({}, '', '/');
     setCurrentPath('/');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToService = (path: string) => {
+    const target = path.startsWith('/') ? path : `/${path}`;
+    window.history.pushState({}, '', target);
+    setCurrentPath(target);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToPrivacy = () => {
     window.history.pushState({}, '', '/privacy-policy');
     setCurrentPath('/privacy-policy');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToTerms = () => {
     window.history.pushState({}, '', '/terms-and-conditions');
     setCurrentPath('/terms-and-conditions');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToContact = () => {
+    window.history.pushState({}, '', '/#contact');
+    setCurrentPath('/');
+    setTimeout(() => {
+      const el = document.getElementById('contact');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 150);
   };
 
   return (
@@ -174,16 +217,39 @@ export default function App() {
         {isAdminRoute ? (
           <AdminRouteWrapper />
         ) : isPrivacyRoute ? (
-          <PrivacyPolicyPage onBackToHome={navigateToHome} />
+          <>
+            <SeoHead
+              title="Privacy Policy | Anivex Solution"
+              description="Privacy policy and data governance statement for Anivex Solution clients and website visitors."
+              canonicalPath="/privacy-policy"
+            />
+            <PrivacyPolicyPage onBackToHome={navigateToHome} />
+          </>
         ) : isTermsRoute ? (
-          <TermsAndConditionsPage onBackToHome={navigateToHome} />
+          <>
+            <SeoHead
+              title="Terms & Conditions | Anivex Solution"
+              description="Terms and conditions for software engineering, website development, and IT services provided by Anivex Solution."
+              canonicalPath="/terms-and-conditions"
+            />
+            <TermsAndConditionsPage onBackToHome={navigateToHome} />
+          </>
+        ) : isServiceRoute && SERVICES_SEO_DATA[serviceSlug] ? (
+          <ServicePage
+            service={SERVICES_SEO_DATA[serviceSlug]}
+            onNavigateHome={navigateToHome}
+            onNavigateService={navigateToService}
+            onNavigateContact={navigateToContact}
+          />
         ) : (
           <PublicWebsite
             onNavigatePrivacy={navigateToPrivacy}
             onNavigateTerms={navigateToTerms}
+            onNavigateService={navigateToService}
           />
         )}
       </CmsProvider>
     </AdminAuthProvider>
   );
 }
+
