@@ -1,11 +1,23 @@
 import React from 'react';
-import { motion } from 'motion/react';
-import { Target, Compass, Award, ArrowRight, ShieldCheck, HeartHandshake, CheckCircle } from 'lucide-react';
+import { Target, Compass, ShieldCheck } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { AboutStudioVisual } from './TechVisualMockups';
+import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 export const About: React.FC = () => {
   const { siteContent } = useCms();
+
+  const sectionRef = useGsapSection<HTMLElement>({
+    headerSelector: '.gsap-about-header',
+    cardsSelector: '.gsap-about-card',
+    parallaxSelector: '.gsap-about-parallax',
+    visualSelector: '.gsap-about-visual',
+    cardStagger: 0.1,
+    cardYOffset: 45,
+    rotate3DX: 5,
+    parallaxDistance: 30,
+    enableParallax: true,
+  });
 
   const aboutHeading = siteContent.aboutHeading || "Technology With Purpose.";
   const aboutDescription = siteContent.aboutDescription || "Anivex Solution helps businesses transform ideas into reliable digital products and intelligent technology solutions.";
@@ -30,11 +42,20 @@ export const About: React.FC = () => {
   };
 
   return (
-    <section id="about" className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8">
+    <section
+      id="about"
+      ref={sectionRef}
+      className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8 overflow-hidden"
+      style={{ perspective: '1200px' }}
+    >
+      {/* Subtle GSAP 3D Scroll Parallax Background Light */}
+      <div className="gsap-about-parallax absolute top-10 right-10 w-96 h-96 bg-[#15803D]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="gsap-about-parallax absolute bottom-10 left-5 w-80 h-80 bg-[#F97316]/5 rounded-full blur-3xl pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col items-center text-center mb-16">
+        <div className="gsap-about-header flex flex-col items-center text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
             <span className="uppercase tracking-wider text-[11px] font-bold">ABOUT ANIVEX SOLUTION</span>
@@ -49,10 +70,10 @@ export const About: React.FC = () => {
           </p>
         </div>
 
-        {/* Company Story & Office Visual Frame (Zero AI-Slop) */}
+        {/* Company Story & Office Visual Frame with GSAP 3D Parallax */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-16">
-          {/* Left: High-Impact Visual */}
-          <div className="lg:col-span-6 relative">
+          {/* Left: High-Impact Visual with GSAP 3D Parallax */}
+          <div className="gsap-about-visual lg:col-span-6 relative">
             <AboutStudioVisual />
             {/* Subtle decorative line */}
             <div className="absolute -bottom-2 left-6 right-6 h-1 rounded-full saffron-green-accent opacity-75" />
@@ -91,14 +112,14 @@ export const About: React.FC = () => {
           </div>
         </div>
 
-        {/* 4 Core Values Grid */}
+        {/* 4 Core Values Grid with GSAP 3D Floating Scroll Effect */}
         <div className="mb-16">
           <h3 className="font-heading font-bold text-xl text-[#0B1F3A] text-center mb-8">
             Our Core Values
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((v, i) => (
-              <div key={i} className="card-warm rounded-xl p-5 bg-white">
+              <div key={i} className="gsap-about-card card-warm rounded-xl p-5 bg-white shadow-xs hover:shadow-md transition-all">
                 <div className="w-8 h-8 rounded-lg bg-[#0B1F3A]/5 flex items-center justify-center text-[#F97316] font-bold text-xs mb-3">
                   0{i + 1}
                 </div>

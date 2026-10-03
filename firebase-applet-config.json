@@ -1,12 +1,12 @@
 {
-  "projectId": "anivexsolutiondatabase",
-  "appId": "1:146849021900:web:49fb844768091816ee2769",
-  "apiKey": "AIzaSyAWx7ukmvyUbTr2NucsZ9dvt0n5zEtODb0",
-  "authDomain": "anivexsolutiondatabase.firebaseapp.com",
-  "firestoreDatabaseId": "(default)",
-  "storageBucket": "anivexsolutiondatabase.firebasestorage.app",
-  "messagingSenderId": "146849021900",
-  "measurementId": "G-2R9SXJ26Q7",
-  "oAuthClientId": "",
+  "projectId": "gen-lang-client-0301847634",
+  "appId": "1:10842370341:web:fff7506f758ee914a56acc",
+  "apiKey": "AIzaSyB0MOCTPJB_uwHEaRGOrBn-eBgyu0z2vNs",
+  "authDomain": "gen-lang-client-0301847634.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-anivexsolutions-45b96767-c964-4579-a356-8b38ecbb9c41",
+  "storageBucket": "gen-lang-client-0301847634.firebasestorage.app",
+  "messagingSenderId": "10842370341",
+  "measurementId": "",
+  "oAuthClientId": "10842370341-uk0882bvf5gflk62f73fa2gcma0qdijm.apps.googleusercontent.com",
   "recaptchaSiteKey": ""
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ArrowRight, MessageCircle } from 'lucide-react';
+import { Menu, X, ArrowRight, MessageCircle, ChevronRight } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
 
@@ -26,7 +26,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
       const element = document.getElementById(initialId);
       if (element) {
         setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
+          const navHeight = 72;
+          const rect = element.getBoundingClientRect();
+          const targetY = Math.max(0, rect.top + window.scrollY - navHeight);
+          window.scrollTo({ top: targetY, behavior: 'smooth' });
         }, 150);
       }
     }
@@ -34,12 +37,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
 
-      const sections = ['hero', 'about', 'services', 'products', 'projects', 'why-anivex', 'testimonials', 'faq', 'contact'];
+      const sections = ['hero', 'about', 'services', 'products', 'projects', 'why-anivex', 'testimonials', 'pricing', 'faq', 'contact'];
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
         if (el) {
           const rect = el.getBoundingClientRect();
-          if (rect.top <= 120 && rect.bottom >= 120) {
+          if (rect.top <= 140 && rect.bottom >= 140) {
             setActiveSection(sectionId);
             break;
           }
@@ -51,15 +54,92 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
+  const navigateToTarget = (href: string) => {
+    // Close mobile drawer immediately
     setMobileMenuOpen(false);
-    const targetId = href.startsWith('#') ? href.substring(1) : href;
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      window.history.pushState(null, '', href);
+
+    let cleanHref = (href || '').trim();
+    if (!cleanHref) cleanHref = '#hero';
+
+    // Handle external URLs
+    if (cleanHref.startsWith('http://') || cleanHref.startsWith('https://')) {
+      if (!cleanHref.includes(window.location.hostname)) {
+        window.open(cleanHref, '_blank', 'noopener,noreferrer');
+        return;
+      }
+      const hashIdx = cleanHref.indexOf('#');
+      if (hashIdx !== -1) {
+        cleanHref = cleanHref.substring(hashIdx);
+      }
     }
+
+    // Determine target anchor id
+    let targetId = '';
+    if (cleanHref.includes('#')) {
+      targetId = cleanHref.split('#')[1];
+    } else if (cleanHref.startsWith('/')) {
+      targetId = cleanHref.replace(/^\//, '');
+    } else {
+      targetId = cleanHref;
+    }
+
+    targetId = targetId.toLowerCase().trim();
+
+    // Map common aliases
+    if (targetId === '' || targetId === 'home') {
+      targetId = 'hero';
+    } else if (targetId === 'why' || targetId === 'whyanivex') {
+      targetId = 'why-anivex';
+    }
+
+    // Check if on dedicated service page navigation
+    const validSections = ['hero', 'about', 'services', 'products', 'projects', 'why-anivex', 'testimonials', 'pricing', 'faq', 'contact'];
+    if (onNavigateService && !cleanHref.includes('#') && !validSections.includes(targetId)) {
+      onNavigateService(targetId);
+      return;
+    }
+
+    const performScroll = () => {
+      if (targetId === 'hero') {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        });
+        window.history.pushState(null, '', '#hero');
+        setActiveSection('hero');
+        return;
+      }
+
+      // Try finding the element by targetId, or with fallbacks
+      const el = document.getElementById(targetId) ||
+                 document.getElementById(targetId.replace(/-/g, '')) ||
+                 document.querySelector(`[id*="${targetId}"]`);
+
+      if (el) {
+        const navHeight = 72;
+        const rect = el.getBoundingClientRect();
+        const absoluteTop = rect.top + window.scrollY;
+        const targetScrollTop = Math.max(0, absoluteTop - navHeight);
+
+        window.scrollTo({
+          top: targetScrollTop,
+          behavior: 'smooth',
+        });
+
+        window.history.pushState(null, '', `#${targetId}`);
+        setActiveSection(targetId);
+      }
+    };
+
+    // Execute immediately and after drawer height collapse
+    performScroll();
+    setTimeout(performScroll, 80);
+    setTimeout(performScroll, 240);
+  };
+
+  const handleNavClick = (e: React.MouseEvent<HTMLElement>, href: string) => {
+    e.preventDefault();
+    navigateToTarget(href);
   };
 
   // Nav items from CMS with fallback
@@ -126,13 +206,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
         {/* Zone 2: Clean text navigation links with subtle hover effect */}
         <nav className="hidden lg:flex items-center gap-6" id="desktop-nav">
           {navItems.map((link) => {
-            const isActive = activeSection === link.href.substring(1);
+            const targetKey = link.href.replace(/^[/#]+/, '').toLowerCase();
+            const isActive = activeSection === targetKey || (targetKey === 'home' && activeSection === 'hero');
             return (
               <a
                 key={link.id || link.label}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className={`text-sm font-medium transition-colors whitespace-nowrap relative py-1 ${
+                className={`text-sm font-medium transition-colors whitespace-nowrap relative py-1 cursor-pointer ${
                   isActive
                     ? 'text-[#F97316] font-semibold'
                     : 'text-[#0B1F3A]/80 hover:text-[#0B1F3A]'
@@ -170,7 +251,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
           </a>
         </div>
 
-        {/* Mobile Hamburger Toggle */}
+        {/* Mobile Hamburger Toggle Button */}
         <div className="flex items-center gap-2 lg:hidden">
           <a
             href={whatsappUrl}
@@ -184,8 +265,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg bg-[#0B1F3A]/5 text-[#0B1F3A] hover:bg-[#0B1F3A]/10 transition-colors cursor-pointer"
-            aria-label="Toggle navigation menu"
+            className={`p-2.5 rounded-lg border transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
+              mobileMenuOpen
+                ? 'bg-[#F97316]/10 text-[#F97316] border-[#F97316]/30 shadow-xs'
+                : 'bg-[#0B1F3A]/5 text-[#0B1F3A] border-[#0B1F3A]/10 hover:bg-[#0B1F3A]/10'
+            }`}
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileMenuOpen}
             id="mobile-menu-toggle"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -200,41 +286,58 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="lg:hidden bg-[#FFFDF7] border-b border-[#0B1F3A]/10 overflow-hidden px-4 py-4 shadow-lg"
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:hidden bg-[#FFFDF7] border-b border-[#0B1F3A]/10 overflow-hidden px-4 py-3 shadow-xl"
             id="mobile-menu-drawer"
           >
             <div className="flex flex-col gap-1">
-              {navItems.map((link) => (
-                <a
-                  key={link.id || link.label}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className="px-3 py-2 rounded-md text-sm font-medium text-[#0B1F3A] hover:bg-[#0B1F3A]/5 hover:text-[#F97316] transition-colors"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navItems.map((link) => {
+                const targetKey = link.href.replace(/^[/#]+/, '').toLowerCase();
+                const isItemActive = activeSection === targetKey || (targetKey === 'hero' && activeSection === 'hero') || (targetKey === 'home' && activeSection === 'hero');
+
+                return (
+                  <button
+                    key={link.id || link.label}
+                    type="button"
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all text-left cursor-pointer active:bg-[#F97316]/15 ${
+                      isItemActive
+                        ? 'bg-[#F97316]/10 text-[#F97316] font-bold'
+                        : 'text-[#0B1F3A] hover:bg-[#0B1F3A]/5 hover:text-[#F97316]'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <span className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                        isItemActive ? 'bg-[#F97316]' : 'bg-[#0B1F3A]/20'
+                      }`} />
+                      <span>{link.label}</span>
+                    </span>
+                    <ChevronRight className={`w-4 h-4 transition-transform ${
+                      isItemActive ? 'text-[#F97316] translate-x-0.5' : 'text-[#0B1F3A]/30'
+                    }`} />
+                  </button>
+                );
+              })}
 
               <div className="pt-3 mt-2 border-t border-[#0B1F3A]/10 flex flex-col gap-2">
                 <a
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-2.5 rounded-lg bg-[#15803D] text-white text-xs font-bold text-center flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full py-2.5 rounded-lg bg-[#15803D] hover:bg-[#166534] text-white text-xs font-bold text-center flex items-center justify-center gap-2 shadow-sm transition-colors cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4 fill-current" />
                   <span>WhatsApp Inquiry (+91)</span>
                 </a>
 
-                <a
-                  href={ctaLink}
+                <button
+                  type="button"
                   onClick={(e) => handleNavClick(e, ctaLink)}
-                  className="w-full py-2.5 rounded-lg bg-[#F97316] text-white text-xs font-bold text-center flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full py-2.5 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold text-center flex items-center justify-center gap-2 shadow-sm transition-colors cursor-pointer"
                 >
                   <span>{ctaText}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
-                </a>
+                </button>
               </div>
             </div>
           </motion.div>

@@ -1,8 +1,8 @@
 import React from 'react';
-import { motion } from 'motion/react';
-import { ArrowRight, MessageCircle, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, MessageCircle, CheckCircle2 } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
+import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 interface CTASectionProps {
   onStartProject?: () => void;
@@ -10,6 +10,15 @@ interface CTASectionProps {
 
 export const CTASection: React.FC<CTASectionProps> = ({ onStartProject }) => {
   const { siteContent, companyInfo, websiteSettings } = useCms();
+
+  const sectionRef = useGsapSection<HTMLElement>({
+    headerSelector: '.gsap-cta-card',
+    parallaxSelector: '.gsap-cta-glow',
+    rotate3DX: 4,
+    cardYOffset: 45,
+    parallaxDistance: 35,
+    enableParallax: true,
+  });
 
   const heading = siteContent.ctaHeading || "Let's Build Something That Matters.";
   const subtitle = siteContent.ctaSubtitle || "Whether you need a custom software platform, high-converting web application, or enterprise ERP, we are ready to build it with you.";
@@ -29,18 +38,16 @@ export const CTASection: React.FC<CTASectionProps> = ({ onStartProject }) => {
   };
 
   return (
-    <section className="py-20 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8 overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="py-20 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8 overflow-hidden"
+      style={{ perspective: '1200px' }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-          className="p-8 sm:p-14 rounded-3xl bg-[#0B1F3A] text-white text-center relative overflow-hidden shadow-xl"
-        >
-          {/* Subtle decorative glow */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#F97316]/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#15803D]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="gsap-cta-card p-8 sm:p-14 rounded-3xl bg-[#0B1F3A] text-white text-center relative overflow-hidden shadow-2xl">
+          {/* Subtle GSAP 3D Scroll Parallax decorative glow */}
+          <div className="gsap-cta-glow absolute top-0 right-0 w-96 h-96 bg-[#F97316]/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="gsap-cta-glow absolute bottom-0 left-0 w-96 h-96 bg-[#15803D]/15 rounded-full blur-3xl pointer-events-none" />
 
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-[#D4A72C] mb-6">
@@ -63,7 +70,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ onStartProject }) => {
             <button
               type="button"
               onClick={onStartProject || handleScrollToContact}
-              className="px-7 py-3.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-bold text-xs tracking-wide shadow-md transition-all cursor-pointer flex items-center gap-2"
+              className="px-7 py-3.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-bold text-xs tracking-wide shadow-md hover:shadow-xl transition-all cursor-pointer flex items-center gap-2"
             >
               <span>{primaryText}</span>
               <ArrowRight className="w-4 h-4" />
@@ -73,7 +80,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ onStartProject }) => {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#15803D] hover:bg-[#166534] text-white font-bold text-xs tracking-wide shadow-sm transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#15803D] hover:bg-[#166534] text-white font-bold text-xs tracking-wide shadow-sm hover:shadow-lg transition-all"
             >
               <MessageCircle className="w-4 h-4 fill-current" />
               <span>{secondaryText} (+91)</span>
@@ -91,7 +98,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ onStartProject }) => {
             <span>·</span>
             <span>GST Tax Invoices Provided</span>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

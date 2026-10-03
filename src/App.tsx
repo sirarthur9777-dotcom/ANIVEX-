@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext';
 import { CmsProvider } from './context/CmsContext';
 
@@ -64,9 +65,16 @@ function PublicWebsite({ onNavigatePrivacy, onNavigateTerms, onNavigateService }
   const [selectedBudget, setSelectedBudget] = useState<string>('₹15,000 - ₹50,000');
 
   const handleScrollToSection = (id: string) => {
+    if (id === 'hero' || id === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const navHeight = 72;
+      const rect = element.getBoundingClientRect();
+      const targetScrollTop = Math.max(0, rect.top + window.scrollY - navHeight);
+      window.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
     }
   };
 
@@ -169,6 +177,13 @@ export default function App() {
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [currentPath]);
+
   const cleanPath = currentPath.replace(/\/$/, '').toLowerCase() || '/';
   const serviceSlug = cleanPath.replace(/^\//, '');
   const isServiceRoute = Boolean(SERVICES_SEO_DATA[serviceSlug]);
@@ -176,6 +191,22 @@ export default function App() {
   const isAdminRoute = currentPath.startsWith('/admin');
   const isPrivacyRoute = cleanPath === '/privacy-policy' || cleanPath === '/privacy';
   const isTermsRoute = cleanPath === '/terms-and-conditions' || cleanPath === '/terms';
+
+  useEffect(() => {
+    const slug = (cleanPath.replace(/^\//, '') || '').toLowerCase();
+    const knownSections = ['about', 'services', 'products', 'projects', 'why-anivex', 'testimonials', 'pricing', 'faq', 'contact'];
+    if (knownSections.includes(slug)) {
+      setTimeout(() => {
+        const el = document.getElementById(slug);
+        if (el) {
+          const navHeight = 72;
+          const rect = el.getBoundingClientRect();
+          const targetY = Math.max(0, rect.top + window.scrollY - navHeight);
+          window.scrollTo({ top: targetY, behavior: 'smooth' });
+        }
+      }, 150);
+    }
+  }, [cleanPath]);
 
   const navigateToHome = () => {
     window.history.pushState({}, '', '/');

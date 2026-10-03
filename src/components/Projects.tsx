@@ -4,10 +4,23 @@ import { ArrowRight, Check, X, Calendar, User, ExternalLink, Sparkles } from 'lu
 import { useCms } from '../context/CmsContext';
 import { ProjectCMS } from '../types/cms';
 import { PolicyHubVisual, VyaparDeskVisual, OpsGridVisual } from './TechVisualMockups';
+import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 export const Projects: React.FC = () => {
   const { projects } = useCms();
   const [selectedProject, setSelectedProject] = useState<ProjectCMS | null>(null);
+
+  const sectionRef = useGsapSection<HTMLElement>({
+    headerSelector: '.gsap-projects-header',
+    cardsSelector: '.gsap-project-card',
+    parallaxSelector: '.gsap-projects-parallax',
+    visualSelector: '.gsap-projects-visual',
+    cardStagger: 0.12,
+    cardYOffset: 55,
+    rotate3DX: 6,
+    parallaxDistance: 30,
+    enableParallax: true,
+  });
 
   const fallbackProjects: ProjectCMS[] = [
     {
@@ -83,11 +96,20 @@ export const Projects: React.FC = () => {
     : fallbackProjects;
 
   return (
-    <section id="projects" className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8">
+    <section
+      id="projects"
+      ref={sectionRef}
+      className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8 overflow-hidden"
+      style={{ perspective: '1200px' }}
+    >
+      {/* Subtle GSAP 3D Scroll Parallax Background Light */}
+      <div className="gsap-projects-parallax absolute top-10 left-5 w-80 h-80 bg-[#F97316]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="gsap-projects-parallax absolute bottom-10 right-5 w-96 h-96 bg-[#D4A72C]/5 rounded-full blur-3xl pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col items-center text-center mb-16">
+        <div className="gsap-projects-header flex flex-col items-center text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />
             <span className="uppercase tracking-wider text-[11px] font-bold">PROVEN DELIVERIES</span>
@@ -102,23 +124,19 @@ export const Projects: React.FC = () => {
           </p>
         </div>
 
-        {/* Case Study Cards Grid */}
+        {/* Case Study Cards Grid with GSAP 3D Floating Scroll Effect */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {activeProjects.map((project, index) => {
             const projectImg = project.image || project.imageUrl || '/images/hero_indian_tech_business_1790750492543.jpg';
 
             return (
-              <motion.div
+              <div
                 key={project.id}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.35, delay: index * 0.05 }}
-                className="card-warm card-warm-hover rounded-2xl overflow-hidden bg-white flex flex-col justify-between"
+                className="gsap-project-card card-warm card-warm-hover rounded-2xl overflow-hidden bg-white flex flex-col justify-between shadow-xs hover:shadow-xl transition-all"
               >
                 <div>
-                  {/* Project Technical UI Mockup Preview (Zero AI-Slop) */}
-                  <div className="relative aspect-[16/10] bg-slate-900 overflow-hidden border-b border-[#0B1F3A]/6">
+                  {/* Project Technical UI Mockup Preview with GSAP 3D Parallax */}
+                  <div className="gsap-projects-visual relative aspect-[16/10] bg-slate-900 overflow-hidden border-b border-[#0B1F3A]/6">
                     {project.id === 'policyhub-project' ? (
                       <PolicyHubVisual />
                     ) : project.id === 'nexus-erp' ? (
@@ -194,7 +212,7 @@ export const Projects: React.FC = () => {
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

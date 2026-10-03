@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, MessageCircle, QrCode, Landmark, Copy, Check, ArrowRight } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl, formatPhoneTel } from '../services/websiteSettings';
+import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 interface ContactProps {
   preselectedProjectType?: string;
@@ -10,6 +11,17 @@ interface ContactProps {
 
 export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, preselectedBudget }) => {
   const { submitContactEnquiry, companyInfo, websiteSettings, paymentSettings } = useCms();
+
+  const sectionRef = useGsapSection<HTMLElement>({
+    headerSelector: '.gsap-contact-header',
+    cardsSelector: '.gsap-contact-card',
+    parallaxSelector: '.gsap-contact-parallax',
+    cardStagger: 0.12,
+    cardYOffset: 50,
+    rotate3DX: 5,
+    parallaxDistance: 25,
+    enableParallax: true,
+  });
 
   const projectOptions = [
     'Website',
@@ -101,11 +113,20 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
   };
 
   return (
-    <section id="contact" className="py-24 bg-white relative border-t border-[#0B1F3A]/8">
+    <section
+      id="contact"
+      ref={sectionRef}
+      className="py-24 bg-white relative border-t border-[#0B1F3A]/8 overflow-hidden"
+      style={{ perspective: '1200px' }}
+    >
+      {/* Subtle GSAP 3D Scroll Parallax Background Light */}
+      <div className="gsap-contact-parallax absolute top-10 right-10 w-96 h-96 bg-[#F97316]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="gsap-contact-parallax absolute bottom-10 left-10 w-80 h-80 bg-[#15803D]/5 rounded-full blur-3xl pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col items-center text-center mb-16">
+        <div className="gsap-contact-header flex flex-col items-center text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />
             <span className="uppercase tracking-wider text-[11px] font-bold">START A PROJECT</span>
@@ -122,8 +143,8 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
-          {/* Main Contact Flow: Interactive Question + Form */}
-          <div className="lg:col-span-8 bg-[#FFFDF7] border border-[#0B1F3A]/10 rounded-2xl p-6 sm:p-10 shadow-sm">
+          {/* Main Contact Flow: Interactive Question + Form with GSAP 3D Floating Scroll Effect */}
+          <div className="gsap-contact-card lg:col-span-8 bg-[#FFFDF7] border border-[#0B1F3A]/10 rounded-2xl p-6 sm:p-10 shadow-sm hover:shadow-md transition-shadow">
             
             {/* Step 1: Interactive Question */}
             <div className="mb-8">
@@ -275,7 +296,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
           <div className="lg:col-span-4 space-y-6">
             
             {/* Direct Contact Card */}
-            <div className="p-6 rounded-2xl bg-[#FFFDF7] border border-[#0B1F3A]/10 shadow-xs space-y-5">
+            <div className="gsap-contact-card p-6 rounded-2xl bg-[#FFFDF7] border border-[#0B1F3A]/10 shadow-xs space-y-5">
               <h3 className="font-heading font-bold text-lg text-[#0B1F3A]">
                 Direct Communication
               </h3>
@@ -328,7 +349,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
             </div>
 
             {/* Indian Payment Details (UPI / Bank) */}
-            <div className="p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-xs">
+            <div className="gsap-contact-card p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-xs hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[11px] font-bold text-[#15803D] uppercase tracking-wider">
                   Payment Modes

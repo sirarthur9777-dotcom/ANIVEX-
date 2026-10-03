@@ -1,8 +1,8 @@
 import React from 'react';
-import { motion } from 'motion/react';
 import { Check, ArrowRight, MessageCircle, ShieldCheck } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
+import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 interface PricingPackagesProps {
   onSelectPackage?: (packageName: string, budgetRange: string) => void;
@@ -11,6 +11,17 @@ interface PricingPackagesProps {
 export const PricingPackages: React.FC<PricingPackagesProps> = ({ onSelectPackage }) => {
   const { companyInfo, websiteSettings } = useCms();
   const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
+
+  const sectionRef = useGsapSection<HTMLElement>({
+    headerSelector: '.gsap-pricing-header',
+    cardsSelector: '.gsap-pricing-card',
+    parallaxSelector: '.gsap-pricing-parallax',
+    cardStagger: 0.1,
+    cardYOffset: 50,
+    rotate3DX: 6,
+    parallaxDistance: 25,
+    enableParallax: true,
+  });
 
   const packages = [
     {
@@ -110,11 +121,20 @@ export const PricingPackages: React.FC<PricingPackagesProps> = ({ onSelectPackag
   };
 
   return (
-    <section id="pricing" className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8">
+    <section
+      id="pricing"
+      ref={sectionRef}
+      className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8 overflow-hidden"
+      style={{ perspective: '1200px' }}
+    >
+      {/* Subtle GSAP 3D Scroll Parallax Background Light */}
+      <div className="gsap-pricing-parallax absolute top-10 right-5 w-80 h-80 bg-[#F97316]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="gsap-pricing-parallax absolute bottom-5 left-5 w-96 h-96 bg-[#15803D]/5 rounded-full blur-3xl pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col items-center text-center mb-16">
+        <div className="gsap-pricing-header flex flex-col items-center text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
             <span className="uppercase tracking-wider text-[11px] font-bold">TRANSPARENT VALUE</span>
@@ -129,19 +149,15 @@ export const PricingPackages: React.FC<PricingPackagesProps> = ({ onSelectPackag
           </p>
         </div>
 
-        {/* 4 Packages Grid */}
+        {/* 4 Packages Grid with GSAP 3D Floating Scroll Effect */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {packages.map((pkg, idx) => (
-            <motion.div
+            <div
               key={pkg.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: idx * 0.05 }}
-              className={`rounded-2xl p-6 flex flex-col justify-between transition-all ${
+              className={`gsap-pricing-card rounded-2xl p-6 flex flex-col justify-between transition-all ${
                 pkg.featured
-                  ? 'bg-white border-2 border-[#F97316] shadow-md relative'
-                  : 'bg-white border border-[#0B1F3A]/10 card-warm-hover shadow-xs'
+                  ? 'bg-white border-2 border-[#F97316] shadow-md hover:shadow-xl relative'
+                  : 'bg-white border border-[#0B1F3A]/10 card-warm-hover shadow-xs hover:shadow-lg'
               }`}
             >
               <div>
@@ -209,7 +225,7 @@ export const PricingPackages: React.FC<PricingPackagesProps> = ({ onSelectPackag
                   <span>WhatsApp Inquiry</span>
                 </button>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 

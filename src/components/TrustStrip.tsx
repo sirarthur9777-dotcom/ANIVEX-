@@ -1,9 +1,17 @@
 import React from 'react';
-import { Code2, Layers, ShieldCheck, Award, CheckCircle2, HeartHandshake } from 'lucide-react';
+import { Code2, ShieldCheck, Award, HeartHandshake } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 export const TrustStrip: React.FC = () => {
   const { siteContent } = useCms();
+  const sectionRef = useGsapSection<HTMLElement>({
+    cardsSelector: '.gsap-trust-card',
+    cardStagger: 0.1,
+    cardYOffset: 35,
+    rotate3DX: 4,
+    enableParallax: false,
+  });
 
   const trustStats = siteContent.trustStats && siteContent.trustStats.length > 0
     ? siteContent.trustStats.filter((t) => t.enabled !== false).sort((a, b) => a.order - b.order)
@@ -56,13 +64,18 @@ export const TrustStrip: React.FC = () => {
   };
 
   return (
-    <section id="trust-strip" className="relative z-20 py-8 bg-white border-y border-[#0B1F3A]/8">
+    <section
+      id="trust-strip"
+      ref={sectionRef}
+      className="relative z-20 py-8 bg-white border-y border-[#0B1F3A]/8"
+      style={{ perspective: '1000px' }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {trustStats.map((item) => (
             <div
               key={item.id}
-              className="flex items-start gap-4 p-4 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6 hover:border-[#F97316]/30 transition-all card-warm-hover"
+              className="gsap-trust-card flex items-start gap-4 p-4 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6 hover:border-[#F97316]/30 transition-all card-warm-hover"
             >
               <div className="p-2.5 rounded-lg bg-white border border-[#0B1F3A]/8 shadow-xs shrink-0">
                 {getIcon(item.iconName)}

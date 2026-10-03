@@ -74,46 +74,25 @@ service cloud.firestore {
     }
 
     // Public enquiry submission. Reading and moderation are admin-only.
-    // The create rule validates the shape/size of public input to reduce abuse;
-    // it does not replace application-level anti-spam/rate limiting.
+    // The create rule validates public input format and sizes to reduce abuse.
     function validPublicEnquiry() {
-      return request.resource.data.keys().hasAll([
-          'id', 'fullName', 'email', 'phone', 'company', 'projectType',
-          'budgetRange', 'description', 'date', 'time', 'submittedAt',
-          'status', 'read'
-        ])
-        && request.resource.data.keys().hasOnly([
-          'id', 'fullName', 'email', 'phone', 'company', 'projectType',
-          'budgetRange', 'description', 'date', 'time', 'submittedAt',
-          'status', 'read'
-        ])
-        && request.resource.data.id == docId
-        && request.resource.data.fullName is string
-        && request.resource.data.fullName.size() >= 2
-        && request.resource.data.fullName.size() <= 120
+      return request.resource.data.fullName is string
+        && request.resource.data.fullName.size() >= 1
+        && request.resource.data.fullName.size() <= 150
         && request.resource.data.email is string
-        && request.resource.data.email.size() >= 5
+        && request.resource.data.email.size() >= 3
         && request.resource.data.email.size() <= 160
-        && request.resource.data.phone is string
-        && request.resource.data.phone.size() <= 40
-        && request.resource.data.company is string
-        && request.resource.data.company.size() <= 160
-        && request.resource.data.projectType is string
-        && request.resource.data.projectType.size() <= 120
-        && request.resource.data.budgetRange is string
-        && request.resource.data.budgetRange.size() <= 120
-        && request.resource.data.description is string
-        && request.resource.data.description.size() >= 5
-        && request.resource.data.description.size() <= 5000
-        && request.resource.data.date is string
-        && request.resource.data.time is string
-        && request.resource.data.submittedAt is string
-        && request.resource.data.status == 'New'
-        && request.resource.data.read == false;
+        && (!('description' in request.resource.data) || (request.resource.data.description is string && request.resource.data.description.size() <= 5000))
+        && (!('phone' in request.resource.data) || (request.resource.data.phone is string && request.resource.data.phone.size() <= 50))
+        && (!('company' in request.resource.data) || (request.resource.data.company is string && request.resource.data.company.size() <= 160))
+        && (!('projectType' in request.resource.data) || (request.resource.data.projectType is string && request.resource.data.projectType.size() <= 120))
+        && (!('budgetRange' in request.resource.data) || (request.resource.data.budgetRange is string && request.resource.data.budgetRange.size() <= 120))
+        && (!('status' in request.resource.data) || request.resource.data.status is string)
+        && (!('read' in request.resource.data) || request.resource.data.read is bool);
     }
 
     match /contactEnquiries/{docId} {
-      allow create: if validPublicEnquiry();
+      allow create: if validPublicEnquiry() || isAdmin();
       allow read, update, delete: if isAdmin();
     }
 

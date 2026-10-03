@@ -452,14 +452,21 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     crypto.getRandomValues(randomBytes);
     const suffix = Array.from(randomBytes, (b) => (b % 36).toString(36)).join('').toUpperCase();
     const id = `ANX-${now.getFullYear()}-${suffix}`;
+    const cleanDescription = (data.description || '').trim().slice(0, 5000) || 'Project inquiry via website contact form.';
     const enquiry: ContactEnquiry = {
-      id, fullName: data.fullName.trim().slice(0, 120), email: data.email.trim().slice(0, 160),
+      id,
+      fullName: (data.fullName || 'Prospective Client').trim().slice(0, 120),
+      email: (data.email || '').trim().slice(0, 160),
       phone: (data.phone || '').trim().slice(0, 40) || 'Not specified',
       company: (data.company || '').trim().slice(0, 160) || 'Independent / Startup',
-      projectType: data.projectType.slice(0, 120),
-      budgetRange: (data.budgetRange || 'Flexible').slice(0, 120), description: data.description.trim().slice(0, 5000),
-      date: now.toISOString().slice(0, 10), time: now.toTimeString().slice(0, 5),
-      submittedAt: now.toISOString(), status: 'New', read: false,
+      projectType: (data.projectType || 'Website').slice(0, 120),
+      budgetRange: (data.budgetRange || 'Flexible').slice(0, 120),
+      description: cleanDescription,
+      date: now.toISOString().slice(0, 10),
+      time: now.toTimeString().slice(0, 5),
+      submittedAt: now.toISOString(),
+      status: 'New',
+      read: false,
     };
 
     try {

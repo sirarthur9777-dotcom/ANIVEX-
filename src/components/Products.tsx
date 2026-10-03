@@ -4,10 +4,23 @@ import { ArrowRight, Check, X, Shield, ExternalLink, Sparkles } from 'lucide-rea
 import { useCms } from '../context/CmsContext';
 import { ProductCMS } from '../types/cms';
 import { PolicyHubVisual, VyaparDeskVisual, OpsGridVisual } from './TechVisualMockups';
+import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 export const Products: React.FC = () => {
   const { products } = useCms();
   const [selectedProduct, setSelectedProduct] = useState<ProductCMS | null>(null);
+
+  const sectionRef = useGsapSection<HTMLElement>({
+    headerSelector: '.gsap-products-header',
+    cardsSelector: '.gsap-product-card',
+    parallaxSelector: '.gsap-products-parallax',
+    visualSelector: '.gsap-products-visual',
+    cardStagger: 0.12,
+    cardYOffset: 55,
+    rotate3DX: 6,
+    parallaxDistance: 25,
+    enableParallax: true,
+  });
 
   const fallbackProducts: ProductCMS[] = [
     {
@@ -73,11 +86,20 @@ export const Products: React.FC = () => {
   };
 
   return (
-    <section id="products" className="py-24 bg-white relative border-t border-[#0B1F3A]/8">
+    <section
+      id="products"
+      ref={sectionRef}
+      className="py-24 bg-white relative border-t border-[#0B1F3A]/8 overflow-hidden"
+      style={{ perspective: '1200px' }}
+    >
+      {/* Subtle GSAP 3D Scroll Parallax Background Light */}
+      <div className="gsap-products-parallax absolute top-10 right-5 w-80 h-80 bg-[#15803D]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="gsap-products-parallax absolute bottom-10 left-5 w-96 h-96 bg-[#F97316]/5 rounded-full blur-3xl pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col items-center text-center mb-16">
+        <div className="gsap-products-header flex flex-col items-center text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
             <span className="uppercase tracking-wider text-[11px] font-bold">PROPRIETARY PRODUCTS</span>
@@ -92,20 +114,16 @@ export const Products: React.FC = () => {
           </p>
         </div>
 
-        {/* Product Cards Grid */}
+        {/* Product Cards Grid with GSAP 3D Floating Scroll Effect */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {activeProducts.map((prod, index) => (
-            <motion.div
+            <div
               key={prod.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: index * 0.05 }}
-              className="card-warm card-warm-hover rounded-2xl overflow-hidden bg-white flex flex-col justify-between"
+              className="gsap-product-card card-warm card-warm-hover rounded-2xl overflow-hidden bg-white flex flex-col justify-between shadow-xs hover:shadow-xl transition-all"
             >
               <div>
-                {/* Product Cover UI Mockup Preview (Zero AI-Slop) */}
-                <div className="relative aspect-[16/10] bg-slate-900 overflow-hidden border-b border-[#0B1F3A]/6">
+                {/* Product Cover UI Mockup Preview with GSAP 3D Parallax */}
+                <div className="gsap-products-visual relative aspect-[16/10] bg-slate-900 overflow-hidden border-b border-[#0B1F3A]/6">
                   {prod.id === 'policyhub' ? (
                     <PolicyHubVisual />
                   ) : prod.id === 'vyapardesk' ? (
@@ -173,7 +191,7 @@ export const Products: React.FC = () => {
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 

@@ -4,11 +4,23 @@ import { ChevronDown, HelpCircle, MessageCircle } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { FaqCMS } from '../types/cms';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
+import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 export const FaqSection: React.FC = () => {
   const { faqs, companyInfo, websiteSettings } = useCms();
   const [openId, setOpenId] = useState<string | null>('faq-1');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+  const sectionRef = useGsapSection<HTMLElement>({
+    headerSelector: '.gsap-faq-header',
+    cardsSelector: '.gsap-faq-item',
+    parallaxSelector: '.gsap-faq-parallax',
+    cardStagger: 0.08,
+    cardYOffset: 40,
+    rotate3DX: 4,
+    parallaxDistance: 25,
+    enableParallax: true,
+  });
 
   const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
 
@@ -75,11 +87,20 @@ export const FaqSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8">
+    <section
+      id="faq"
+      ref={sectionRef}
+      className="py-24 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8 overflow-hidden"
+      style={{ perspective: '1200px' }}
+    >
+      {/* Subtle GSAP 3D Scroll Parallax Background Light */}
+      <div className="gsap-faq-parallax absolute top-10 right-5 w-72 h-72 bg-[#F97316]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="gsap-faq-parallax absolute bottom-5 left-5 w-80 h-80 bg-[#15803D]/5 rounded-full blur-3xl pointer-events-none" />
+
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col items-center text-center mb-12">
+        <div className="gsap-faq-header flex flex-col items-center text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
             <HelpCircle className="w-3.5 h-3.5 text-[#F97316]" />
             <span className="uppercase tracking-wider text-[11px] font-bold">FREQUENTLY ASKED QUESTIONS</span>
@@ -114,7 +135,7 @@ export const FaqSection: React.FC = () => {
           </div>
         )}
 
-        {/* FAQ Accordion List */}
+        {/* FAQ Accordion List with GSAP 3D Floating Scroll Effect */}
         <div className="space-y-3">
           {filteredFaqs.map((faq) => {
             const isOpen = openId === faq.id;
@@ -122,7 +143,7 @@ export const FaqSection: React.FC = () => {
             return (
               <div
                 key={faq.id}
-                className="card-warm rounded-xl overflow-hidden bg-white border border-[#0B1F3A]/8 transition-colors"
+                className="gsap-faq-item card-warm rounded-xl overflow-hidden bg-white border border-[#0B1F3A]/8 transition-colors shadow-xs hover:shadow-md"
               >
                 <button
                   type="button"
