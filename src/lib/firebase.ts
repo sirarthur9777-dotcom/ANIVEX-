@@ -5,16 +5,15 @@ import { getFirestore } from 'firebase/firestore';
 import appletConfig from '../../firebase-applet-config.json';
 
 // Production Firebase configuration for Anivex Solution.
-// The checked-in applet config is the source of truth so an old Netlify
-// environment variable cannot silently connect this deployment to another
-// Firebase project. Update firebase-applet-config.json if the project changes.
+// Supports both Vite/Netlify environment variables and checked-in appletConfig fallback.
 const firebaseConfig = {
-  apiKey: appletConfig.apiKey,
-  authDomain: appletConfig.authDomain,
-  projectId: appletConfig.projectId,
-  storageBucket: appletConfig.storageBucket,
-  messagingSenderId: appletConfig.messagingSenderId,
-  appId: appletConfig.appId,
+  apiKey: (import.meta.env.VITE_FIREBASE_API_KEY as string) || appletConfig.apiKey,
+  authDomain: (import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string) || appletConfig.authDomain,
+  projectId: (import.meta.env.VITE_FIREBASE_PROJECT_ID as string) || appletConfig.projectId,
+  storageBucket: (import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string) || appletConfig.storageBucket,
+  messagingSenderId: (import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID as string) || appletConfig.messagingSenderId,
+  appId: (import.meta.env.VITE_FIREBASE_APP_ID as string) || appletConfig.appId,
+  measurementId: (import.meta.env.VITE_FIREBASE_MEASUREMENT_ID as string) || appletConfig.measurementId,
 };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
