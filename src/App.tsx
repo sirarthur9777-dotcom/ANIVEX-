@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext';
 import { CmsProvider } from './context/CmsContext';
 
@@ -176,13 +175,6 @@ export default function App() {
     window.addEventListener('popstate', handleLocationChange);
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 150);
-    return () => clearTimeout(timer);
-  }, [currentPath]);
 
   const cleanPath = currentPath.replace(/\/$/, '').toLowerCase() || '/';
   const serviceSlug = cleanPath.replace(/^\//, '');

@@ -2,7 +2,6 @@ import React from 'react';
 import { ArrowRight, MessageCircle, CheckCircle2 } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
-import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 interface CTASectionProps {
   onStartProject?: () => void;
@@ -10,15 +9,6 @@ interface CTASectionProps {
 
 export const CTASection: React.FC<CTASectionProps> = ({ onStartProject }) => {
   const { siteContent, companyInfo, websiteSettings } = useCms();
-
-  const sectionRef = useGsapSection<HTMLElement>({
-    headerSelector: '.gsap-cta-card',
-    parallaxSelector: '.gsap-cta-glow',
-    rotate3DX: 4,
-    cardYOffset: 45,
-    parallaxDistance: 35,
-    enableParallax: true,
-  });
 
   const heading = siteContent.ctaHeading || "Let's Build Something That Matters.";
   const subtitle = siteContent.ctaSubtitle || "Whether you need a custom software platform, high-converting web application, or enterprise ERP, we are ready to build it with you.";
@@ -39,15 +29,13 @@ export const CTASection: React.FC<CTASectionProps> = ({ onStartProject }) => {
 
   return (
     <section
-      ref={sectionRef}
       className="py-20 bg-[#FFFDF7] relative border-t border-[#0B1F3A]/8 overflow-hidden"
-      style={{ perspective: '1200px' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="gsap-cta-card p-8 sm:p-14 rounded-3xl bg-[#0B1F3A] text-white text-center relative overflow-hidden shadow-2xl">
-          {/* Subtle GSAP 3D Scroll Parallax decorative glow */}
-          <div className="gsap-cta-glow absolute top-0 right-0 w-96 h-96 bg-[#F97316]/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="gsap-cta-glow absolute bottom-0 left-0 w-96 h-96 bg-[#15803D]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="p-8 sm:p-14 rounded-3xl bg-[#0B1F3A] text-white text-center relative overflow-hidden shadow-2xl">
+          {/* Decorative ambient glow */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#F97316]/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#15803D]/15 rounded-full blur-3xl pointer-events-none" />
 
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-[#D4A72C] mb-6">

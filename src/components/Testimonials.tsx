@@ -2,21 +2,9 @@ import React from 'react';
 import { Quote, Building2, CheckCircle2 } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { TestimonialCMS } from '../types/cms';
-import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 export const Testimonials: React.FC = () => {
   const { testimonials } = useCms();
-
-  const sectionRef = useGsapSection<HTMLElement>({
-    headerSelector: '.gsap-testimonials-header',
-    cardsSelector: '.gsap-testimonial-card',
-    parallaxSelector: '.gsap-testimonials-parallax',
-    cardStagger: 0.12,
-    cardYOffset: 55,
-    rotate3DX: 6,
-    parallaxDistance: 25,
-    enableParallax: true,
-  });
 
   const fallbackTestimonials: TestimonialCMS[] = [
     {
@@ -64,18 +52,16 @@ export const Testimonials: React.FC = () => {
   return (
     <section
       id="testimonials"
-      ref={sectionRef}
       className="py-24 bg-white relative border-t border-[#0B1F3A]/8 overflow-hidden"
-      style={{ perspective: '1200px' }}
     >
-      {/* Subtle GSAP 3D Scroll Parallax Background Light */}
-      <div className="gsap-testimonials-parallax absolute top-10 left-5 w-80 h-80 bg-[#15803D]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="gsap-testimonials-parallax absolute bottom-5 right-5 w-96 h-96 bg-[#F97316]/5 rounded-full blur-3xl pointer-events-none" />
+      {/* Background Ambient Glow */}
+      <div className="absolute top-10 left-5 w-80 h-80 bg-[#15803D]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-5 right-5 w-96 h-96 bg-[#F97316]/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="gsap-testimonials-header flex flex-col items-center text-center mb-16">
+        <div className="flex flex-col items-center text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
             <span className="uppercase tracking-wider text-[11px] font-bold">CLIENT EXPERIENCES</span>
@@ -90,12 +76,12 @@ export const Testimonials: React.FC = () => {
           </p>
         </div>
 
-        {/* Testimonials Grid with GSAP 3D Floating Scroll Effect */}
+        {/* Testimonials Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {activeTestimonials.map((item, index) => (
             <div
               key={item.id}
-              className="gsap-testimonial-card card-warm card-warm-hover rounded-2xl p-7 bg-[#FFFDF7] flex flex-col justify-between shadow-xs hover:shadow-lg transition-all"
+              className="card-warm card-warm-hover rounded-2xl p-7 bg-[#FFFDF7] flex flex-col justify-between shadow-xs hover:shadow-lg transition-all"
             >
               <div>
                 {/* Verified Engagement Badge & Quote Icon */}
