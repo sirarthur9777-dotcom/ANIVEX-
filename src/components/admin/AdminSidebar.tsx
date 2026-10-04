@@ -133,21 +133,21 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       {isOpenMobile && (
         <div
           onClick={() => setIsOpenMobile(false)}
-          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 lg:hidden"
         />
       )}
 
       {/* Sidebar Drawer Container */}
       <aside
-        className={`sidebar no-print print:hidden fixed top-0 left-0 bottom-0 w-72 bg-[#0B1F3A] text-white border-r border-[#0B1F3A]/20 z-50 flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 shadow-xl ${
+        className={`sidebar no-print print:hidden fixed top-0 left-0 bottom-0 w-72 bg-white text-slate-800 border-r border-slate-200 z-50 flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 shadow-sm ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Top Header */}
-        <div className="p-5 border-b border-white/10 flex items-center justify-between bg-[#08172C]">
+        <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">
           <a href="/" target="_blank" rel="noreferrer" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/20 p-1.5 flex items-center justify-center shrink-0">
-              <svg viewBox="0 0 100 100" className="w-full h-full text-white">
+            <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 p-1.5 flex items-center justify-center shrink-0 shadow-2xs">
+              <svg viewBox="0 0 100 100" className="w-full h-full text-[#0B1F3A]">
                 <path
                   d="M 20,80 L 50,20 L 80,80 M 35,55 L 65,55"
                   fill="none"
@@ -166,14 +166,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               </svg>
             </div>
             <div>
-              <div className="font-heading font-extrabold text-base text-white tracking-tight leading-none">
+              <div className="font-heading font-extrabold text-base text-slate-900 tracking-tight leading-none">
                 Anivex <span className="text-[#F97316]">Solution</span>
               </div>
               <div className="flex items-center gap-1.5 mt-1">
-                <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-[#F97316]/20 text-[#F97316]">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-orange-50 text-[#F97316] border border-orange-200">
                   ADMIN CMS
                 </span>
-                <span className="text-[10px] text-slate-300 flex items-center gap-1 group-hover:text-white transition-colors">
+                <span className="text-[10px] text-slate-500 flex items-center gap-1 group-hover:text-slate-900 transition-colors">
                   <span>Site</span>
                   <ExternalLink className="w-2.5 h-2.5" />
                 </span>
@@ -200,12 +200,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     onClick={() => handleSelectTab(item.id as AdminTab)}
                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                       isActive
-                        ? 'bg-[#F97316] text-white shadow-md font-bold'
-                        : 'text-slate-300 hover:text-white hover:bg-white/10'
+                        ? 'bg-[#0B1F3A] text-white shadow-xs font-bold'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
                       <span className="truncate">{item.label}</span>
                     </div>
 
@@ -213,8 +213,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                       {item.badge !== undefined && item.badge > 0 && (
                         <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
                           isActive
-                            ? 'bg-white text-[#0B1F3A]'
-                            : 'bg-white/15 text-slate-200'
+                            ? 'bg-white/20 text-white'
+                            : 'bg-slate-100 text-slate-700 border border-slate-200'
                         }`}>
                           {item.badge}
                         </span>
@@ -232,20 +232,20 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         </div>
 
         {/* Footer Logout */}
-        <div className="p-4 border-t border-white/10 bg-[#08172C] space-y-2.5">
-          <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
+        <div className="p-4 border-t border-slate-200 bg-slate-50/80 space-y-2.5">
+          <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
             <div className="w-8 h-8 rounded-lg bg-[#F97316] text-white font-extrabold text-xs flex items-center justify-center font-heading">
               KC
             </div>
             <div className="overflow-hidden">
-              <div className="text-xs font-bold text-white truncate">Krishndas Chauhan</div>
-              <div className="text-[10px] text-slate-300 truncate">Founder & Lead Admin</div>
+              <div className="text-xs font-bold text-slate-900 truncate">Krishndas Chauhan</div>
+              <div className="text-[10px] text-slate-500 truncate">Founder & Lead Admin</div>
             </div>
           </div>
 
           <button
             onClick={() => logout()}
-            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500/20 text-xs font-semibold transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 text-xs font-semibold transition-colors cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>

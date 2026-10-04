@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import {
   collection,
   deleteDoc,
@@ -22,14 +22,14 @@ import {
   SiteContent, ServiceCMS, ProductCMS, SolutionCMS, ProjectCMS, BuiltByAnivexItem,
   CompanyInfo, PaymentSettings, SocialLinks, ContactEnquiry, AdminNotification,
   AdminActivityLog, MediaItem, InvoiceRecord, TestimonialCMS, FaqCMS, ClientRecord,
-  ContractRecord, QuotationRecord,
+  ContractRecord, QuotationRecord, PricingPackageCMS,
 } from '../types/cms';
 import {
   initialSiteContent, initialServices, initialProducts, initialSolutions,
   initialProjects, initialBuiltByAnivex, initialCompanyInfo, initialPaymentSettings,
   initialSocialLinks, initialContactEnquiries, initialNotifications, initialActivityLogs,
   initialMediaItems, initialTestimonials, initialFaqs, initialClients, initialContracts,
-  initialQuotations,
+  initialQuotations, initialPricingPackages,
 } from '../data/initialCmsData';
 
 interface ToastState { type: 'success' | 'error' | 'info'; message: string; }
@@ -39,6 +39,7 @@ interface CmsContextType {
   solutions: SolutionCMS[]; projects: ProjectCMS[]; builtByAnivex: BuiltByAnivexItem[];
   testimonials: TestimonialCMS[]; faqs: FaqCMS[]; clients: ClientRecord[];
   contracts: ContractRecord[]; quotations: QuotationRecord[]; companyInfo: CompanyInfo;
+  pricingPackages: PricingPackageCMS[];
   websiteSettings: WebsiteSettings; isLoadingSettings: boolean; settingsError: string | null;
   paymentSettings: PaymentSettings; socialLinks: SocialLinks; contactEnquiries: ContactEnquiry[];
   notifications: AdminNotification[]; activityLogs: AdminActivityLog[]; mediaItems: MediaItem[];
@@ -46,6 +47,9 @@ interface CmsContextType {
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
   updateWebsiteSettings: (data: Partial<WebsiteSettings>) => Promise<void>;
   updateSiteContent: (data: Partial<SiteContent>) => Promise<void>;
+  addPricingPackage: (data: Omit<PricingPackageCMS, 'id'>) => Promise<void>;
+  updatePricingPackage: (id: string, data: Partial<PricingPackageCMS>) => Promise<void>;
+  deletePricingPackage: (id: string) => Promise<void>;
   addService: (data: Omit<ServiceCMS, 'id'>) => Promise<void>;
   updateService: (id: string, data: Partial<ServiceCMS>) => Promise<void>;
   deleteService: (id: string) => Promise<void>;
@@ -191,17 +195,16 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setIsLoadingSettings(false);
     }));
 
-    watchDoc<PaymentSettings>('paymentSettings', 'main', setPaymentSettings, (data) => data as PaymentSettings);
     watchDoc<SocialLinks>('socialLinks', 'main', setSocialLinks, (data) => data as SocialLinks);
     watchDoc<SiteContent>('siteContent', 'main', setSiteContent, (data) => ({ ...initialSiteContent, ...data }));
-    watchCollection<ServiceCMS>('services', setServices, (id, data) => ({ id, ...data } as ServiceCMS), sortByOrder);
-    watchCollection<ProductCMS>('products', setProducts, (id, data) => ({ id, ...data } as ProductCMS), sortByOrder);
-    watchCollection<SolutionCMS>('solutions', setSolutions, (id, data) => ({ id, ...data } as SolutionCMS), sortByOrder);
-    watchCollection<ProjectCMS>('projects', setProjects, (id, data) => ({ id, ...data } as ProjectCMS), sortByOrder);
-    watchCollection<BuiltByAnivexItem>('builtByAnivex', setBuiltByAnivex, (id, data) => ({ id, ...data } as BuiltByAnivexItem), sortByOrder);
-    watchCollection<TestimonialCMS>('testimonials', setTestimonials, (id, data) => ({ id, ...data } as TestimonialCMS), sortByOrder);
-    watchCollection<FaqCMS>('faqs', setFaqs, (id, data) => ({ id, ...data } as FaqCMS), sortByOrder);
-    watchCollection<MediaItem>('media', setMediaItems, (id, data) => ({ id, ...data } as MediaItem));
+    watchCollection<ServiceCMS>('services', setServices, (id, data) => ({ ...data, id } as ServiceCMS), sortByOrder);
+    watchCollection<ProductCMS>('products', setProducts, (id, data) => ({ ...data, id } as ProductCMS), sortByOrder);
+    watchCollection<SolutionCMS>('solutions', setSolutions, (id, data) => ({ ...data, id } as SolutionCMS), sortByOrder);
+    watchCollection<ProjectCMS>('projects', setProjects, (id, data) => ({ ...data, id } as ProjectCMS), sortByOrder);
+    watchCollection<BuiltByAnivexItem>('builtByAnivex', setBuiltByAnivex, (id, data) => ({ ...data, id } as BuiltByAnivexItem), sortByOrder);
+    watchCollection<TestimonialCMS>('testimonials', setTestimonials, (id, data) => ({ ...data, id } as TestimonialCMS), sortByOrder);
+    watchCollection<FaqCMS>('faqs', setFaqs, (id, data) => ({ ...data, id } as FaqCMS), sortByOrder);
+    watchCollection<MediaItem>('media', setMediaItems, (id, data) => ({ ...data, id } as MediaItem));
 
     return () => unsubs.forEach((unsubscribe) => unsubscribe());
   }, []);
@@ -268,18 +271,23 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       const watchAdminCollection = <T,>(name: string, setter: React.Dispatch<React.SetStateAction<T[]>>, mapper: (id: string, data: any) => T, sort?: (items: T[]) => T[]) => {
         adminUnsubs.push(onSnapshot(collection(db, name), (snap) => {
-          const items = snap.docs.map((d) => mapper(d.id, d.data()));
+          const items = snap.docs.map((d) => mapper(d.id, fixAssetPaths(d.data())));
           setter(sort ? sort(items) : items);
         }, (error) => console.warn(`Firestore admin ${name} sync:`, error)));
       };
 
-      watchAdminCollection<ContactEnquiry>('contactEnquiries', setContactEnquiries, (id, data) => ({ id, ...data } as ContactEnquiry), sortByDateDesc);
-      watchAdminCollection<AdminNotification>('notifications', setNotifications, (id, data) => ({ id, ...data } as AdminNotification), sortByDateDesc);
-      watchAdminCollection<AdminActivityLog>('activityLogs', setActivityLogs, (id, data) => ({ id, ...data } as AdminActivityLog), sortByDateDesc);
-      watchAdminCollection<InvoiceRecord>('invoices', setInvoices, (id, data) => ({ id, ...data } as InvoiceRecord), sortByDateDesc);
-      watchAdminCollection<ClientRecord>('clients', setClients, (id, data) => ({ id, ...data } as ClientRecord), sortByDateDesc);
-      watchAdminCollection<ContractRecord>('contracts', setContracts, (id, data) => ({ id, ...data } as ContractRecord), sortByDateDesc);
-      watchAdminCollection<QuotationRecord>('quotations', setQuotations, (id, data) => ({ id, ...data } as QuotationRecord), sortByDateDesc);
+      // Watch paymentSettings only for authenticated admins
+      adminUnsubs.push(onSnapshot(doc(db, 'paymentSettings', 'main'), (snap) => {
+        if (snap.exists()) setPaymentSettings(snap.data() as PaymentSettings);
+      }, (error) => console.warn('Firestore admin paymentSettings sync notice:', error?.message)));
+
+      watchAdminCollection<ContactEnquiry>('contactEnquiries', setContactEnquiries, (id, data) => ({ ...data, id } as ContactEnquiry), sortByDateDesc);
+      watchAdminCollection<AdminNotification>('notifications', setNotifications, (id, data) => ({ ...data, id } as AdminNotification), sortByDateDesc);
+      watchAdminCollection<AdminActivityLog>('activityLogs', setActivityLogs, (id, data) => ({ ...data, id } as AdminActivityLog), sortByDateDesc);
+      watchAdminCollection<InvoiceRecord>('invoices', setInvoices, (id, data) => ({ ...data, id } as InvoiceRecord), sortByDateDesc);
+      watchAdminCollection<ClientRecord>('clients', setClients, (id, data) => ({ ...data, id } as ClientRecord), sortByDateDesc);
+      watchAdminCollection<ContractRecord>('contracts', setContracts, (id, data) => ({ ...data, id } as ContractRecord), sortByDateDesc);
+      watchAdminCollection<QuotationRecord>('quotations', setQuotations, (id, data) => ({ ...data, id } as QuotationRecord), sortByDateDesc);
     });
 
     return () => {
@@ -288,11 +296,14 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
   }, []);
 
+  // In-flight submission guard to prevent accidental duplicate Firestore writes across CMS
+  const inFlightAddsRef = useRef<Set<string>>(new Set());
+
   const logActivity = async (action: string, targetItem: string) => {
     const user = auth.currentUser;
-    if (!user || !(await isAdminUser(user))) return;
+    if (!user || user.isAnonymous) return;
     const newLog: AdminActivityLog = {
-      id: `act-${Date.now()}`,
+      id: `act-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       adminEmail: user.email || 'admin',
       action,
       targetItem,
@@ -301,16 +312,19 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       await setDoc(doc(db, 'activityLogs', newLog.id), newLog);
     } catch (error) {
-      console.warn('Activity log failed (non-blocking):', error);
+      console.warn('Activity log notice (non-blocking):', error);
     }
   };
 
   const commitSet = async (collectionName: string, id: string, data: any, merge = false) => {
-    await setDoc(doc(db, collectionName, id), data, merge ? { merge: true } : undefined);
+    const docRef = doc(db, collectionName, id);
+    await setDoc(docRef, data, merge ? { merge: true } : undefined);
   };
 
   const commitDelete = async (collectionName: string, id: string) => {
-    await deleteDoc(doc(db, collectionName, id));
+    if (!id) return;
+    const docRef = doc(db, collectionName, id);
+    await deleteDoc(docRef);
   };
 
   const updateSiteContent = async (data: Partial<SiteContent>) => {
@@ -320,7 +334,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       await commitSet('siteContent', 'main', updated, true);
       setSiteContent(updated);
       showToast('Home & Site Content updated successfully!');
-      await logActivity('Updated Site Content', 'Home & About Sections');
+      void logActivity('Updated Site Content', 'Home & About Sections');
     } catch (error: any) {
       showToast(`Failed to update site content: ${error.message}`, 'error');
       throw error;
@@ -335,43 +349,70 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     prefix: string,
   ) => ({
     add: async (data: Omit<T, 'id'>) => {
+      // Guard against double submission of the exact same payload within 2 seconds
+      const payloadKey = `${collectionName}:${JSON.stringify(data)}`;
+      if (inFlightAddsRef.current.has(payloadKey)) {
+        console.warn(`[CMS Guard] Prevented duplicate submission for ${collectionName}`);
+        return;
+      }
+      inFlightAddsRef.current.add(payloadKey);
+
       setIsLoading(true);
-      const id = `${prefix}-${Date.now()}`;
-      const item = { id, ...data } as T;
+      const uniqueSuffix = Math.random().toString(36).substring(2, 8);
+      const id = `${prefix}-${Date.now()}-${uniqueSuffix}`;
+      const item = { ...data, id } as T;
       try {
-        await commitSet(collectionName, id, item);
-        setState((prev) => [...prev, item]);
+        const docRef = doc(db, collectionName, id);
+        await setDoc(docRef, item);
+        setState((prev) => (prev.some((entry) => entry.id === id) ? prev : [...prev, item]));
         showToast(`${label(data)} added successfully!`);
-        await logActivity(`Added ${collectionName}`, label(data));
+        void logActivity(`Added ${collectionName}`, label(data));
       } catch (error: any) {
         showToast(`Failed to save ${collectionName}: ${error.message}`, 'error');
         throw error;
-      } finally { setIsLoading(false); }
+      } finally {
+        setIsLoading(false);
+        setTimeout(() => inFlightAddsRef.current.delete(payloadKey), 2000);
+      }
     },
     update: async (id: string, data: Partial<T>) => {
+      if (!id) return;
       setIsLoading(true);
       try {
         await commitSet(collectionName, id, data, true);
-        setState((prev) => prev.map((item) => item.id === id ? { ...item, ...data } : item));
+        setState((prev) => prev.map((item) => (item.id === id ? { ...item, ...data } : item)));
         showToast(`${collectionName} item updated successfully!`);
-        await logActivity(`Updated ${collectionName}`, label(data));
+        void logActivity(`Updated ${collectionName}`, label(data));
       } catch (error: any) {
         showToast(`Failed to update ${collectionName}: ${error.message}`, 'error');
         throw error;
-      } finally { setIsLoading(false); }
+      } finally {
+        setIsLoading(false);
+      }
     },
     remove: async (id: string) => {
-      setIsLoading(true);
-      const item = state.find((entry) => entry.id === id);
+      if (!id) return;
+      let targetItem: T | undefined;
+      // 1. Optimistic immediate state update for fast, responsive UI
+      setState((prev) => {
+        targetItem = prev.find((entry) => entry.id === id);
+        return prev.filter((entry) => entry.id !== id);
+      });
+
       try {
-        await commitDelete(collectionName, id);
-        setState((prev) => prev.filter((entry) => entry.id !== id));
+        // 2. Delete exact Firestore document by unique ID — never by name, title, or index
+        const docRef = doc(db, collectionName, id);
+        await deleteDoc(docRef);
         showToast(`${collectionName} item deleted.`);
-        await logActivity(`Deleted ${collectionName}`, label(item || { id }));
+        void logActivity(`Deleted ${collectionName}`, label(targetItem || { id }));
       } catch (error: any) {
+        // Rollback on failure
+        if (targetItem) {
+          setState((prev) => [...prev, targetItem!]);
+        }
         showToast(`Failed to delete ${collectionName}: ${error.message}`, 'error');
         throw error;
-      } finally { setIsLoading(false); }
+      }
     },
   });
 

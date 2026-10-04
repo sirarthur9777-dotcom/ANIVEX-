@@ -2,7 +2,6 @@ import React from 'react';
 import { ArrowRight, CheckCircle2, ShieldCheck, Globe } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { HeroTechVisual } from './TechVisualMockups';
-import { useGsapSection } from '../lib/gsapScrollAnimations';
 
 interface HeroProps {
   onStartProject?: () => void;
@@ -11,17 +10,6 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }) => {
   const { siteContent } = useCms();
-  const sectionRef = useGsapSection<HTMLElement>({
-    headerSelector: '.gsap-hero-left',
-    cardsSelector: '.gsap-hero-trust',
-    parallaxSelector: '.gsap-hero-parallax',
-    visualSelector: '.gsap-hero-visual',
-    cardStagger: 0.12,
-    cardYOffset: 30,
-    rotate3DX: 4,
-    parallaxDistance: 35,
-    enableParallax: true,
-  });
 
   if (siteContent.heroVisible === false) {
     return null;
@@ -46,18 +34,16 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }
   return (
     <section
       id="hero"
-      ref={sectionRef}
       className="relative pt-32 pb-20 md:pt-40 md:pb-28 bg-[#FFFDF7] overflow-hidden indian-pattern-bg"
-      style={{ perspective: '1200px' }}
     >
-      {/* Subtle Warm Saffron and Green Ambient Light with GSAP 3D Scroll Parallax */}
-      <div className="gsap-hero-parallax absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-r from-[#F97316]/8 via-[#D4A72C]/6 to-[#15803D]/6 rounded-full blur-3xl pointer-events-none" />
+      {/* Subtle Warm Saffron and Green Ambient Light */}
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-r from-[#F97316]/8 via-[#D4A72C]/6 to-[#15803D]/6 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
-          {/* Left Column: Editorial Value Proposition with GSAP Float Up */}
-          <div className="gsap-hero-left lg:col-span-7 flex flex-col items-start text-left">
+          {/* Left Column: Editorial Value Proposition */}
+          <div className="lg:col-span-7 flex flex-col items-start text-left">
             {/* Subtle Indian Tech Badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-6">
               <span className="w-2 h-2 rounded-full bg-[#F97316]" />
@@ -100,21 +86,21 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }
 
             {/* Trust highlights */}
             <div className="mt-10 pt-6 border-t border-[#0B1F3A]/10 grid grid-cols-2 sm:grid-cols-3 gap-6 w-full">
-              <div className="gsap-hero-trust flex items-start gap-2.5">
+              <div className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-5 h-5 text-[#15803D] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-xs font-bold text-[#0B1F3A]">Enterprise Quality</h4>
                   <p className="text-[11px] text-[#0B1F3A]/60 mt-0.5">Production-grade architecture</p>
                 </div>
               </div>
-              <div className="gsap-hero-trust flex items-start gap-2.5">
+              <div className="flex items-start gap-2.5">
                 <ShieldCheck className="w-5 h-5 text-[#F97316] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-xs font-bold text-[#0B1F3A]">GST Compliant</h4>
                   <p className="text-[11px] text-[#0B1F3A]/60 mt-0.5">Official invoices & contracts</p>
                 </div>
               </div>
-              <div className="gsap-hero-trust flex items-start gap-2.5 col-span-2 sm:col-span-1">
+              <div className="flex items-start gap-2.5 col-span-2 sm:col-span-1">
                 <Globe className="w-5 h-5 text-[#D4A72C] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-xs font-bold text-[#0B1F3A]">Direct Engineering</h4>
@@ -124,8 +110,8 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }
             </div>
           </div>
 
-          {/* Right Column: Premium High-Fidelity Technology & Indian Business Visual with 3D Parallax */}
-          <div className="gsap-hero-visual lg:col-span-5 relative">
+          {/* Right Column: Premium High-Fidelity Technology & Indian Business Visual */}
+          <div className="lg:col-span-5 relative">
             <HeroTechVisual />
             {/* Subtle decorative Indian geometric accent line */}
             <div className="absolute -bottom-3 left-8 right-8 h-1 rounded-full saffron-green-accent opacity-80" />

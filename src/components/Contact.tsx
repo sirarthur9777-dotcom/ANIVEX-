@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, MessageCircle, QrCode, Landmark, Copy, Check, ArrowRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, MessageCircle, Landmark, ShieldCheck, ArrowRight } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl, formatPhoneTel } from '../services/websiteSettings';
 
@@ -9,7 +9,7 @@ interface ContactProps {
 }
 
 export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, preselectedBudget }) => {
-  const { submitContactEnquiry, companyInfo, websiteSettings, paymentSettings } = useCms();
+  const { submitContactEnquiry, companyInfo, websiteSettings } = useCms();
 
   const projectOptions = [
     'Website',
@@ -33,8 +33,6 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [copiedUpi, setCopiedUpi] = useState(false);
 
   const phone = websiteSettings?.phone || companyInfo?.phone || '';
   const whatsappNumber = websiteSettings?.whatsapp || phone;
@@ -90,14 +88,6 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
 *Message:* ${formData.message || 'I would like to discuss my project requirements.'}`;
 
     window.open(formatWhatsAppUrl(whatsappNumber, text), '_blank', 'noopener,noreferrer');
-  };
-
-  const handleCopyUpi = () => {
-    if (paymentSettings?.upiId) {
-      navigator.clipboard.writeText(paymentSettings.upiId);
-      setCopiedUpi(true);
-      setTimeout(() => setCopiedUpi(false), 2000);
-    }
   };
 
   return (
@@ -334,29 +324,24 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
               </div>
             </div>
 
-            {/* Indian Payment Details (UPI / Bank) */}
+            {/* Indian Business Engagement & Invoicing Guarantee */}
             <div className="p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-xs hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[11px] font-bold text-[#15803D] uppercase tracking-wider">
-                  Payment Modes
+                  Transparent Engagement
                 </span>
                 <span className="text-[11px] font-bold text-[#0B1F3A]">100% In ₹</span>
               </div>
               <h4 className="font-heading font-bold text-sm text-[#0B1F3A] mb-2">
-                Official Invoicing & UPI
+                Official Invoicing & Milestone Delivery
               </h4>
-              <p className="text-xs text-[#0B1F3A]/70 leading-relaxed mb-4">
-                We accept milestone-based payments via UPI (Google Pay, PhonePe, Paytm, BHIM) and NEFT/IMPS bank transfer with GST invoices.
+              <p className="text-xs text-[#0B1F3A]/70 leading-relaxed mb-3">
+                Every project is backed by a formal contract, defined sprint milestones, GST tax invoices, and full intellectual property handover.
               </p>
-
-              <button
-                type="button"
-                onClick={() => setShowPaymentModal(true)}
-                className="w-full py-2 px-3 rounded-lg bg-[#0B1F3A]/5 hover:bg-[#0B1F3A]/10 text-[#0B1F3A] text-xs font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <QrCode className="w-3.5 h-3.5 text-[#F97316]" />
-                <span>View UPI / Bank Details</span>
-              </button>
+              <div className="flex items-center gap-2 pt-1 text-[11px] text-[#15803D] font-bold">
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                <span>GST Registered Business • Milestone Payments</span>
+              </div>
             </div>
 
           </div>
@@ -364,75 +349,6 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
         </div>
 
       </div>
-
-      {/* Payment Details Modal */}
-      {showPaymentModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1F3A]/60 backdrop-blur-xs">
-          <div className="relative w-full max-w-md p-6 rounded-2xl bg-[#FFFDF7] border border-[#0B1F3A]/10 shadow-2xl">
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#0B1F3A]/10">
-              <h3 className="font-heading font-bold text-lg text-[#0B1F3A]">
-                Official Payment Details
-              </h3>
-              <button
-                onClick={() => setShowPaymentModal(false)}
-                className="text-[#0B1F3A]/60 hover:text-[#0B1F3A] text-sm font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="space-y-4 text-xs">
-              <div className="p-3.5 rounded-xl bg-white border border-[#0B1F3A]/8">
-                <span className="text-[10px] font-bold text-[#15803D] uppercase block mb-1">
-                  UPI ID (GPay / PhonePe / Paytm / BHIM)
-                </span>
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-sm font-bold text-[#0B1F3A]">
-                    {paymentSettings?.upiId || 'Payment details unavailable'}
-                  </span>
-                  <button
-                    onClick={handleCopyUpi}
-                    className="p-1.5 rounded-md bg-[#0B1F3A]/5 hover:bg-[#0B1F3A]/10 text-[#0B1F3A] flex items-center gap-1 cursor-pointer"
-                  >
-                    {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span className="text-[10px]">{copiedUpi ? 'Copied' : 'Copy'}</span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-white border border-[#0B1F3A]/8 space-y-1.5">
-                <span className="text-[10px] font-bold text-[#0B1F3A]/60 uppercase block mb-1">
-                  Direct Bank Wire (NEFT / IMPS)
-                </span>
-                <div className="flex justify-between">
-                  <span className="text-[#0B1F3A]/70">Account Name:</span>
-                  <span className="font-semibold text-[#0B1F3A]">{paymentSettings?.accountHolderName || 'Not available'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#0B1F3A]/70">Bank Name:</span>
-                  <span className="font-semibold text-[#0B1F3A]">{paymentSettings?.bankName || 'Not available'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#0B1F3A]/70">Account Number:</span>
-                  <span className="font-mono font-semibold text-[#0B1F3A]">{paymentSettings?.accountNumber || 'Not available'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#0B1F3A]/70">IFSC Code:</span>
-                  <span className="font-mono font-semibold text-[#0B1F3A]">{paymentSettings?.ifscCode || 'Not available'}</span>
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setShowPaymentModal(false)}
-              className="mt-5 w-full py-2.5 rounded-xl bg-[#0B1F3A] text-white text-xs font-bold"
-            >
-              Done
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   );
 };

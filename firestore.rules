@@ -33,8 +33,7 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     match /paymentSettings/{docId} {
-      allow read: if true;
-      allow write: if isAdmin();
+      allow read, write: if isAdmin();
     }
     match /socialLinks/{docId} {
       allow read: if true;
@@ -65,6 +64,10 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     match /faqs/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /pricingPackages/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }

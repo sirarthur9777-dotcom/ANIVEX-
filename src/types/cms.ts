@@ -62,6 +62,25 @@ export interface FaqCMS {
   published: boolean;
 }
 
+export interface PricingPackageCMS {
+  id: string;
+  name: string;
+  category?: string;
+  price: string;
+  priceSubtext?: string;
+  timeline: string;
+  badge?: string;
+  featured: boolean;
+  description: string;
+  features: string[];
+  projectType: string;
+  budgetRange: string;
+  ctaText?: string;
+  whatsappText?: string;
+  displayOrder: number;
+  published: boolean;
+}
+
 export interface SiteContent {
   heroBadge?: string;
   heroHeading: string;
@@ -76,6 +95,9 @@ export interface SiteContent {
   navbar?: NavbarSettings;
   trustStats?: TrustStatItem[];
   whyAnivex?: WhyAnivexSettings;
+  pricingBadge?: string;
+  pricingHeading?: string;
+  pricingDescription?: string;
   aboutHeading: string;
   aboutDescription: string;
   aboutStory: string;
