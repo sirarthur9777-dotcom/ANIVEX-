@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Target, Compass, ShieldCheck, User } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { AboutStudioVisual } from './TechVisualMockups';
-import { FounderModal } from './FounderModal';
 
-export const About: React.FC = () => {
+interface AboutProps {
+  onNavigateFounder?: () => void;
+}
+
+export const About: React.FC<AboutProps> = ({ onNavigateFounder }) => {
   const { siteContent } = useCms();
-  const [isFounderModalOpen, setIsFounderModalOpen] = useState(false);
 
   const aboutHeading = siteContent.aboutHeading || "Technology With Purpose.";
   const aboutDescription = siteContent.aboutDescription || "Anivex Solution helps businesses transform ideas into reliable digital products and intelligent technology solutions.";
@@ -163,24 +165,25 @@ export const About: React.FC = () => {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setIsFounderModalOpen(true)}
+          <a
+            href="/aboutfounder"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onNavigateFounder) {
+                onNavigateFounder();
+              } else {
+                window.history.pushState({}, '', '/aboutfounder');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }
+            }}
             className="px-6 py-3 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white text-xs sm:text-sm font-bold whitespace-nowrap transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
             aria-label={`Learn more about ${founderName}, Founder of Anivex Solution`}
           >
             <span>More About Founder</span>
             <span aria-hidden="true">→</span>
-          </button>
+          </a>
         </div>
-
       </div>
-
-      {/* Founder Details Modal */}
-      <FounderModal
-        isOpen={isFounderModalOpen}
-        onClose={() => setIsFounderModalOpen(false)}
-      />
     </section>
   );
 };

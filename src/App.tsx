@@ -24,6 +24,7 @@ import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { PrivacyPolicyPage } from './components/PrivacyPolicyPage';
 import { TermsAndConditionsPage } from './components/TermsAndConditionsPage';
 import { ServicePage } from './components/ServicePage';
+import { AboutFounderPage } from './components/AboutFounderPage';
 import { SeoHead } from './components/SeoHead';
 import { SERVICES_SEO_DATA } from './data/servicesSeoData';
 
@@ -56,10 +57,11 @@ interface PublicWebsiteProps {
   onNavigatePrivacy: () => void;
   onNavigateTerms: () => void;
   onNavigateService?: (path: string) => void;
+  onNavigateFounder?: () => void;
 }
 
 // Inner component for Public Anivex Solution Website
-function PublicWebsite({ onNavigatePrivacy, onNavigateTerms, onNavigateService }: PublicWebsiteProps) {
+function PublicWebsite({ onNavigatePrivacy, onNavigateTerms, onNavigateService, onNavigateFounder }: PublicWebsiteProps) {
   const [selectedProjectType, setSelectedProjectType] = useState<string>('Website');
   const [selectedBudget, setSelectedBudget] = useState<string>('₹15,000 - ₹50,000');
 
@@ -107,9 +109,16 @@ function PublicWebsite({ onNavigatePrivacy, onNavigateTerms, onNavigateService }
     <div className="min-h-screen bg-[#FFFDF7] text-[#0B1F3A] selection:bg-[#F97316]/20 selection:text-[#F97316]">
       {/* Homepage SEO Head */}
       <SeoHead
-        title="Anivex Solution | Web Development & IT Solutions"
-        description="Anivex Solution provides professional website development, web applications, custom software, ERP systems, and IT solutions for businesses in India."
+        title="Anivex Solution | Web Development & IT Solutions — Founder Krishndas Chauhan"
+        description="Anivex Solution, founded by Krishndas Chauhan (Lead Architect), provides professional website development, web applications, custom software, ERP systems, and IT solutions for businesses in India."
         canonicalPath="/"
+        keywords="Krishndas Chauhan, Founder of Anivex Solution, Who is Krishndas Chauhan, Krishndas Chauhan MCA, Krishndas Chauhan Anivex, Founder & Lead Architect Krishndas Chauhan, Anivex Solution Founder, Web Development India, IT Solutions Lucknow, Custom Software, Krishndas Chauhan APCS"
+        ogImage="/images/krishndas-chauhan-founder-anivex-solution.jpeg"
+        ogImageAlt="Krishndas Chauhan - Founder & Lead Architect of Anivex Solution"
+        ogImageWidth={1080}
+        ogImageHeight={1350}
+        twitterImage="/images/krishndas-chauhan-founder-anivex-solution.jpeg"
+        author="Krishndas Chauhan"
       />
 
       {/* Navigation */}
@@ -132,7 +141,7 @@ function PublicWebsite({ onNavigatePrivacy, onNavigateTerms, onNavigateService }
 
         <WhyAnivex />
 
-        <About />
+        <About onNavigateFounder={onNavigateFounder} />
 
         <Testimonials />
 
@@ -183,6 +192,7 @@ export default function App() {
   const isAdminRoute = currentPath.startsWith('/admin');
   const isPrivacyRoute = cleanPath === '/privacy-policy' || cleanPath === '/privacy';
   const isTermsRoute = cleanPath === '/terms-and-conditions' || cleanPath === '/terms';
+  const isFounderRoute = cleanPath === '/aboutfounder' || cleanPath === '/about-founder' || cleanPath === '/founder';
 
   useEffect(() => {
     const slug = (cleanPath.replace(/^\//, '') || '').toLowerCase();
@@ -203,6 +213,12 @@ export default function App() {
   const navigateToHome = () => {
     window.history.pushState({}, '', '/');
     setCurrentPath('/');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToFounder = () => {
+    window.history.pushState({}, '', '/aboutfounder');
+    setCurrentPath('/aboutfounder');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -239,6 +255,12 @@ export default function App() {
       <CmsProvider>
         {isAdminRoute ? (
           <AdminRouteWrapper />
+        ) : isFounderRoute ? (
+          <AboutFounderPage
+            onBackToHome={navigateToHome}
+            onNavigateService={navigateToService}
+            onNavigateContact={navigateToContact}
+          />
         ) : isPrivacyRoute ? (
           <>
             <SeoHead
@@ -269,6 +291,7 @@ export default function App() {
             onNavigatePrivacy={navigateToPrivacy}
             onNavigateTerms={navigateToTerms}
             onNavigateService={navigateToService}
+            onNavigateFounder={navigateToFounder}
           />
         )}
       </CmsProvider>

@@ -3,16 +3,67 @@
 
 User-agent: *
 Allow: /
+Allow: /aboutfounder
 Allow: /images/
 Allow: /assets/
-
-# Disallow private and administrative portals
 Disallow: /admin
 Disallow: /admin/
 Disallow: /api/
+
+# Explicit permissions for AI Search Engines & Bots (ChatGPT Search, Perplexity, Google Gemini, Claude, Bing)
+User-agent: Googlebot
+Allow: /
+Allow: /aboutfounder
+Allow: /images/
+
+User-agent: Googlebot-Image
+Allow: /
+Allow: /images/
+Allow: /assets/
+
+User-agent: Bingbot
+Allow: /
+Allow: /aboutfounder
+Allow: /images/
+
+User-agent: GPTBot
+Allow: /
+Allow: /aboutfounder
+Allow: /images/
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /aboutfounder
+Allow: /images/
+
+User-agent: OAI-SearchBot
+Allow: /
+Allow: /aboutfounder
+Allow: /images/
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /aboutfounder
+Allow: /images/
+
+User-agent: Claude-Web
+Allow: /
+Allow: /aboutfounder
+Allow: /images/
+
+User-agent: anthropic-ai
+Allow: /
+Allow: /aboutfounder
+Allow: /images/
+
+User-agent: Applebot
+Allow: /
+Allow: /aboutfounder
+Allow: /images/
 
 # Host
 Host: https://anivexsolution.in
 
 # Sitemap reference
 Sitemap: https://anivexsolution.in/sitemap.xml
+

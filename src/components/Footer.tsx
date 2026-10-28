@@ -117,6 +117,20 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
             <ul className="space-y-2 text-xs">
               <li><a href="#hero" className="hover:text-white transition-colors">Home</a></li>
               <li><a href="#about" className="hover:text-white transition-colors">About Us</a></li>
+              <li>
+                <a
+                  href="/aboutfounder"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.history.pushState({}, '', '/aboutfounder');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  className="text-[#F97316] hover:text-white transition-colors font-medium flex items-center gap-1"
+                >
+                  <span>Meet Our Founder</span>
+                  <span className="text-[10px] bg-[#F97316]/20 px-1.5 py-0.2 rounded text-[#F97316]">Krishndas</span>
+                </a>
+              </li>
               <li><a href="#services" className="hover:text-white transition-colors">Services</a></li>
               <li><a href="#products" className="hover:text-white transition-colors">Products</a></li>
               <li><a href="#projects" className="hover:text-white transition-colors">Projects</a></li>

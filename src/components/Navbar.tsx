@@ -128,6 +128,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
 
         window.history.pushState(null, '', `#${targetId}`);
         setActiveSection(targetId);
+      } else if (window.location.pathname !== '/') {
+        const targetPath = targetId === 'hero' ? '/' : `/#${targetId}`;
+        window.history.pushState({}, '', targetPath);
+        window.dispatchEvent(new PopStateEvent('popstate'));
+        setTimeout(() => {
+          const elem = document.getElementById(targetId);
+          if (elem) {
+            const navHeight = 72;
+            const rect = elem.getBoundingClientRect();
+            const targetY = Math.max(0, rect.top + window.scrollY - navHeight);
+            window.scrollTo({ top: targetY, behavior: 'smooth' });
+          }
+        }, 180);
       }
     };
 

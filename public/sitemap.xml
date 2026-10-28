@@ -21,6 +21,22 @@
     </image:image>
   </url>
   <url>
+    <loc>https://anivexsolution.in/aboutfounder</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg</image:loc>
+      <image:title>Krishndas Chauhan - Founder &amp; Lead Architect of Anivex Solution</image:title>
+      <image:caption>Official portrait of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution in formal executive attire.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://anivexsolution.in/images/krishndas-chauhan-anivex-solution.jpeg</image:loc>
+      <image:title>Krishndas Chauhan - Technology Innovator &amp; Software Architect</image:title>
+      <image:caption>Field portrait of Krishndas Chauhan, full-stack architect and digital technology leader at Anivex Solution.</image:caption>
+    </image:image>
+  </url>
+  <url>
     <loc>https://anivexsolution.in/web-development</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
