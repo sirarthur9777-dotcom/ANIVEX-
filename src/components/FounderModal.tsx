@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, GraduationCap, User, Award, MessageCircle, ArrowRight, Sparkles } from 'lucide-react';
+import { X, GraduationCap, User, Award, MessageCircle, ArrowRight, Sparkles, ExternalLink } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
 
@@ -35,8 +35,8 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
   const founderAge = siteContent.founderAge || "21";
   const founderQualifications = siteContent.founderQualifications || "MCA";
 
-  const photoFormal = siteContent.founderImage || "/assets/aistudio/WhatsApp_Image_2026-10-28_at_21.25.39_44e4583f.jpeg";
-  const photoCasual = siteContent.founderSecondaryImage || "/assets/aistudio/WhatsApp_Image_2026-10-28_at_21.20.42_2bf6c621.jpeg";
+  const photoFormal = siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg";
+  const photoCasual = siteContent.founderSecondaryImage || "/images/krishndas-chauhan-anivex-solution.jpeg";
 
   const photos = [
     {
@@ -302,6 +302,51 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
                 <span className="text-xs sm:text-sm font-bold text-[#15803D]">
                   {founderQualifications}
                 </span>
+              </div>
+            </div>
+
+            {/* Verified Professional & Social Profiles */}
+            <div className="pt-3 border-t border-[#0B1F3A]/8">
+              <span className="text-[10px] font-bold text-[#0B1F3A]/60 uppercase tracking-wider block mb-2">
+                Verified Professional Profiles (Identity Verification)
+              </span>
+              <div className="flex flex-wrap gap-2">
+                <a
+                  href="https://www.linkedin.com/in/krishndas-chauhan"
+                  target="_blank"
+                  rel="noopener noreferrer me"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0B1F3A]/5 hover:bg-[#0B1F3A]/10 text-[#0B1F3A] text-xs font-semibold transition-colors"
+                >
+                  <span>LinkedIn</span>
+                  <ExternalLink className="w-3 h-3 text-[#0B1F3A]/50" />
+                </a>
+                <a
+                  href="https://github.com/krishndas-chauhan"
+                  target="_blank"
+                  rel="noopener noreferrer me"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0B1F3A]/5 hover:bg-[#0B1F3A]/10 text-[#0B1F3A] text-xs font-semibold transition-colors"
+                >
+                  <span>GitHub</span>
+                  <ExternalLink className="w-3 h-3 text-[#0B1F3A]/50" />
+                </a>
+                <a
+                  href="https://x.com/krishndas_"
+                  target="_blank"
+                  rel="noopener noreferrer me"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0B1F3A]/5 hover:bg-[#0B1F3A]/10 text-[#0B1F3A] text-xs font-semibold transition-colors"
+                >
+                  <span>X (Twitter)</span>
+                  <ExternalLink className="w-3 h-3 text-[#0B1F3A]/50" />
+                </a>
+                <a
+                  href="https://www.instagram.com/krishndas_chauhan"
+                  target="_blank"
+                  rel="noopener noreferrer me"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0B1F3A]/5 hover:bg-[#0B1F3A]/10 text-[#0B1F3A] text-xs font-semibold transition-colors"
+                >
+                  <span>Instagram</span>
+                  <ExternalLink className="w-3 h-3 text-[#0B1F3A]/50" />
+                </a>
               </div>
             </div>
           </div>

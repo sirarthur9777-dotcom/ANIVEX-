@@ -161,11 +161,27 @@ export const initialTestimonials: TestimonialCMS[] = [
 
 export const initialFaqs: FaqCMS[] = [
   {
+    id: 'faq-founder-1',
+    question: 'Who is the founder of Anivex Solution?',
+    answer: 'Krishndas Chauhan is the Founder and Lead Architect of Anivex Solution. He holds a Master of Computer Applications (MCA) from Mangalayatan University and a Bachelor of Computer Applications (BCA) from APCS College of IT & Management.',
+    category: 'Leadership',
+    displayOrder: 1,
+    published: true
+  },
+  {
+    id: 'faq-founder-2',
+    question: 'Who is Krishndas Chauhan?',
+    answer: 'Krishndas Chauhan is the Founder & Lead Architect of Anivex Solution, an Indian software technology and development company. He specializes in enterprise software architecture, custom ERP platforms, and scalable web engineering.',
+    category: 'Leadership',
+    displayOrder: 2,
+    published: true
+  },
+  {
     id: 'faq-1',
     question: 'What types of software solutions does Anivex Solution build?',
     answer: 'We design and develop custom web applications, Android & iOS mobile apps, custom ERP systems, GST-compliant billing software, AI workflow automation, and conversion-focused business websites.',
     category: 'General',
-    displayOrder: 1,
+    displayOrder: 3,
     published: true
   },
   {
@@ -173,7 +189,7 @@ export const initialFaqs: FaqCMS[] = [
     question: 'How long does a typical project take to develop and launch?',
     answer: 'High-speed business websites and MVPs typically take 1 to 3 weeks. Comprehensive custom software or ERP solutions typically require 4 to 8 weeks depending on the complexity and scope.',
     category: 'Process',
-    displayOrder: 2,
+    displayOrder: 4,
     published: true
   },
   {
@@ -181,7 +197,7 @@ export const initialFaqs: FaqCMS[] = [
     question: 'Do you provide GST tax invoices and Indian payment options?',
     answer: 'Yes, absolutely. We provide official GST tax invoices for all client engagements, and accept UPI (Google Pay, PhonePe, Paytm), IMPS/NEFT direct bank transfers, and standard business payment methods.',
     category: 'Billing',
-    displayOrder: 3,
+    displayOrder: 5,
     published: true
   },
   {
@@ -189,7 +205,7 @@ export const initialFaqs: FaqCMS[] = [
     question: 'Will we have full ownership of the source code and IP?',
     answer: 'Yes. Upon project completion and final handover, you receive 100% intellectual property ownership, complete source code repository access, and all associated deployment assets.',
     category: 'Ownership',
-    displayOrder: 4,
+    displayOrder: 6,
     published: true
   },
   {
@@ -197,7 +213,7 @@ export const initialFaqs: FaqCMS[] = [
     question: 'What kind of support do you provide after launch?',
     answer: 'Every Anivex Solution delivery includes post-launch warranty support, bug fixes, server monitoring, and direct WhatsApp communication for rapid responses. We also offer ongoing maintenance retainers.',
     category: 'Support',
-    displayOrder: 5,
+    displayOrder: 7,
     published: true
   }
 ];
@@ -237,8 +253,8 @@ export const initialSiteContent: SiteContent = {
   founderQualifications: "MCA",
   founderDescription: "Krishndas Chauhan is the Founder and Lead Architect of Anivex Solution, holding MCA from Mangalayatan University and BCA from APCS College of IT & Management, architecting high-performance digital products and scalable enterprise systems.",
   founderBio: "Krishndas Chauhan is the Founder and Lead Architect of Anivex Solution.\n\nHe holds a Master of Computer Applications (MCA) from Mangalayatan University and a Bachelor of Computer Applications (BCA), both from APCS College of IT & Management.\n\nHis educational background in computer applications provides a strong academic foundation for his professional journey in technology and his role at Anivex Solution.",
-  founderImage: "/assets/aistudio/WhatsApp_Image_2026-10-28_at_21.25.39_44e4583f.jpeg",
-  founderSecondaryImage: "/assets/aistudio/WhatsApp_Image_2026-10-28_at_21.20.42_2bf6c621.jpeg",
+  founderImage: "/images/krishndas-chauhan-founder-anivex-solution.jpeg",
+  founderSecondaryImage: "/images/krishndas-chauhan-anivex-solution.jpeg",
   founderEducationDegree1: "Master of Computer Applications (MCA)",
   founderEducationCollege1: "Mangalayatan University",
   founderEducationDegree2: "Bachelor of Computer Applications (BCA)",

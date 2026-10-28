@@ -121,26 +121,43 @@ export const About: React.FC = () => {
           </div>
         </div>
 
-        {/* Founder Spotlight Card */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        {/* Founder Spotlight Card (Microdata for Google Knowledge Graph & Rich Snippets) */}
+        <div
+          itemScope
+          itemType="https://schema.org/Person"
+          className="p-6 sm:p-8 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+        >
+          <meta itemProp="url" content="https://anivexsolution.in/#about" />
+          <meta itemProp="worksFor" content="Anivex Solution" />
+          <link itemProp="sameAs" href="https://www.linkedin.com/in/krishndas-chauhan" />
+          <link itemProp="sameAs" href="https://github.com/krishndas-chauhan" />
+          <link itemProp="sameAs" href="https://x.com/krishndas_" />
+          <link itemProp="sameAs" href="https://twitter.com/krishndas_" />
+          <link itemProp="sameAs" href="https://www.instagram.com/krishndas_chauhan" />
+          <link itemProp="sameAs" href="https://www.facebook.com/krishndas.chauhan" />
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-[#0B1F3A] border-2 border-[#F97316]/30 shrink-0 shadow-sm">
               <img
-                src={siteContent.founderImage || "/assets/aistudio/WhatsApp_Image_2026-10-28_at_21.25.39_44e4583f.jpeg"}
-                alt={founderName}
+                itemProp="image"
+                src={siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg"}
+                alt={`${founderName} - Founder & Lead Architect of Anivex Solution`}
+                title={`${founderName} - Founder & Lead Architect of Anivex Solution`}
                 className="w-full h-full object-cover object-top"
+                loading="lazy"
+                width="80"
+                height="80"
               />
               <span className="absolute bottom-1 right-1 w-3 h-3 bg-[#15803D] rounded-full border-2 border-white" title="Active Lead Architect" />
             </div>
             <div>
               <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#F97316] uppercase tracking-wider mb-1">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>{founderRole}</span>
+                <span itemProp="jobTitle">{founderRole}</span>
               </div>
-              <h3 className="font-heading font-bold text-xl sm:text-2xl text-[#0B1F3A]">
+              <h3 itemProp="name" className="font-heading font-bold text-xl sm:text-2xl text-[#0B1F3A]">
                 {founderName}
               </h3>
-              <p className="text-xs sm:text-sm text-[#0B1F3A]/70 leading-relaxed max-w-2xl mt-1 font-normal">
+              <p itemProp="description" className="text-xs sm:text-sm text-[#0B1F3A]/70 leading-relaxed max-w-2xl mt-1 font-normal">
                 {founderDesc}
               </p>
             </div>
@@ -150,6 +167,7 @@ export const About: React.FC = () => {
             type="button"
             onClick={() => setIsFounderModalOpen(true)}
             className="px-6 py-3 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white text-xs sm:text-sm font-bold whitespace-nowrap transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
+            aria-label={`Learn more about ${founderName}, Founder of Anivex Solution`}
           >
             <span>More About Founder</span>
             <span aria-hidden="true">→</span>

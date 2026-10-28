@@ -44,10 +44,10 @@ export const AboutFounderManager: React.FC = () => {
       'Krishndas Chauhan is the Founder and Lead Architect of Anivex Solution.\n\nHe holds a Master of Computer Applications (MCA) from Mangalayatan University and a Bachelor of Computer Applications (BCA), both from APCS College of IT & Management.\n\nHis educational background in computer applications provides a strong academic foundation for his professional journey in technology and his role at Anivex Solution.',
     founderImage:
       siteContent.founderImage ||
-      '/assets/aistudio/WhatsApp_Image_2026-10-28_at_21.25.39_44e4583f.jpeg',
+      '/images/krishndas-chauhan-founder-anivex-solution.jpeg',
     founderSecondaryImage:
       siteContent.founderSecondaryImage ||
-      '/assets/aistudio/WhatsApp_Image_2026-10-28_at_21.20.42_2bf6c621.jpeg',
+      '/images/krishndas-chauhan-anivex-solution.jpeg',
     founderEducationDegree1:
       siteContent.founderEducationDegree1 || 'Master of Computer Applications (MCA)',
     founderEducationCollege1:
