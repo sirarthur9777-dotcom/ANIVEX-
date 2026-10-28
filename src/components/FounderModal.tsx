@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, GraduationCap, Building2, User, Award, ShieldCheck, MessageCircle, ArrowRight, ExternalLink, Sparkles, CheckCircle2 } from 'lucide-react';
+import { X, GraduationCap, User, Award, MessageCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
 
@@ -127,12 +127,6 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
                   <span className="text-xs font-semibold text-white">
                     {photos[activePhoto].label}
                   </span>
-                </div>
-
-                {/* Verified badge */}
-                <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-[#0B1F3A]/85 backdrop-blur-md text-[10px] font-bold text-white flex items-center gap-1 border border-white/20">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#15803D]" />
-                  <span>Verified Founder</span>
                 </div>
               </div>
 
