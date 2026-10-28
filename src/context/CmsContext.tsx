@@ -131,6 +131,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [builtByAnivex, setBuiltByAnivex] = useState<BuiltByAnivexItem[]>(initialBuiltByAnivex);
   const [testimonials, setTestimonials] = useState<TestimonialCMS[]>(initialTestimonials);
   const [faqs, setFaqs] = useState<FaqCMS[]>(initialFaqs);
+  const [pricingPackages, setPricingPackages] = useState<PricingPackageCMS[]>(initialPricingPackages);
   const [clients, setClients] = useState<ClientRecord[]>([]);
   const [contracts, setContracts] = useState<ContractRecord[]>([]);
   const [quotations, setQuotations] = useState<QuotationRecord[]>([]);
@@ -204,6 +205,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     watchCollection<BuiltByAnivexItem>('builtByAnivex', setBuiltByAnivex, (id, data) => ({ ...data, id } as BuiltByAnivexItem), sortByOrder);
     watchCollection<TestimonialCMS>('testimonials', setTestimonials, (id, data) => ({ ...data, id } as TestimonialCMS), sortByOrder);
     watchCollection<FaqCMS>('faqs', setFaqs, (id, data) => ({ ...data, id } as FaqCMS), sortByOrder);
+    watchCollection<PricingPackageCMS>('pricingPackages', setPricingPackages, (id, data) => ({ ...data, id } as PricingPackageCMS), sortByOrder);
     watchCollection<MediaItem>('media', setMediaItems, (id, data) => ({ ...data, id } as MediaItem));
 
     return () => unsubs.forEach((unsubscribe) => unsubscribe());
@@ -247,7 +249,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const collections: Array<[string, any[]]> = [
           ['services', initialServices], ['products', initialProducts], ['solutions', initialSolutions],
           ['projects', initialProjects], ['builtByAnivex', initialBuiltByAnivex], ['testimonials', initialTestimonials],
-          ['faqs', initialFaqs], ['media', initialMediaItems],
+          ['faqs', initialFaqs], ['pricingPackages', initialPricingPackages], ['media', initialMediaItems],
         ];
         for (const [collectionName, items] of collections) {
           const existing = await getDocs(collection(db, collectionName));
@@ -423,6 +425,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const builtCrud = makeCrud<BuiltByAnivexItem>('builtByAnivex', builtByAnivex, setBuiltByAnivex, (d) => d.title || d.id, 'built');
   const testimonialCrud = makeCrud<TestimonialCMS>('testimonials', testimonials, setTestimonials, (d) => d.customerName || d.id, 'test');
   const faqCrud = makeCrud<FaqCMS>('faqs', faqs, setFaqs, (d) => d.question || d.id, 'faq');
+  const pricingCrud = makeCrud<PricingPackageCMS>('pricingPackages', pricingPackages, setPricingPackages, (d) => d.name || d.id, 'pkg');
 
   const updateWebsiteSettings = async (data: Partial<WebsiteSettings>) => {
     setIsLoading(true);
@@ -655,7 +658,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   return (
     <CmsContext.Provider value={{
-      siteContent, services, products, solutions, projects, builtByAnivex, testimonials, faqs,
+      siteContent, services, products, solutions, projects, builtByAnivex, testimonials, faqs, pricingPackages,
       clients, contracts, quotations, companyInfo, websiteSettings, isLoadingSettings, settingsError,
       paymentSettings, socialLinks, contactEnquiries, notifications, activityLogs, mediaItems, invoices,
       isLoading, toast, showToast, updateWebsiteSettings, updateSiteContent,
@@ -666,6 +669,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       addBuiltByAnivex: builtCrud.add, updateBuiltByAnivex: builtCrud.update, deleteBuiltByAnivex: builtCrud.remove,
       addTestimonial: testimonialCrud.add, updateTestimonial: testimonialCrud.update, deleteTestimonial: testimonialCrud.remove,
       addFaq: faqCrud.add, updateFaq: faqCrud.update, deleteFaq: faqCrud.remove,
+      addPricingPackage: pricingCrud.add, updatePricingPackage: pricingCrud.update, deletePricingPackage: pricingCrud.remove,
       addClient, updateClient, deleteClient, addContract, updateContract, deleteContract,
       addQuotation, updateQuotation, deleteQuotation, updateCompanyInfo, updatePaymentSettings, updateSocialLinks,
       submitContactEnquiry, markEnquiryRead, updateEnquiryStatus, deleteEnquiry,

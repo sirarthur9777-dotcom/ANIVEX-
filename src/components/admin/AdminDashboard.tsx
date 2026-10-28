@@ -10,6 +10,7 @@ import { ServicesManager } from './ServicesManager';
 import { ProductsManager } from './ProductsManager';
 import { SolutionsManager } from './SolutionsManager';
 import { ProjectsManager } from './ProjectsManager';
+import { PricingManager } from './PricingManager';
 import { AboutFounderManager } from './AboutFounderManager';
 import { TestimonialsManager } from './TestimonialsManager';
 import { FaqsManager } from './FaqsManager';
@@ -66,6 +67,8 @@ export const AdminDashboard: React.FC = () => {
         return <SolutionsManager />;
       case 'projects':
         return <ProjectsManager />;
+      case 'pricing':
+        return <PricingManager />;
       case 'about':
         return <AboutFounderManager />;
       case 'testimonials':

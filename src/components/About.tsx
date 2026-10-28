@@ -1,10 +1,12 @@
-import React from 'react';
-import { Target, Compass, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { Target, Compass, ShieldCheck, User } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { AboutStudioVisual } from './TechVisualMockups';
+import { FounderModal } from './FounderModal';
 
 export const About: React.FC = () => {
   const { siteContent } = useCms();
+  const [isFounderModalOpen, setIsFounderModalOpen] = useState(false);
 
   const aboutHeading = siteContent.aboutHeading || "Technology With Purpose.";
   const aboutDescription = siteContent.aboutDescription || "Anivex Solution helps businesses transform ideas into reliable digital products and intelligent technology solutions.";
@@ -120,20 +122,25 @@ export const About: React.FC = () => {
         </div>
 
         {/* Founder Spotlight Card */}
-        <div className="p-7 sm:p-9 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-            <div className="w-16 h-16 rounded-xl bg-[#0B1F3A] text-[#D4A72C] font-heading font-extrabold text-xl flex items-center justify-center shrink-0 shadow-xs">
-              KC
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-[#0B1F3A] border-2 border-[#F97316]/30 shrink-0 shadow-sm">
+              <img
+                src={siteContent.founderImage || "/assets/aistudio/WhatsApp_Image_2026-10-28_at_21.25.39_44e4583f.jpeg"}
+                alt={founderName}
+                className="w-full h-full object-cover object-top"
+              />
+              <span className="absolute bottom-1 right-1 w-3 h-3 bg-[#15803D] rounded-full border-2 border-white" title="Active Lead Architect" />
             </div>
             <div>
               <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#F97316] uppercase tracking-wider mb-1">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>{founderRole}</span>
               </div>
-              <h3 className="font-heading font-bold text-xl text-[#0B1F3A]">
+              <h3 className="font-heading font-bold text-xl sm:text-2xl text-[#0B1F3A]">
                 {founderName}
               </h3>
-              <p className="text-xs sm:text-sm text-[#0B1F3A]/70 leading-relaxed max-w-2xl mt-1">
+              <p className="text-xs sm:text-sm text-[#0B1F3A]/70 leading-relaxed max-w-2xl mt-1 font-normal">
                 {founderDesc}
               </p>
             </div>
@@ -141,14 +148,21 @@ export const About: React.FC = () => {
 
           <button
             type="button"
-            onClick={handleScrollToContact}
-            className="px-5 py-2.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold whitespace-nowrap transition-colors shadow-xs"
+            onClick={() => setIsFounderModalOpen(true)}
+            className="px-6 py-3 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white text-xs sm:text-sm font-bold whitespace-nowrap transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
           >
-            Start a Conversation →
+            <span>More About Founder</span>
+            <span aria-hidden="true">→</span>
           </button>
         </div>
 
       </div>
+
+      {/* Founder Details Modal */}
+      <FounderModal
+        isOpen={isFounderModalOpen}
+        onClose={() => setIsFounderModalOpen(false)}
+      />
     </section>
   );
 };

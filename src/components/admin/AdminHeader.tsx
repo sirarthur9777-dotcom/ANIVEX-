@@ -24,6 +24,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
     products: 'Products Manager',
     solutions: 'Solutions & Verticals Manager',
     projects: 'Projects Manager',
+    pricing: 'Transparent Pricing Packages (₹)',
     about: 'About & Founder Management',
     testimonials: 'Client Testimonials CMS',
     faqs: 'Frequently Asked Questions CMS',

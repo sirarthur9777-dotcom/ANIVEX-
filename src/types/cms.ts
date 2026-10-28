@@ -108,6 +108,15 @@ export interface SiteContent {
   founderRole: string;
   founderDescription: string;
   founderImage?: string;
+  founderSecondaryImage?: string;
+  founderAge?: string | number;
+  founderOrganization?: string;
+  founderQualifications?: string;
+  founderEducationDegree1?: string;
+  founderEducationCollege1?: string;
+  founderEducationDegree2?: string;
+  founderEducationCollege2?: string;
+  founderBio?: string;
   companyImage?: string;
   ctaHeading: string;
   ctaSubtitle: string;

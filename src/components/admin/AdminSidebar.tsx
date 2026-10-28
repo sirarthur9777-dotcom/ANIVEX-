@@ -8,6 +8,7 @@ import {
   Package,
   Sparkles,
   FolderGit2,
+  Tag,
   Info,
   Building,
   Share2,
@@ -36,6 +37,7 @@ export type AdminTab =
   | 'products'
   | 'solutions'
   | 'projects'
+  | 'pricing'
   | 'about'
   | 'testimonials'
   | 'faqs'
@@ -100,6 +102,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         { id: 'products', label: 'Products Manager', icon: Package },
         { id: 'solutions', label: 'Solutions & Verticals', icon: Sparkles },
         { id: 'projects', label: 'Projects & Case Studies', icon: FolderGit2 },
+        { id: 'pricing', label: 'Pricing Packages (₹)', icon: Tag },
         { id: 'about', label: 'About & Founder', icon: Info },
         { id: 'testimonials', label: 'Testimonials CMS', icon: MessageSquareQuote },
         { id: 'faqs', label: 'FAQ Questions', icon: HelpCircle },

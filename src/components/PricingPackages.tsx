@@ -1,6 +1,7 @@
 import React from 'react';
 import { Check, ArrowRight, MessageCircle, ShieldCheck } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
+import { initialPricingPackages } from '../data/initialCmsData';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
 
 interface PricingPackagesProps {
@@ -8,95 +9,22 @@ interface PricingPackagesProps {
 }
 
 export const PricingPackages: React.FC<PricingPackagesProps> = ({ onSelectPackage }) => {
-  const { companyInfo, websiteSettings } = useCms();
+  const { siteContent, pricingPackages, companyInfo, websiteSettings } = useCms();
   const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '';
 
-  const packages = [
-    {
-      id: 'starter-web',
-      name: 'Starter Business Web',
-      category: 'Web Platform',
-      price: '₹14,999',
-      timeline: '5 - 7 Days',
-      badge: 'Quick Launch',
-      featured: false,
-      description: 'Ideal for MSMEs, consultants, clinics, and professional practices looking to build instant credibility.',
-      features: [
-        '100% Mobile & Desktop Responsive',
-        'Direct WhatsApp Chat Integration',
-        'Google Maps & SEO Architecture',
-        'High-Speed Cloud Hosting Setup',
-        'Verified Lead Capture Inquiries',
-        '1 Year Warranty & Support',
-      ],
-      projectType: 'Website',
-      budgetRange: 'Under ₹50,000',
-    },
-    {
-      id: 'ecommerce-store',
-      name: 'E-Commerce & Storefront',
-      category: 'Online Commerce',
-      price: '₹34,999',
-      timeline: '10 - 15 Days',
-      badge: 'Most Popular',
-      featured: true,
-      description: 'Ideal for D2C brands, retail merchants, wholesalers, and product manufacturers selling direct-to-consumer.',
-      features: [
-        'Complete Product Catalog & Filters',
-        'Payment Gateway (UPI, Cards, Netbanking)',
-        'Automated WhatsApp Order Alerts',
-        'Admin Dashboard to Manage Stock',
-        'Coupon & Discount Promotions Engine',
-        'Customer Accounts & Order History',
-      ],
-      projectType: 'Website',
-      budgetRange: '₹50,000 - ₹2,00,000',
-    },
-    {
-      id: 'mobile-app',
-      name: 'Android Mobile App',
-      category: 'Mobile Application',
-      price: '₹49,999',
-      timeline: '2 - 4 Weeks',
-      badge: 'High Retention',
-      featured: false,
-      description: 'Full-featured mobile application built for fluid native interactions and customer retention.',
-      features: [
-        'Google Play Store Ready Build',
-        'Push Notification Campaigns',
-        'OTP & Mobile Quick Login',
-        'Offline Data Sync Architecture',
-        'Real-Time Customer Analytics',
-        'Full IP & Source Code Ownership',
-      ],
-      projectType: 'Mobile App',
-      budgetRange: '₹50,000 - ₹2,00,000',
-    },
-    {
-      id: 'enterprise-erp',
-      name: 'Custom ERP & Software',
-      category: 'Enterprise Software',
-      price: 'Custom Scope',
-      timeline: 'Milestone Based',
-      badge: 'Custom Architecture',
-      featured: false,
-      description: 'Tailored business software, GST billing management, inventory control, and multi-branch systems.',
-      features: [
-        'GST Billing & 1-Click Tax Invoices',
-        'Multi-Warehouse Inventory Tracking',
-        'Granular Role-Based Permissions',
-        'Automated Daily / Monthly Ledgers',
-        'Cloud Database with Auto-Backup',
-        'Dedicated Technical Project Manager',
-      ],
-      projectType: 'ERP / Business Software',
-      budgetRange: '₹2,00,000 - ₹10,00,000',
-    },
-  ];
+  const displayPackages = (pricingPackages && pricingPackages.length > 0)
+    ? pricingPackages.filter((p) => p.published !== false)
+    : initialPricingPackages;
 
-  const handleChoose = (pkg: typeof packages[0]) => {
+  const pricingBadge = siteContent.pricingBadge || 'TRANSPARENT VALUE';
+  const pricingHeading = siteContent.pricingHeading || 'Transparent Pricing in Rupees (₹)';
+  const pricingDescription =
+    siteContent.pricingDescription ||
+    'Zero hidden charges. Milestone-based invoicing with official GST documentation and full intellectual property ownership.';
+
+  const handleChoose = (pkg: typeof displayPackages[0]) => {
     if (onSelectPackage) {
-      onSelectPackage(pkg.projectType, pkg.budgetRange);
+      onSelectPackage(pkg.projectType || 'Website', pkg.budgetRange || 'Under ₹50,000');
     } else {
       const el = document.getElementById('contact');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -123,21 +51,21 @@ export const PricingPackages: React.FC<PricingPackagesProps> = ({ onSelectPackag
         <div className="flex flex-col items-center text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
-            <span className="uppercase tracking-wider text-[11px] font-bold">TRANSPARENT VALUE</span>
+            <span className="uppercase tracking-wider text-[11px] font-bold">{pricingBadge}</span>
           </div>
 
           <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] tracking-tight mb-4">
-            Transparent Pricing in Rupees (₹)
+            {pricingHeading}
           </h2>
 
           <p className="text-base sm:text-lg text-[#0B1F3A]/70 max-w-2xl font-normal leading-relaxed">
-            Zero hidden charges. Milestone-based invoicing with official GST documentation and full intellectual property ownership.
+            {pricingDescription}
           </p>
         </div>
 
-        {/* 4 Packages Grid */}
+        {/* Dynamic Packages Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {packages.map((pkg, idx) => (
+          {displayPackages.map((pkg) => (
             <div
               key={pkg.id}
               className={`rounded-2xl p-6 flex flex-col justify-between transition-all ${
