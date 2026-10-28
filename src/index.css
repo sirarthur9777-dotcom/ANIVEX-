@@ -3,6 +3,8 @@
 @layer base {
   html {
     scroll-padding-top: 80px;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   section[id] {
@@ -13,6 +15,9 @@
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: #FFFDF7;
     color: #0B1F3A;
+    overflow-x: hidden;
+    max-width: 100%;
+    position: relative;
   }
 
   h1, h2, h3, h4, .font-heading {

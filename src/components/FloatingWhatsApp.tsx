@@ -12,7 +12,7 @@ export const FloatingWhatsApp: React.FC = () => {
   const whatsappUrl = formatWhatsAppUrl(phone, defaultMessage);
 
   return (
-    <aside aria-label="WhatsApp Contact" className="fixed bottom-6 right-6 z-50 flex items-end flex-col gap-2">
+    <aside aria-label="WhatsApp Contact" className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex items-end flex-col gap-2 max-w-[calc(100vw-2rem)] pointer-events-auto">
       {/* Friendly Tooltip */}
       {showTooltip && (
         <div className="relative bg-[#0B1F3A] border border-[#F97316]/30 text-white rounded-xl p-3 shadow-xl max-w-[220px] text-xs">
