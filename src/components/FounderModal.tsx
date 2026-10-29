@@ -11,6 +11,8 @@ interface FounderModalProps {
 export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) => {
   const { siteContent, companyInfo, websiteSettings } = useCms();
   const [activePhoto, setActivePhoto] = useState<0 | 1>(0);
+  const [modalImgError0, setModalImgError0] = useState(false);
+  const [modalImgError1, setModalImgError1] = useState(false);
 
   // Close on Escape key
   useEffect(() => {
@@ -43,13 +45,21 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
       src: photoFormal,
       label: 'Executive & Architecture',
       tag: 'Formal Studio Portrait',
-      alt: 'Krishndas Chauhan - Founder & Lead Architect in formal blazer'
+      alt: 'Krishndas Chauhan, Founder and Lead Architect of Anivex Solution',
+      hasError: modalImgError0,
+      onError: () => setModalImgError0(true),
+      width: 729,
+      height: 1114,
     },
     {
       src: photoCasual,
       label: 'Creative & Tech Vision',
       tag: 'Field & Innovation Portrait',
-      alt: 'Krishndas Chauhan - Outdoor portrait with headphones'
+      alt: 'Krishndas Chauhan - Technology innovator and lead architect',
+      hasError: modalImgError1,
+      onError: () => setModalImgError1(true),
+      width: 1086,
+      height: 1448,
     }
   ];
 
@@ -112,15 +122,29 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
             <div className="md:col-span-5 flex flex-col gap-3">
               {/* Main Featured Photo Frame */}
               <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-[#0B1F3A] border-2 border-[#0B1F3A]/10 shadow-md group">
-                <img
-                  src={photos[activePhoto].src}
-                  alt={photos[activePhoto].alt}
-                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                  loading="eager"
-                />
+                {!photos[activePhoto].hasError ? (
+                  <img
+                    src={photos[activePhoto].src}
+                    alt={photos[activePhoto].alt}
+                    width={photos[activePhoto].width}
+                    height={photos[activePhoto].height}
+                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    loading="eager"
+                    fetchPriority="high"
+                    onError={photos[activePhoto].onError}
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
+                    <div className="w-20 h-20 rounded-2xl bg-[#F97316] text-white font-extrabold text-2xl flex items-center justify-center shadow-lg font-heading mb-2">
+                      KC
+                    </div>
+                    <span className="font-heading font-bold text-base text-white">Krishndas Chauhan</span>
+                    <span className="text-xs text-[#D4A72C]">Founder & Lead Architect</span>
+                  </div>
+                )}
 
                 {/* Gradient vignette at bottom */}
-                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0B1F3A]/90 via-[#0B1F3A]/40 to-transparent flex flex-col justify-end p-4">
+                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0B1F3A]/90 via-[#0B1F3A]/40 to-transparent flex flex-col justify-end p-4 pointer-events-none">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-[#D4A72C]">
                     {photos[activePhoto].tag}
                   </span>
@@ -143,11 +167,20 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
                         : 'border-[#0B1F3A]/10 bg-white hover:border-[#0B1F3A]/30'
                     }`}
                   >
-                    <img
-                      src={photo.src}
-                      alt={photo.alt}
-                      className="w-10 h-10 rounded-lg object-cover object-top shrink-0"
-                    />
+                    {!photo.hasError ? (
+                      <img
+                        src={photo.src}
+                        alt={photo.alt}
+                        width="40"
+                        height="40"
+                        className="w-10 h-10 rounded-lg object-cover object-top shrink-0"
+                        onError={photo.onError}
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg bg-[#F97316] text-white font-bold text-xs flex items-center justify-center shrink-0">
+                        KC
+                      </div>
+                    )}
                     <div className="min-w-0 pr-1">
                       <div className="text-[11px] font-bold text-[#0B1F3A] truncate">
                         Photo {idx + 1}

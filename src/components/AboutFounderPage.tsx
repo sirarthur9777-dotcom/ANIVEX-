@@ -30,6 +30,8 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
 }) => {
   const { siteContent, companyInfo, websiteSettings } = useCms();
   const [activePhoto, setActivePhoto] = useState<0 | 1>(0);
+  const [imgErrorFormal, setImgErrorFormal] = useState(false);
+  const [imgErrorCasual, setImgErrorCasual] = useState(false);
 
   const founderName = siteContent.founderName || "Krishndas Chauhan";
   const founderRole = siteContent.founderRole || "Founder & Lead Architect";
@@ -45,15 +47,23 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
       src: photoFormal,
       label: 'Executive & Architecture',
       tag: 'Formal Executive Portrait',
-      alt: 'Krishndas Chauhan - Founder & Lead Architect of Anivex Solution in formal suit',
-      description: 'Formal portrait representing executive leadership, enterprise software architecture, and technology direction at Anivex Solution.'
+      alt: 'Krishndas Chauhan, Founder and Lead Architect of Anivex Solution',
+      description: 'Formal portrait representing executive leadership, enterprise software architecture, and technology direction at Anivex Solution.',
+      hasError: imgErrorFormal,
+      onError: () => setImgErrorFormal(true),
+      width: 729,
+      height: 1114
     },
     {
       src: photoCasual,
       label: 'Creative & Tech Vision',
       tag: 'Field & Innovation Portrait',
       alt: 'Krishndas Chauhan - Technology innovator and lead architect with headphones',
-      description: 'Dynamic portrait representing hands-on full-stack development, modern product craftsmanship, and digital engineering.'
+      description: 'Dynamic portrait representing hands-on full-stack development, modern product craftsmanship, and digital engineering.',
+      hasError: imgErrorCasual,
+      onError: () => setImgErrorCasual(true),
+      width: 1086,
+      height: 1448
     }
   ];
 
@@ -78,10 +88,10 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
         "primaryImageOfPage": {
           "@type": "ImageObject",
           "url": "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
-          "caption": `${founderName} - Founder & Lead Architect of ${founderOrg}`,
+          "caption": "Krishndas Chauhan, Founder and Lead Architect of Anivex Solution",
           "representativeOfPage": true,
-          "width": 1080,
-          "height": 1350
+          "width": 729,
+          "height": 1114
         }
       },
       {
@@ -211,9 +221,9 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
         canonicalPath="/aboutfounder"
         ogType="profile"
         ogImage="/images/krishndas-chauhan-founder-anivex-solution.jpeg"
-        ogImageAlt="Krishndas Chauhan - Founder & Lead Architect of Anivex Solution"
-        ogImageWidth={1080}
-        ogImageHeight={1350}
+        ogImageAlt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution"
+        ogImageWidth={729}
+        ogImageHeight={1114}
         twitterImage="/images/krishndas-chauhan-founder-anivex-solution.jpeg"
         author="Krishndas Chauhan"
         keywords="Krishndas Chauhan, Founder of Anivex Solution, Who is Krishndas Chauhan, Krishndas Chauhan MCA, Krishndas Chauhan BCA, Krishndas Chauhan age, Krishndas Chauhan Anivex, Founder & Lead Architect Krishndas Chauhan, Anivex Solution Founder"
@@ -269,17 +279,30 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
             {/* Left: Interactive Multi-Photo Showcase */}
             <div className="lg:col-span-5 space-y-4 w-full max-w-full min-w-0">
               <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden bg-[#0B1F3A] border-2 border-[#0B1F3A]/10 shadow-xl group">
-                <img
-                  src={photos[activePhoto].src}
-                  alt={photos[activePhoto].alt}
-                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                  loading="eager"
-                  width="600"
-                  height="800"
-                />
+                {!photos[activePhoto].hasError ? (
+                  <img
+                    src={photos[activePhoto].src}
+                    alt={photos[activePhoto].alt}
+                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
+                    width={photos[activePhoto].width}
+                    height={photos[activePhoto].height}
+                    onError={photos[activePhoto].onError}
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
+                    <div className="w-24 h-24 rounded-2xl bg-[#F97316] text-white font-extrabold text-3xl flex items-center justify-center shadow-xl font-heading mb-3 border-2 border-white/20">
+                      KC
+                    </div>
+                    <span className="font-heading font-extrabold text-lg text-white">Krishndas Chauhan</span>
+                    <span className="text-xs text-[#D4A72C] font-semibold mt-0.5">Founder & Lead Architect</span>
+                  </div>
+                )}
 
                 {/* Bottom Overlay Info */}
-                <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#0B1F3A]/95 via-[#0B1F3A]/60 to-transparent flex flex-col justify-end p-4 sm:p-6">
+                <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#0B1F3A]/95 via-[#0B1F3A]/60 to-transparent flex flex-col justify-end p-4 sm:p-6 pointer-events-none">
                   <span className="text-xs uppercase font-extrabold tracking-wider text-[#D4A72C]">
                     {photos[activePhoto].tag}
                   </span>
@@ -305,11 +328,20 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
                         : 'border-[#0B1F3A]/10 bg-white/70 hover:bg-white hover:border-[#0B1F3A]/25'
                     }`}
                   >
-                    <img
-                      src={photo.src}
-                      alt={photo.alt}
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover object-top shrink-0 border border-[#0B1F3A]/10"
-                    />
+                    {!photo.hasError ? (
+                      <img
+                        src={photo.src}
+                        alt={photo.alt}
+                        width="48"
+                        height="48"
+                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover object-top shrink-0 border border-[#0B1F3A]/10"
+                        onError={photo.onError}
+                      />
+                    ) : (
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#F97316] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+                        KC
+                      </div>
+                    )}
                     <div className="min-w-0 flex-1 overflow-hidden">
                       <div className="text-xs font-bold text-[#0B1F3A] truncate">
                         {idx === 0 ? 'Formal Studio' : 'Field Portrait'}

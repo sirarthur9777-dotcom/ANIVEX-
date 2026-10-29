@@ -9,6 +9,7 @@ interface AboutProps {
 
 export const About: React.FC<AboutProps> = ({ onNavigateFounder }) => {
   const { siteContent } = useCms();
+  const [founderImageError, setFounderImageError] = React.useState(false);
 
   const aboutHeading = siteContent.aboutHeading || "Technology With Purpose.";
   const aboutDescription = siteContent.aboutDescription || "Anivex Solution helps businesses transform ideas into reliable digital products and intelligent technology solutions.";
@@ -138,17 +139,23 @@ export const About: React.FC<AboutProps> = ({ onNavigateFounder }) => {
           <link itemProp="sameAs" href="https://www.instagram.com/krishndas_chauhan" />
           <link itemProp="sameAs" href="https://www.facebook.com/krishndas.chauhan" />
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-[#0B1F3A] border-2 border-[#F97316]/30 shrink-0 shadow-sm">
-              <img
-                itemProp="image"
-                src={siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg"}
-                alt={`${founderName} - Founder & Lead Architect of Anivex Solution`}
-                title={`${founderName} - Founder & Lead Architect of Anivex Solution`}
-                className="w-full h-full object-cover object-top"
-                loading="lazy"
-                width="80"
-                height="80"
-              />
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-[#0B1F3A] border-2 border-[#F97316]/30 shrink-0 shadow-sm flex items-center justify-center">
+              {!founderImageError ? (
+                <img
+                  itemProp="image"
+                  src={siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg"}
+                  alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution"
+                  title="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution"
+                  className="w-full h-full object-cover object-top"
+                  loading="eager"
+                  decoding="async"
+                  width="80"
+                  height="80"
+                  onError={() => setFounderImageError(true)}
+                />
+              ) : (
+                <span className="font-heading font-extrabold text-[#F97316] text-lg sm:text-xl">KC</span>
+              )}
               <span className="absolute bottom-1 right-1 w-3 h-3 bg-[#15803D] rounded-full border-2 border-white" title="Active Lead Architect" />
             </div>
             <div>

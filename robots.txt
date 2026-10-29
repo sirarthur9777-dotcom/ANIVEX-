@@ -1,0 +1,7 @@
+# Public pages and images are crawlable. Robots rules are not access control.
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://anivexsolution.in/sitemap.xml

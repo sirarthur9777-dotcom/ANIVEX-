@@ -67,16 +67,30 @@ export const AdminProfileManager: React.FC = () => {
     <div className="space-y-8 max-w-4xl">
       <div className="p-8 rounded-3xl bg-gradient-to-r from-[#0B0F16] via-[#121824] to-[#0B0F16] border border-[#D6A84F]/40 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-5">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#D6A84F] to-[#F5C85B] text-[#05070B] font-extrabold text-2xl flex items-center justify-center font-mono shadow-lg shrink-0">
-            KC
+          <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#0B0F16] border-2 border-[#D6A84F]/50 shadow-lg shrink-0 flex items-center justify-center relative">
+            <img
+              src="/images/krishndas-chauhan-founder-anivex-solution.jpeg"
+              alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution"
+              width="64"
+              height="64"
+              className="w-full h-full object-cover object-top"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                if (fallback) fallback.style.display = 'flex';
+              }}
+            />
+            <div className="w-full h-full bg-gradient-to-br from-[#D6A84F] to-[#F5C85B] text-[#05070B] font-extrabold text-2xl items-center justify-center font-mono hidden">
+              KC
+            </div>
           </div>
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05070B] border border-[#D6A84F]/30 text-[10px] font-mono text-[#F5C85B] uppercase mb-1">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>SUPER ADMIN & FOUNDER</span>
+              <span>FOUNDER & LEAD ARCHITECT</span>
             </div>
             <h2 className="font-display font-bold text-2xl text-white">Krishndas Chauhan</h2>
-            <p className="text-xs text-slate-400 mt-0.5">{adminEmail || user?.email || 'admin@anivex.com'}</p>
+            <p className="text-xs text-slate-400 mt-0.5">{adminEmail || user?.email || 'anivexsolution@gmail.com'}</p>
           </div>
         </div>
 

@@ -237,12 +237,26 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         {/* Footer Logout */}
         <div className="p-4 border-t border-slate-200 bg-slate-50/80 space-y-2.5">
           <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
-            <div className="w-8 h-8 rounded-lg bg-[#F97316] text-white font-extrabold text-xs flex items-center justify-center font-heading">
-              KC
+            <div className="w-8 h-8 rounded-lg overflow-hidden bg-[#0B1F3A] border border-slate-200 shrink-0 flex items-center justify-center relative">
+              <img
+                src="/images/krishndas-chauhan-founder-anivex-solution.jpeg"
+                alt="Krishndas Chauhan"
+                width="32"
+                height="32"
+                className="w-full h-full object-cover object-top"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+              <div className="w-full h-full bg-[#F97316] text-white font-extrabold text-xs items-center justify-center font-heading hidden">
+                KC
+              </div>
             </div>
             <div className="overflow-hidden">
               <div className="text-xs font-bold text-slate-900 truncate">Krishndas Chauhan</div>
-              <div className="text-[10px] text-slate-500 truncate">Founder & Lead Admin</div>
+              <div className="text-[10px] text-slate-500 truncate">Founder & Lead Architect</div>
             </div>
           </div>
 
