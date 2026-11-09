@@ -20,8 +20,8 @@
 /custom-software /custom-software.html 200
 /privacy-policy /privacy-policy.html 200
 /terms-and-conditions /terms-and-conditions.html 200
-/admin /admin.html 200
-/admin/* /admin.html 200
-/controlroom /admin.html 200
-/controlroom/* /admin.html 200
-/* /404.html 404
+/admin /index.html 200
+/admin/* /index.html 200
+/controlroom /index.html 200
+/controlroom/* /index.html 200
+/* /index.html 200

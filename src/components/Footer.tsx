@@ -50,6 +50,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
     }
   };
 
+  const handleControlRoomClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.history.pushState({}, '', '/controlroom');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <footer className="bg-[#0B1F3A] text-slate-300 pt-16 pb-12 border-t border-[#0B1F3A]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -191,7 +198,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
               <li className="pt-1">
                 <a
                   href="/controlroom"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#D4A72C] text-xs font-semibold transition-colors"
+                  onClick={handleControlRoomClick}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#D4A72C] text-xs font-semibold transition-colors cursor-pointer"
                 >
                   <Lock className="w-3.5 h-3.5" />
                   <span>Control Room</span>
@@ -222,7 +230,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
             >
               Terms & Conditions
             </a>
-            <a href="/admin" className="hover:text-[#F97316] transition-colors">Admin Dashboard</a>
+            <a 
+              href="/controlroom" 
+              onClick={handleControlRoomClick}
+              className="hover:text-[#F97316] transition-colors cursor-pointer"
+            >
+              Admin Dashboard
+            </a>
             <a href="#contact" className="hover:text-white transition-colors">Start a Project</a>
             <button
               type="button"

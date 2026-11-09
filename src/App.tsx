@@ -174,15 +174,23 @@ function PublicWebsite({ onNavigatePrivacy, onNavigateTerms, onNavigateService, 
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname);
+  const [searchParams, setSearchParams] = useState<string>(() => typeof window !== 'undefined' ? window.location.search : '');
+  const [hash, setHash] = useState<string>(() => typeof window !== 'undefined' ? window.location.hash : '');
 
   useEffect(() => {
     const handleLocationChange = () => {
       setCurrentPath(window.location.pathname);
+      setSearchParams(window.location.search);
+      setHash(window.location.hash);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
   }, []);
 
   const cleanPath = currentPath.replace(/\/$/, '').toLowerCase() || '/';
@@ -207,7 +215,16 @@ export default function App() {
     cleanPath.startsWith('/manage') ||
     cleanPath.startsWith('/control-panel');
 
-  const isAdminRoute = isCmsSubdomain || isCmsPath;
+  // Detect CMS query or hash parameters (e.g. ?route=controlroom, ?admin=true, #controlroom)
+  const isCmsQuery = Boolean(
+    searchParams.toLowerCase().includes('controlroom') ||
+    searchParams.toLowerCase().includes('admin') ||
+    searchParams.toLowerCase().includes('cms') ||
+    hash.toLowerCase() === '#controlroom' ||
+    hash.toLowerCase() === '#admin'
+  );
+
+  const isAdminRoute = isCmsSubdomain || isCmsPath || isCmsQuery;
   const isPrivacyRoute = cleanPath === '/privacy-policy' || cleanPath === '/privacy';
   const isTermsRoute = cleanPath === '/terms-and-conditions' || cleanPath === '/terms';
   const isFounderRoute = cleanPath === '/aboutfounder' || cleanPath === '/about-founder' || cleanPath === '/founder';
