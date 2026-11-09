@@ -38,8 +38,8 @@ function AdminRouteWrapper() {
   return (
     <>
       <SeoHead
-        title="Admin Console | Anivex Solution"
-        description="Administrative portal for Anivex Solution."
+        title="Control Room | Anivex Solution"
+        description="Official administrative control room and website management system for Anivex Solution."
         isNoIndex={true}
       />
       {isLoading ? (
@@ -189,7 +189,25 @@ export default function App() {
   const serviceSlug = cleanPath.replace(/^\//, '');
   const isServiceRoute = Boolean(SERVICES_SEO_DATA[serviceSlug]);
 
-  const isAdminRoute = currentPath.startsWith('/admin');
+  // Detect dedicated CMS / Control Room subdomain (e.g., controlroom.anivexsolution.in, cms.anivexsolution.in)
+  const isCmsSubdomain = typeof window !== 'undefined' && Boolean(
+    window.location.hostname.toLowerCase().startsWith('controlroom.') ||
+    window.location.hostname.toLowerCase().startsWith('cms.') || 
+    window.location.hostname.toLowerCase().startsWith('admin.') || 
+    window.location.hostname.toLowerCase().startsWith('portal.')
+  );
+
+  // Detect dedicated CMS path URLs (/controlroom, /control-room, /cms, /admin, /portal, /manage, /control-panel)
+  const isCmsPath = 
+    cleanPath.startsWith('/controlroom') ||
+    cleanPath.startsWith('/control-room') ||
+    cleanPath.startsWith('/admin') || 
+    cleanPath.startsWith('/cms') || 
+    cleanPath.startsWith('/portal') || 
+    cleanPath.startsWith('/manage') ||
+    cleanPath.startsWith('/control-panel');
+
+  const isAdminRoute = isCmsSubdomain || isCmsPath;
   const isPrivacyRoute = cleanPath === '/privacy-policy' || cleanPath === '/privacy';
   const isTermsRoute = cleanPath === '/terms-and-conditions' || cleanPath === '/terms';
   const isFounderRoute = cleanPath === '/aboutfounder' || cleanPath === '/about-founder' || cleanPath === '/founder';

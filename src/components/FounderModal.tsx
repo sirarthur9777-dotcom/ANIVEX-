@@ -10,9 +10,9 @@ interface FounderModalProps {
 
 export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) => {
   const { siteContent, companyInfo, websiteSettings } = useCms();
-  const [activePhoto, setActivePhoto] = useState<0 | 1>(0);
-  const [modalImgError0, setModalImgError0] = useState(false);
-  const [modalImgError1, setModalImgError1] = useState(false);
+  const [modalActivePortrait, setModalActivePortrait] = useState<'executive' | 'field'>('field');
+  const [execModalImgError, setExecModalImgError] = useState(false);
+  const [fieldModalImgError, setFieldModalImgError] = useState(false);
 
   // Close on Escape key
   useEffect(() => {
@@ -37,31 +37,8 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
   const founderAge = siteContent.founderAge || "21";
   const founderQualifications = siteContent.founderQualifications || "MCA";
 
-  const photoFormal = siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg";
-  const photoCasual = siteContent.founderSecondaryImage || "/images/krishndas-chauhan-anivex-solution.jpeg";
-
-  const photos = [
-    {
-      src: photoFormal,
-      label: 'Executive & Architecture',
-      tag: 'Formal Studio Portrait',
-      alt: 'Krishndas Chauhan, Founder and Lead Architect of Anivex Solution',
-      hasError: modalImgError0,
-      onError: () => setModalImgError0(true),
-      width: 729,
-      height: 1114,
-    },
-    {
-      src: photoCasual,
-      label: 'Creative & Tech Vision',
-      tag: 'Field & Innovation Portrait',
-      alt: 'Krishndas Chauhan - Technology innovator and lead architect',
-      hasError: modalImgError1,
-      onError: () => setModalImgError1(true),
-      width: 1086,
-      height: 1448,
-    }
-  ];
+  const founderPhoto = siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg";
+  const founderFieldPhoto = siteContent.founderSecondaryImage || "/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg";
 
   const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '+91 9119069399';
   const whatsappUrl = formatWhatsAppUrl(
@@ -118,79 +95,101 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
           {/* Hero Banner Grid: Photos + Core Bio */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-start">
             
-            {/* Left Column: Photo Showcase */}
+            {/* Left Column: Official Photo Showcase */}
             <div className="md:col-span-5 flex flex-col gap-3">
               {/* Main Featured Photo Frame */}
               <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-[#0B1F3A] border-2 border-[#0B1F3A]/10 shadow-md group">
-                {!photos[activePhoto].hasError ? (
-                  <img
-                    src={photos[activePhoto].src}
-                    alt={photos[activePhoto].alt}
-                    width={photos[activePhoto].width}
-                    height={photos[activePhoto].height}
-                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    loading="eager"
-                    fetchPriority="high"
-                    onError={photos[activePhoto].onError}
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
-                    <div className="w-20 h-20 rounded-2xl bg-[#F97316] text-white font-extrabold text-2xl flex items-center justify-center shadow-lg font-heading mb-2">
-                      KC
+                {modalActivePortrait === 'executive' ? (
+                  !execModalImgError ? (
+                    <img
+                      src={founderPhoto}
+                      alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Executive Portrait)"
+                      width={900}
+                      height={1599}
+                      className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      loading="eager"
+                      fetchPriority="high"
+                      onError={() => setExecModalImgError(true)}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
+                      <div className="w-20 h-20 rounded-2xl bg-[#F97316] text-white font-extrabold text-2xl flex items-center justify-center shadow-lg font-heading mb-2">
+                        KC
+                      </div>
+                      <span className="font-heading font-bold text-base text-white">Krishndas Chauhan</span>
+                      <span className="text-xs text-[#D4A72C]">Executive Studio Portrait</span>
                     </div>
-                    <span className="font-heading font-bold text-base text-white">Krishndas Chauhan</span>
-                    <span className="text-xs text-[#D4A72C]">Founder & Lead Architect</span>
-                  </div>
+                  )
+                ) : (
+                  !fieldModalImgError ? (
+                    <img
+                      src={founderFieldPhoto}
+                      alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Field & Leadership Portrait)"
+                      width={1086}
+                      height={1448}
+                      className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      loading="eager"
+                      fetchPriority="high"
+                      onError={() => setFieldModalImgError(true)}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
+                      <div className="w-20 h-20 rounded-2xl bg-[#15803D] text-white font-extrabold text-2xl flex items-center justify-center shadow-lg font-heading mb-2">
+                        KC
+                      </div>
+                      <span className="font-heading font-bold text-base text-white">Krishndas Chauhan</span>
+                      <span className="text-xs text-[#D4A72C]">Field &amp; Technical Leadership</span>
+                    </div>
+                  )
                 )}
 
                 {/* Gradient vignette at bottom */}
                 <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0B1F3A]/90 via-[#0B1F3A]/40 to-transparent flex flex-col justify-end p-4 pointer-events-none">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-[#D4A72C]">
-                    {photos[activePhoto].tag}
+                    {modalActivePortrait === 'executive' ? 'Official Executive Portrait' : 'Field & Leadership Portrait'}
                   </span>
                   <span className="text-xs font-semibold text-white">
-                    {photos[activePhoto].label}
+                    Krishndas Chauhan {modalActivePortrait === 'field' ? '• Tech Leadership' : '• Lead Architect'}
                   </span>
                 </div>
               </div>
 
-              {/* Dual Photo Selector Thumbnails */}
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                {photos.map((photo, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setActivePhoto(idx as 0 | 1)}
-                    className={`relative p-1.5 rounded-xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
-                      activePhoto === idx
-                        ? 'border-[#F97316] bg-[#F97316]/5 ring-2 ring-[#F97316]/20'
-                        : 'border-[#0B1F3A]/10 bg-white hover:border-[#0B1F3A]/30'
-                    }`}
-                  >
-                    {!photo.hasError ? (
-                      <img
-                        src={photo.src}
-                        alt={photo.alt}
-                        width="40"
-                        height="40"
-                        className="w-10 h-10 rounded-lg object-cover object-top shrink-0"
-                        onError={photo.onError}
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-lg bg-[#F97316] text-white font-bold text-xs flex items-center justify-center shrink-0">
-                        KC
-                      </div>
-                    )}
-                    <div className="min-w-0 pr-1">
-                      <div className="text-[11px] font-bold text-[#0B1F3A] truncate">
-                        Photo {idx + 1}
-                      </div>
-                      <div className="text-[10px] text-[#0B1F3A]/60 truncate">
-                        {idx === 0 ? 'Formal Suit' : 'Creative Vision'}
-                      </div>
-                    </div>
-                  </button>
-                ))}
+              {/* Portrait Toggle Bar */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setModalActivePortrait('executive')}
+                  className={`flex-1 p-1.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
+                    modalActivePortrait === 'executive'
+                      ? 'bg-[#0B1F3A] text-white border-[#0B1F3A] shadow-xs'
+                      : 'bg-white text-[#0B1F3A]/80 border-[#0B1F3A]/10 hover:bg-slate-50'
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />
+                  <span>Executive</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setModalActivePortrait('field')}
+                  className={`flex-1 p-1.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
+                    modalActivePortrait === 'field'
+                      ? 'bg-[#0B1F3A] text-white border-[#0B1F3A] shadow-xs'
+                      : 'bg-white text-[#0B1F3A]/80 border-[#0B1F3A]/10 hover:bg-slate-50'
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
+                  <span>Field Portrait</span>
+                </button>
+              </div>
+
+              {/* Verified Founder Badge */}
+              <div className="p-2.5 rounded-xl border border-[#0B1F3A]/10 bg-white shadow-2xs flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#15803D] animate-pulse" />
+                  <span className="text-xs font-bold text-[#0B1F3A]">Verified Leadership</span>
+                </div>
+                <span className="text-[11px] text-[#F97316] font-semibold">Anivex Solution</span>
               </div>
             </div>
 

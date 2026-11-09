@@ -254,7 +254,7 @@ export const initialSiteContent: SiteContent = {
   founderDescription: "Krishndas Chauhan is the Founder and Lead Architect of Anivex Solution, holding MCA from Mangalayatan University and BCA from APCS College of IT & Management, architecting high-performance digital products and scalable enterprise systems.",
   founderBio: "Krishndas Chauhan is the Founder and Lead Architect of Anivex Solution.\n\nHe holds a Master of Computer Applications (MCA) from Mangalayatan University and a Bachelor of Computer Applications (BCA), both from APCS College of IT & Management.\n\nHis educational background in computer applications provides a strong academic foundation for his professional journey in technology and his role at Anivex Solution.",
   founderImage: "/images/krishndas-chauhan-founder-anivex-solution.jpeg",
-  founderSecondaryImage: "/images/krishndas-chauhan-anivex-solution.jpeg",
+  founderSecondaryImage: "/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg",
   founderEducationDegree1: "Master of Computer Applications (MCA)",
   founderEducationCollege1: "Mangalayatan University",
   founderEducationDegree2: "Bachelor of Computer Applications (BCA)",

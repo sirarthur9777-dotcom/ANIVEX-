@@ -29,9 +29,9 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
   onNavigateContact,
 }) => {
   const { siteContent, companyInfo, websiteSettings } = useCms();
-  const [activePhoto, setActivePhoto] = useState<0 | 1>(0);
-  const [imgErrorFormal, setImgErrorFormal] = useState(false);
-  const [imgErrorCasual, setImgErrorCasual] = useState(false);
+  const [activePortrait, setActivePortrait] = useState<'executive' | 'field'>('field');
+  const [execImgError, setExecImgError] = useState(false);
+  const [fieldImgError, setFieldImgError] = useState(false);
 
   const founderName = siteContent.founderName || "Krishndas Chauhan";
   const founderRole = siteContent.founderRole || "Founder & Lead Architect";
@@ -39,33 +39,8 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
   const founderAge = siteContent.founderAge || "21";
   const founderQualifications = siteContent.founderQualifications || "MCA";
 
-  const photoFormal = siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg";
-  const photoCasual = siteContent.founderSecondaryImage || "/images/krishndas-chauhan-anivex-solution.jpeg";
-
-  const photos = [
-    {
-      src: photoFormal,
-      label: 'Executive & Architecture',
-      tag: 'Formal Executive Portrait',
-      alt: 'Krishndas Chauhan, Founder and Lead Architect of Anivex Solution',
-      description: 'Formal portrait representing executive leadership, enterprise software architecture, and technology direction at Anivex Solution.',
-      hasError: imgErrorFormal,
-      onError: () => setImgErrorFormal(true),
-      width: 729,
-      height: 1114
-    },
-    {
-      src: photoCasual,
-      label: 'Creative & Tech Vision',
-      tag: 'Field & Innovation Portrait',
-      alt: 'Krishndas Chauhan - Technology innovator and lead architect with headphones',
-      description: 'Dynamic portrait representing hands-on full-stack development, modern product craftsmanship, and digital engineering.',
-      hasError: imgErrorCasual,
-      onError: () => setImgErrorCasual(true),
-      width: 1086,
-      height: 1448
-    }
-  ];
+  const founderPhoto = siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg";
+  const founderFieldPhoto = siteContent.founderSecondaryImage || "/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg";
 
   const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '+91 9119069399';
   const whatsappUrl = formatWhatsAppUrl(
@@ -80,18 +55,19 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
         "@type": "ProfilePage",
         "@id": "https://anivexsolution.in/aboutfounder#profilepage",
         "url": "https://anivexsolution.in/aboutfounder",
-        "name": `${founderName} - Founder & Lead Architect | ${founderOrg}`,
-        "description": `Official profile and verified biography of ${founderName}, ${founderRole} of ${founderOrg}.`,
+        "name": `Who is Krishndas Chauhan? | Founder & Lead Architect | Anivex Solution`,
+        "description": `Official profile and verified biography of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution. Learn about his engineering vision, qualifications (MCA), and enterprise software architecture.`,
         "mainEntity": {
           "@id": "https://anivexsolution.in/#krishndas-chauhan"
         },
         "primaryImageOfPage": {
           "@type": "ImageObject",
+          "@id": "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
           "url": "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
-          "caption": "Krishndas Chauhan, Founder and Lead Architect of Anivex Solution",
+          "caption": "Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Executive Portrait)",
           "representativeOfPage": true,
-          "width": 729,
-          "height": 1114
+          "width": 900,
+          "height": 1599
         }
       },
       {
@@ -101,13 +77,16 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
         "alternateName": [
           "Founder of Anivex Solution",
           "Who is Krishndas Chauhan",
-          "Krishndas Chauhan Anivex",
-          "Krishndas Chauhan MCA",
-          "Krishndas Chauhan BCA",
+          "Krishndas Chauhan Anivex Solution",
           "Krishndas Chauhan Founder",
           "Krishndas Chauhan Lead Architect",
+          "Krishndas Chauhan Field Portrait",
+          "Krishndas Chauhan Photo",
+          "Krishndas Chauhan MCA",
+          "Krishndas Chauhan BCA",
           "Krishna Das Chauhan",
-          "Er. Krishndas Chauhan"
+          "Er. Krishndas Chauhan",
+          "Krishndas Chauhan age"
         ],
         "givenName": "Krishndas",
         "familyName": "Chauhan",
@@ -115,6 +94,7 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
         "jobTitle": founderRole,
         "worksFor": {
           "@type": "Organization",
+          "@id": "https://anivexsolution.in/#organization",
           "name": founderOrg,
           "url": "https://anivexsolution.in/"
         },
@@ -122,7 +102,27 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
         "mainEntityOfPage": "https://anivexsolution.in/aboutfounder",
         "image": [
           "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
-          "https://anivexsolution.in/images/krishndas-chauhan-anivex-solution.jpeg"
+          "https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg"
+        ],
+        "subjectOf": [
+          {
+            "@type": "ImageObject",
+            "@id": "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
+            "contentUrl": "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
+            "name": "Krishndas Chauhan - Official Executive Portrait",
+            "caption": "Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Executive Portrait in Studio)",
+            "width": 900,
+            "height": 1599
+          },
+          {
+            "@type": "ImageObject",
+            "@id": "https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg",
+            "contentUrl": "https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg",
+            "name": "Krishndas Chauhan - Field & On-Site Leadership Portrait",
+            "caption": "Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Field & Project Execution Portrait)",
+            "width": 1086,
+            "height": 1448
+          }
         ],
         "description": `${founderName} (Age: ${founderAge}) is the ${founderRole} of ${founderOrg}. He holds a Master of Computer Applications (MCA) from Mangalayatan University and a Bachelor of Computer Applications (BCA) from APCS College of IT & Management.`,
         "alumniOf": [
@@ -216,17 +216,17 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
     <div className="min-h-screen bg-[#FFFDF7] text-[#0B1F3A] flex flex-col selection:bg-[#F97316]/20 selection:text-[#F97316] w-full max-w-full overflow-x-hidden">
       {/* Search Engine Optimization & Knowledge Graph Schema */}
       <SeoHead
-        title="Krishndas Chauhan | Founder & Lead Architect | Anivex Solution"
-        description="Official biography of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution. MCA from Mangalayatan University, BCA from APCS College of IT & Management. Technology leadership, enterprise software, and digital solutions."
+        title="Who is Krishndas Chauhan? | Founder & Lead Architect | Anivex Solution"
+        description="Who is Krishndas Chauhan? Official verified profile of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution. MCA from Mangalayatan University. Enterprise software architecture, web applications, and digital systems."
         canonicalPath="/aboutfounder"
         ogType="profile"
         ogImage="/images/krishndas-chauhan-founder-anivex-solution.jpeg"
         ogImageAlt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution"
-        ogImageWidth={729}
-        ogImageHeight={1114}
+        ogImageWidth={900}
+        ogImageHeight={1599}
         twitterImage="/images/krishndas-chauhan-founder-anivex-solution.jpeg"
         author="Krishndas Chauhan"
-        keywords="Krishndas Chauhan, Founder of Anivex Solution, Who is Krishndas Chauhan, Krishndas Chauhan MCA, Krishndas Chauhan BCA, Krishndas Chauhan age, Krishndas Chauhan Anivex, Founder & Lead Architect Krishndas Chauhan, Anivex Solution Founder"
+        keywords="who is krishndas chauhan, founder of anivex solution, anivex solution, krishndas chauhan founder, anivex solution founder, krishndas chauhan, krishndas chauhan mca, krishndas chauhan bca, krishndas chauhan age, lead architect anivex solution, anivex solution jaunpur, software development founder india"
         schema={founderSchema}
       />
 
@@ -262,6 +262,13 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
           
           {/* Header Banner */}
           <div className="text-center max-w-3xl mx-auto space-y-3 px-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 text-xs font-semibold text-[#0B1F3A] mb-1">
+              <span className="w-2 h-2 rounded-full bg-[#15803D] animate-pulse" />
+              <span className="tracking-wide uppercase text-[11px] font-bold">OFFICIAL FOUNDER PROFILE</span>
+              <span className="text-[#0B1F3A]/30">|</span>
+              <span className="text-[#F97316] font-extrabold">{founderOrg}</span>
+            </div>
+
             <h1 className="font-heading font-extrabold text-2xl sm:text-4xl lg:text-5xl text-[#0B1F3A] tracking-tight break-words">
               {founderName}
             </h1>
@@ -270,88 +277,179 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
               <span className="font-bold text-[#0B1F3A]">{founderRole}</span>
               <span className="text-[#0B1F3A]/30">•</span>
               <span className="text-[#F97316] font-extrabold">{founderOrg}</span>
+              <span className="text-[#0B1F3A]/30">•</span>
+              <span className="text-[#15803D] font-semibold">{founderQualifications}</span>
             </p>
           </div>
 
           {/* Two-Column Grid: Visual Gallery (Left) & Core Biography (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start w-full max-w-full">
             
-            {/* Left: Interactive Multi-Photo Showcase */}
+            {/* Left: Official Photo Showcase */}
             <div className="lg:col-span-5 space-y-4 w-full max-w-full min-w-0">
-              <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden bg-[#0B1F3A] border-2 border-[#0B1F3A]/10 shadow-xl group">
-                {!photos[activePhoto].hasError ? (
-                  <img
-                    src={photos[activePhoto].src}
-                    alt={photos[activePhoto].alt}
-                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                    loading="eager"
-                    fetchPriority="high"
-                    decoding="async"
-                    width={photos[activePhoto].width}
-                    height={photos[activePhoto].height}
-                    onError={photos[activePhoto].onError}
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
-                    <div className="w-24 h-24 rounded-2xl bg-[#F97316] text-white font-extrabold text-3xl flex items-center justify-center shadow-xl font-heading mb-3 border-2 border-white/20">
-                      KC
+              {/* Main Photo Frame */}
+              <div className="relative aspect-[3/4] sm:aspect-[9/16] max-h-[620px] w-full rounded-3xl overflow-hidden bg-[#0B1F3A] border-2 border-[#0B1F3A]/10 shadow-xl group mx-auto">
+                {activePortrait === 'executive' ? (
+                  !execImgError ? (
+                    <img
+                      src={founderPhoto}
+                      alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Executive Portrait)"
+                      className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
+                      width={900}
+                      height={1599}
+                      onError={() => setExecImgError(true)}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
+                      <div className="w-24 h-24 rounded-2xl bg-[#F97316] text-white font-extrabold text-3xl flex items-center justify-center shadow-xl font-heading mb-3 border-2 border-white/20">
+                        KC
+                      </div>
+                      <span className="font-heading font-extrabold text-lg text-white">Krishndas Chauhan</span>
+                      <span className="text-xs text-[#D4A72C] font-semibold mt-0.5">Founder &amp; Lead Architect</span>
                     </div>
-                    <span className="font-heading font-extrabold text-lg text-white">Krishndas Chauhan</span>
-                    <span className="text-xs text-[#D4A72C] font-semibold mt-0.5">Founder & Lead Architect</span>
-                  </div>
+                  )
+                ) : (
+                  !fieldImgError ? (
+                    <img
+                      src={founderFieldPhoto}
+                      alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (On-Site & Field Leadership Portrait)"
+                      className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
+                      width={1086}
+                      height={1448}
+                      onError={() => setFieldImgError(true)}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
+                      <div className="w-24 h-24 rounded-2xl bg-[#15803D] text-white font-extrabold text-3xl flex items-center justify-center shadow-xl font-heading mb-3 border-2 border-white/20">
+                        KC
+                      </div>
+                      <span className="font-heading font-extrabold text-lg text-white">Krishndas Chauhan</span>
+                      <span className="text-xs text-[#D4A72C] font-semibold mt-0.5">Field &amp; Technical Leadership</span>
+                    </div>
+                  )
                 )}
 
                 {/* Bottom Overlay Info */}
                 <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#0B1F3A]/95 via-[#0B1F3A]/60 to-transparent flex flex-col justify-end p-4 sm:p-6 pointer-events-none">
                   <span className="text-xs uppercase font-extrabold tracking-wider text-[#D4A72C]">
-                    {photos[activePhoto].tag}
+                    {activePortrait === 'executive' ? 'Official Executive Portrait' : 'Field & Leadership Portrait'}
                   </span>
                   <h3 className="text-sm font-bold text-white mt-0.5 truncate">
-                    {photos[activePhoto].label}
+                    Krishndas Chauhan {activePortrait === 'field' ? '• Tech Leadership' : ''}
                   </h3>
                   <p className="text-[11px] text-white/80 line-clamp-2 mt-1">
-                    {photos[activePhoto].description}
+                    {activePortrait === 'executive'
+                      ? 'Founder and Lead Architect of Anivex Solution • MCA Graduate & Enterprise Systems Architect'
+                      : 'Founder of Anivex Solution • Practical on-site software engineering and digital execution'}
                   </p>
                 </div>
               </div>
 
-              {/* Photo Selector Thumbnails */}
-              <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full">
-                {photos.map((photo, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setActivePhoto(idx as 0 | 1)}
-                    className={`p-2 sm:p-2.5 rounded-2xl border text-left flex items-center gap-2 sm:gap-3 transition-all cursor-pointer min-w-0 overflow-hidden ${
-                      activePhoto === idx
-                        ? 'border-[#F97316] bg-white ring-2 ring-[#F97316]/20 shadow-md'
-                        : 'border-[#0B1F3A]/10 bg-white/70 hover:bg-white hover:border-[#0B1F3A]/25'
-                    }`}
-                  >
-                    {!photo.hasError ? (
-                      <img
-                        src={photo.src}
-                        alt={photo.alt}
-                        width="48"
-                        height="48"
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover object-top shrink-0 border border-[#0B1F3A]/10"
-                        onError={photo.onError}
-                      />
-                    ) : (
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#F97316] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
-                        KC
-                      </div>
-                    )}
-                    <div className="min-w-0 flex-1 overflow-hidden">
-                      <div className="text-xs font-bold text-[#0B1F3A] truncate">
-                        {idx === 0 ? 'Formal Studio' : 'Field Portrait'}
-                      </div>
-                      <div className="text-[10px] text-[#0B1F3A]/60 truncate font-medium">
-                        {idx === 0 ? 'Blazer / Architecture' : 'Creative Tech'}
-                      </div>
+              {/* Portrait Switcher Tabs (Executive vs Field) */}
+              <div className="flex items-center gap-2.5 w-full">
+                {/* Button 1: Executive Portrait */}
+                <button
+                  type="button"
+                  onClick={() => setActivePortrait('executive')}
+                  className={`flex-1 p-2 rounded-xl border transition-all text-left flex items-center gap-2.5 cursor-pointer ${
+                    activePortrait === 'executive'
+                      ? 'bg-[#0B1F3A] text-white border-[#0B1F3A] shadow-md ring-2 ring-[#F97316]/50'
+                      : 'bg-white text-[#0B1F3A] border-[#0B1F3A]/10 hover:border-[#0B1F3A]/30 hover:bg-slate-50'
+                  }`}
+                  aria-pressed={activePortrait === 'executive'}
+                  aria-label="View Executive Studio Portrait of Krishndas Chauhan"
+                >
+                  <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#0B1F3A]/20 shrink-0 border border-current/20">
+                    <img
+                      src={founderPhoto}
+                      alt="Krishndas Chauhan Executive Portrait preview"
+                      className="w-full h-full object-cover object-top"
+                      width={40}
+                      height={40}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold truncate">Executive</span>
+                      {activePortrait === 'executive' && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#15803D] shrink-0" />
+                      )}
                     </div>
-                  </button>
-                ))}
+                    <p className={`text-[10px] truncate ${activePortrait === 'executive' ? 'text-[#D4A72C]' : 'text-[#0B1F3A]/60'}`}>
+                      Studio Portrait
+                    </p>
+                  </div>
+                </button>
+
+                {/* Button 2: Field Portrait (targeted by CSS selector 2) */}
+                <button
+                  type="button"
+                  onClick={() => setActivePortrait('field')}
+                  className={`flex-1 p-2 rounded-xl border transition-all text-left flex items-center gap-2.5 cursor-pointer ${
+                    activePortrait === 'field'
+                      ? 'bg-[#0B1F3A] text-white border-[#0B1F3A] shadow-md ring-2 ring-[#15803D]/60'
+                      : 'bg-white text-[#0B1F3A] border-[#0B1F3A]/10 hover:border-[#0B1F3A]/30 hover:bg-slate-50'
+                  }`}
+                  aria-pressed={activePortrait === 'field'}
+                  aria-label="View Field & Leadership Portrait of Krishndas Chauhan"
+                >
+                  <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#0B1F3A]/20 shrink-0 border border-current/20">
+                    <img
+                      src={founderFieldPhoto}
+                      alt="Krishndas Chauhan Field Portrait preview"
+                      className="w-full h-full object-cover object-top"
+                      width={40}
+                      height={40}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold truncate">Field Portrait</span>
+                      {activePortrait === 'field' && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#15803D] shrink-0" />
+                      )}
+                    </div>
+                    <p className={`text-[10px] truncate ${activePortrait === 'field' ? 'text-[#D4A72C]' : 'text-[#0B1F3A]/60'}`}>
+                      On-Site &amp; Execution
+                    </p>
+                  </div>
+                </button>
+              </div>
+
+              {/* Verified Identity & Fast Facts Card */}
+              <div className="p-4 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-xs space-y-3 w-full">
+                <div className="flex items-center justify-between pb-2 border-b border-[#0B1F3A]/8">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#15803D]" />
+                    <span className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider">Verified Executive Profile</span>
+                  </div>
+                  <span className="text-[11px] font-bold text-[#F97316] bg-[#F97316]/10 px-2 py-0.5 rounded-md">Anivex Solution</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2.5 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6">
+                    <span className="text-[10px] text-[#0B1F3A]/60 font-semibold block uppercase">Designation</span>
+                    <span className="font-bold text-[#0B1F3A] text-xs">Founder & Lead Architect</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6">
+                    <span className="text-[10px] text-[#0B1F3A]/60 font-semibold block uppercase">Highest Degree</span>
+                    <span className="font-bold text-[#15803D] text-xs">MCA (Post-Graduation)</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6">
+                    <span className="text-[10px] text-[#0B1F3A]/60 font-semibold block uppercase">Location</span>
+                    <span className="font-bold text-[#0B1F3A] text-xs">Uttar Pradesh, India</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6">
+                    <span className="text-[10px] text-[#0B1F3A]/60 font-semibold block uppercase">Company</span>
+                    <span className="font-bold text-[#F97316] text-xs">anivexsolution.in</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -574,6 +672,95 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
 
             </div>
 
+          </div>
+
+          {/* Crawlable Frequently Asked Questions (SEO & AI Knowledge Graph) */}
+          <div className="pt-8 border-t border-[#0B1F3A]/8 space-y-6 w-full max-w-full">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <span className="text-xs font-bold text-[#F97316] uppercase tracking-wider">
+                Direct Answers • Search & AI Verification
+              </span>
+              <h2 className="font-heading font-extrabold text-xl sm:text-3xl text-[#0B1F3A]">
+                Frequently Asked Questions About Krishndas Chauhan
+              </h2>
+              <p className="text-xs sm:text-sm text-[#0B1F3A]/70">
+                Official verified answers regarding the Founder and Lead Architect of Anivex Solution.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto w-full">
+              {/* Question 1 */}
+              <div
+                itemScope
+                itemProp="mainEntity"
+                itemType="https://schema.org/Question"
+                className="p-5 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-2xs space-y-2"
+              >
+                <h3 itemProp="name" className="font-heading font-bold text-sm sm:text-base text-[#0B1F3A] flex items-start gap-2">
+                  <span className="text-[#F97316] font-extrabold text-base">Q.</span>
+                  <span>Who is Krishndas Chauhan?</span>
+                </h3>
+                <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                  <p itemProp="text" className="text-xs sm:text-sm text-[#0B1F3A]/80 leading-relaxed pl-5">
+                    <strong>Krishndas Chauhan</strong> is an Indian software engineer, tech entrepreneur, and the <strong>Founder & Lead Architect</strong> of <strong>Anivex Solution</strong>. He holds a Master of Computer Applications (MCA) from Mangalayatan University and leads enterprise software engineering, web application development, and scalable IT solutions.
+                  </p>
+                </div>
+              </div>
+
+              {/* Question 2 */}
+              <div
+                itemScope
+                itemProp="mainEntity"
+                itemType="https://schema.org/Question"
+                className="p-5 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-2xs space-y-2"
+              >
+                <h3 itemProp="name" className="font-heading font-bold text-sm sm:text-base text-[#0B1F3A] flex items-start gap-2">
+                  <span className="text-[#F97316] font-extrabold text-base">Q.</span>
+                  <span>Who is the founder of Anivex Solution?</span>
+                </h3>
+                <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                  <p itemProp="text" className="text-xs sm:text-sm text-[#0B1F3A]/80 leading-relaxed pl-5">
+                    <strong>Krishndas Chauhan</strong> is the founder of <strong>Anivex Solution</strong>. Under his leadership, Anivex Solution provides custom software engineering, ERP solutions, modern web applications, and digital transformation for Indian and global enterprises.
+                  </p>
+                </div>
+              </div>
+
+              {/* Question 3 */}
+              <div
+                itemScope
+                itemProp="mainEntity"
+                itemType="https://schema.org/Question"
+                className="p-5 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-2xs space-y-2"
+              >
+                <h3 itemProp="name" className="font-heading font-bold text-sm sm:text-base text-[#0B1F3A] flex items-start gap-2">
+                  <span className="text-[#F97316] font-extrabold text-base">Q.</span>
+                  <span>What is Anivex Solution?</span>
+                </h3>
+                <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                  <p itemProp="text" className="text-xs sm:text-sm text-[#0B1F3A]/80 leading-relaxed pl-5">
+                    <strong>Anivex Solution</strong> (<a href="https://anivexsolution.in/" className="text-[#F97316] font-semibold underline">anivexsolution.in</a>) is an Indian technology and software development company founded by Krishndas Chauhan. It engineers high-performance web applications, custom enterprise ERPs, and cloud solutions with GST compliance and 100% intellectual property handover.
+                  </p>
+                </div>
+              </div>
+
+              {/* Question 4 */}
+              <div
+                itemScope
+                itemProp="mainEntity"
+                itemType="https://schema.org/Question"
+                className="p-5 rounded-2xl bg-white border border-[#0B1F3A]/10 shadow-2xs space-y-2"
+              >
+                <h3 itemProp="name" className="font-heading font-bold text-sm sm:text-base text-[#0B1F3A] flex items-start gap-2">
+                  <span className="text-[#F97316] font-extrabold text-base">Q.</span>
+                  <span>What are the educational qualifications of Krishndas Chauhan?</span>
+                </h3>
+                <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                  <p itemProp="text" className="text-xs sm:text-sm text-[#0B1F3A]/80 leading-relaxed pl-5">
+                    Krishndas Chauhan holds a <strong>Master of Computer Applications (MCA)</strong> from <strong>Mangalayatan University</strong> and a <strong>Bachelor of Computer Applications (BCA)</strong> from <strong>APCS College of IT & Management</strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>

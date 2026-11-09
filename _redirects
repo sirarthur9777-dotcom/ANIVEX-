@@ -22,4 +22,6 @@
 /terms-and-conditions /terms-and-conditions.html 200
 /admin /admin.html 200
 /admin/* /admin.html 200
+/controlroom /admin.html 200
+/controlroom/* /admin.html 200
 /* /404.html 404

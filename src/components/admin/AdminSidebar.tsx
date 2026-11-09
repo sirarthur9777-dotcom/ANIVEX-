@@ -174,7 +174,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               </div>
               <div className="flex items-center gap-1.5 mt-1">
                 <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-orange-50 text-[#F97316] border border-orange-200">
-                  ADMIN CMS
+                  CONTROL ROOM
                 </span>
                 <span className="text-[10px] text-slate-500 flex items-center gap-1 group-hover:text-slate-900 transition-colors">
                   <span>Site</span>

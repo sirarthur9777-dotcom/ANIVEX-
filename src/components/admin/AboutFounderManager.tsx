@@ -46,8 +46,7 @@ export const AboutFounderManager: React.FC = () => {
       siteContent.founderImage ||
       '/images/krishndas-chauhan-founder-anivex-solution.jpeg',
     founderSecondaryImage:
-      siteContent.founderSecondaryImage ||
-      '/images/krishndas-chauhan-anivex-solution.jpeg',
+      siteContent.founderSecondaryImage || '',
     founderEducationDegree1:
       siteContent.founderEducationDegree1 || 'Master of Computer Applications (MCA)',
     founderEducationCollege1:
@@ -280,20 +279,20 @@ export const AboutFounderManager: React.FC = () => {
               <span>Founder Photographs (Dual Showcase)</span>
             </h4>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {/* Photo 1: Formal */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Photo 1: Official Founder Portrait */}
               <div className="p-4 rounded-xl bg-white border border-[#0B1F3A]/8 space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-18 rounded-lg overflow-hidden bg-[#0B1F3A] border shrink-0">
+                  <div className="w-16 h-20 rounded-lg overflow-hidden bg-[#0B1F3A] border shrink-0">
                     <img
-                      src={formData.founderImage}
-                      alt="Formal portrait"
+                      src={formData.founderImage || '/images/krishndas-chauhan-founder-anivex-solution.jpeg'}
+                      alt="Official Founder Portrait"
                       className="w-full h-full object-cover object-top"
                     />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-[#0B1F3A] block">Photo 1 (Formal Suit)</span>
-                    <span className="text-[11px] text-[#0B1F3A]/60">Executive portrait with blazer</span>
+                    <span className="text-xs font-bold text-[#0B1F3A] block">1. Executive Portrait (Primary)</span>
+                    <span className="text-[11px] text-[#0B1F3A]/60">Studio portrait (900x1599, Black Blazer)</span>
                   </div>
                 </div>
 
@@ -308,19 +307,19 @@ export const AboutFounderManager: React.FC = () => {
                 </div>
               </div>
 
-              {/* Photo 2: Creative / Outdoor */}
+              {/* Photo 2: Field Leadership Portrait */}
               <div className="p-4 rounded-xl bg-white border border-[#0B1F3A]/8 space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-18 rounded-lg overflow-hidden bg-[#0B1F3A] border shrink-0">
+                  <div className="w-16 h-20 rounded-lg overflow-hidden bg-[#0B1F3A] border shrink-0">
                     <img
-                      src={formData.founderSecondaryImage}
-                      alt="Casual portrait"
+                      src={formData.founderSecondaryImage || '/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg'}
+                      alt="Field Leadership Portrait"
                       className="w-full h-full object-cover object-top"
                     />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-[#0B1F3A] block">Photo 2 (Field & Tech Vision)</span>
-                    <span className="text-[11px] text-[#0B1F3A]/60">Linen shirt with headphones</span>
+                    <span className="text-xs font-bold text-[#0B1F3A] block">2. Field &amp; Leadership Portrait</span>
+                    <span className="text-[11px] text-[#0B1F3A]/60">On-site leadership (1086x1448, Blue Shirt)</span>
                   </div>
                 </div>
 

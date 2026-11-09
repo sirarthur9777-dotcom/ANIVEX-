@@ -6,34 +6,34 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>https://anivexsolution.in/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg</image:loc>
-      <image:title>Krishndas Chauhan - Founder &amp; Lead Architect of Anivex Solution</image:title>
-      <image:caption>Krishndas Chauhan, Founder and Lead Architect of Anivex Solution. Software engineer with MCA from Mangalayatan University and BCA from APCS College of IT &amp; Management.</image:caption>
+      <image:title>Krishndas Chauhan - Founder &amp; Lead Architect of Anivex Solution (Executive Portrait)</image:title>
+      <image:caption>Official portrait of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution. Software engineer with MCA from Mangalayatan University and BCA from APCS College of IT &amp; Management.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://anivexsolution.in/images/krishndas-chauhan-anivex-solution.jpeg</image:loc>
-      <image:title>Krishndas Chauhan - Technology Visionary &amp; Lead Architect</image:title>
-      <image:caption>Krishndas Chauhan portrait, Founder of Anivex Solution.</image:caption>
+      <image:loc>https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg</image:loc>
+      <image:title>Krishndas Chauhan - Field &amp; Leadership Portrait - Founder of Anivex Solution</image:title>
+      <image:caption>Field and on-site engineering leadership portrait of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution.</image:caption>
     </image:image>
   </url>
   <url>
     <loc>https://anivexsolution.in/aboutfounder</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg</image:loc>
-      <image:title>Krishndas Chauhan - Founder &amp; Lead Architect of Anivex Solution</image:title>
-      <image:caption>Official portrait of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution in formal executive attire.</image:caption>
+      <image:title>Krishndas Chauhan - Founder &amp; Lead Architect of Anivex Solution (Executive Portrait)</image:title>
+      <image:caption>Official portrait of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://anivexsolution.in/images/krishndas-chauhan-anivex-solution.jpeg</image:loc>
-      <image:title>Krishndas Chauhan - Technology Innovator &amp; Software Architect</image:title>
-      <image:caption>Field portrait of Krishndas Chauhan, full-stack architect and digital technology leader at Anivex Solution.</image:caption>
+      <image:loc>https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg</image:loc>
+      <image:title>Krishndas Chauhan - Field &amp; On-Site Leadership Portrait - Founder of Anivex Solution</image:title>
+      <image:caption>Krishndas Chauhan, Founder of Anivex Solution, outdoor and practical software development portrait.</image:caption>
     </image:image>
   </url>
   <url>

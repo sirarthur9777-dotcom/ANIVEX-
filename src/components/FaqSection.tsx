@@ -19,11 +19,27 @@ export const FaqSection: React.FC = () => {
 
   const fallbackFaqs: FaqCMS[] = [
     {
+      id: 'faq-founder',
+      question: 'Who is the founder of Anivex Solution?',
+      answer: 'Krishndas Chauhan is the Founder and Lead Architect of Anivex Solution. Holding a Master of Computer Applications (MCA) from Mangalayatan University, he directs full-stack software architecture, cloud platforms, and custom digital product engineering.',
+      category: 'Leadership',
+      displayOrder: 1,
+      published: true,
+    },
+    {
+      id: 'faq-who-is-kc',
+      question: 'Who is Krishndas Chauhan?',
+      answer: 'Krishndas Chauhan is an Indian software engineer, tech entrepreneur, and technology architect. As Founder and Lead Architect of Anivex Solution, he architects custom ERPs, scalable SaaS platforms, and enterprise web applications for growing businesses across India and internationally.',
+      category: 'Leadership',
+      displayOrder: 2,
+      published: true,
+    },
+    {
       id: 'faq-1',
       question: 'What types of software solutions does Anivex Solution build?',
       answer: 'We design and develop custom web applications, Android & iOS mobile apps, custom ERP systems, GST-compliant billing software, and conversion-focused business websites.',
       category: 'General',
-      displayOrder: 1,
+      displayOrder: 3,
       published: true,
     },
     {

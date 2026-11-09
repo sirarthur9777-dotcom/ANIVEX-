@@ -190,11 +190,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
               </li>
               <li className="pt-1">
                 <a
-                  href="/admin"
+                  href="/controlroom"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#D4A72C] text-xs font-semibold transition-colors"
                 >
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Admin CMS Panel</span>
+                  <span>Control Room</span>
                 </a>
               </li>
             </ul>
