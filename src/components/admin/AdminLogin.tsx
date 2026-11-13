@@ -75,7 +75,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
                 Anivex <span className="text-[#F97316]">Solution</span>
               </span>
               <span className="text-[10px] font-mono text-[#0B1F3A]/60 uppercase tracking-wider block font-bold">
-                CONTROL ROOM CMS
+                ADMIN CONSOLE
               </span>
             </div>
           </a>
@@ -86,12 +86,17 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
           
           <div className="flex items-center justify-between pb-4 border-b border-[#0B1F3A]/10">
             <div>
-              <h1 className="font-heading font-bold text-xl text-[#0B1F3A]">Control Room Authentication</h1>
-              <p className="text-xs text-[#0B1F3A]/65 mt-1 font-normal">Sign in to manage whole website &amp; client contracts</p>
+              <h1 className="font-heading font-bold text-xl text-[#0B1F3A]">Portal Authentication</h1>
+              <p className="text-xs text-[#0B1F3A]/65 mt-1 font-normal">Sign in to manage client contracts & content</p>
             </div>
             <div className="p-2.5 rounded-xl bg-[#0B1F3A]/5 text-[#F97316]">
               <Lock className="w-5 h-5" />
             </div>
+          </div>
+
+          <div className="p-3 rounded-xl bg-[#0B1F3A]/5 border border-[#0B1F3A]/10 flex items-center gap-2.5 text-[11px] text-[#0B1F3A]/75">
+            <Lock className="w-3.5 h-3.5 text-[#F97316] shrink-0" />
+            <span>Restricted Access: Strictly reserved for authorized Anivex Solution system administrators.</span>
           </div>
 
           {authError && (

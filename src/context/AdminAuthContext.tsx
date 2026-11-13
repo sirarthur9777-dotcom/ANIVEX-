@@ -42,9 +42,11 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           setAdminEmail(currentUser.email || '');
           setAuthError(null);
         } else {
+          await signOut(auth).catch(() => undefined);
           setUser(null);
           setIsAdmin(false);
           setAdminEmail('');
+          setAuthError('Unauthorized (403): This account does not have administrative privileges for Anivex Solution.');
         }
       } else {
         setUser(null);

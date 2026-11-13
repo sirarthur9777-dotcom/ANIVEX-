@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUp, Lock, Phone, Mail, MapPin } from 'lucide-react';
+import { ArrowUp, Phone, Mail, MapPin } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl, formatPhoneTel } from '../services/websiteSettings';
 
@@ -48,13 +48,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
       window.history.pushState({}, '', '/terms-and-conditions');
       window.dispatchEvent(new PopStateEvent('popstate'));
     }
-  };
-
-  const handleControlRoomClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.history.pushState({}, '', '/controlroom');
-    window.dispatchEvent(new PopStateEvent('popstate'));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -195,16 +188,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
                   Terms & Conditions
                 </a>
               </li>
-              <li className="pt-1">
-                <a
-                  href="/controlroom"
-                  onClick={handleControlRoomClick}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#D4A72C] text-xs font-semibold transition-colors cursor-pointer"
-                >
-                  <Lock className="w-3.5 h-3.5" />
-                  <span>Control Room</span>
-                </a>
-              </li>
             </ul>
           </div>
         </div>
@@ -229,13 +212,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
               className="hover:text-white transition-colors cursor-pointer"
             >
               Terms & Conditions
-            </a>
-            <a 
-              href="/controlroom" 
-              onClick={handleControlRoomClick}
-              className="hover:text-[#F97316] transition-colors cursor-pointer"
-            >
-              Admin Dashboard
             </a>
             <a href="#contact" className="hover:text-white transition-colors">Start a Project</a>
             <button

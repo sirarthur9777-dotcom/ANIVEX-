@@ -10,7 +10,9 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null
         && (
-          isBootstrappedAdmin()
+          (request.auth.token.keys().hasAny(['admin']) && request.auth.token.admin == true)
+          || (request.auth.token.keys().hasAny(['role']) && request.auth.token.role == 'admin')
+          || isBootstrappedAdmin()
           || (
             exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid))
             && get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.role == 'admin'

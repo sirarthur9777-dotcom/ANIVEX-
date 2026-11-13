@@ -3,7 +3,108 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
 
+import fs from "fs";
+
 dotenv.config();
+
+let firebaseApiKey = process.env.VITE_FIREBASE_API_KEY || "";
+try {
+  const configPath = path.join(process.cwd(), "firebase-applet-config.json");
+  if (fs.existsSync(configPath)) {
+    const configData = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+    if (configData.apiKey) {
+      firebaseApiKey = configData.apiKey;
+    }
+  }
+} catch {
+  // fallback to env
+}
+
+const AUTHORIZED_ADMIN_EMAILS = [
+  "sirarthur9777@gmail.com",
+  "kdsingh9777@gmail.com",
+];
+
+async function requireAdminAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      error: "Authentication required: Bearer token is missing.",
+      status: 401,
+    });
+  }
+
+  const token = authHeader.split("Bearer ")[1]?.trim();
+  if (!token) {
+    return res.status(401).json({
+      error: "Authentication required: Token is empty.",
+      status: 401,
+    });
+  }
+
+  try {
+    if (!firebaseApiKey) {
+      return res.status(500).json({ error: "Server authentication configuration missing." });
+    }
+
+    const response = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken: token }),
+      }
+    );
+
+    if (!response.ok) {
+      return res.status(401).json({
+        error: "Invalid or expired administrator token.",
+        status: 401,
+      });
+    }
+
+    const data = (await response.json()) as any;
+    const user = data.users?.[0];
+    if (!user || !user.email) {
+      return res.status(401).json({
+        error: "Unable to verify administrator identity from token.",
+        status: 401,
+      });
+    }
+
+    const email = user.email.toLowerCase().trim();
+    let isAuthorized = AUTHORIZED_ADMIN_EMAILS.includes(email);
+
+    if (!isAuthorized && user.customAttributes) {
+      try {
+        const custom = JSON.parse(user.customAttributes);
+        if (custom.admin === true || custom.role === "admin") {
+          isAuthorized = true;
+        }
+      } catch {
+        // continue
+      }
+    }
+
+    if (!isAuthorized) {
+      return res.status(403).json({
+        error: "Forbidden: Account lacks administrator privileges.",
+        status: 403,
+      });
+    }
+
+    (req as any).adminUser = {
+      uid: user.localId,
+      email: user.email,
+    };
+    next();
+  } catch (err: any) {
+    return res.status(500).json({
+      error: "Error verifying authentication token on server.",
+      details: err?.message,
+    });
+  }
+}
 
 interface ContactInquiry {
   id: string;
@@ -71,6 +172,34 @@ async function startServer() {
         error: "Internal server error processing project inquiry.",
       });
     }
+  });
+
+  // Secure Admin Verification & Inquiries Endpoints (Guarded by server-side requireAdminAuth)
+  app.get("/api/admin/verify", requireAdminAuth, (req, res) => {
+    res.json({
+      authorized: true,
+      user: (req as any).adminUser,
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  app.get("/api/admin/inquiries", requireAdminAuth, (req, res) => {
+    res.json({
+      inquiries,
+      count: inquiries.length,
+      requestedBy: (req as any).adminUser.email,
+    });
+  });
+
+  app.get("/api/admin/system-status", requireAdminAuth, (req, res) => {
+    res.json({
+      status: "operational",
+      serverTime: new Date().toISOString(),
+      nodeVersion: process.version,
+      memoryUsage: process.memoryUsage(),
+      uptimeSeconds: process.uptime(),
+      authorizedAdmin: (req as any).adminUser.email,
+    });
   });
 
   // Serve Vite in dev or static in production

@@ -18,6 +18,16 @@ export async function isAdminUser(user: User | null): Promise<boolean> {
   const email = (user.email || '').toLowerCase().trim();
   const isDesignatedOwner = BOOTSTRAPPED_ADMIN_EMAILS.includes(email);
 
+  // 1. Check custom claims directly from Firebase Auth ID token
+  try {
+    const idTokenResult = await user.getIdTokenResult();
+    if (idTokenResult?.claims?.admin === true || idTokenResult?.claims?.role === 'admin') {
+      return true;
+    }
+  } catch (claimErr) {
+    console.warn('Token claims verification notice:', claimErr);
+  }
+
   try {
     const userRef = doc(db, 'adminUsers', user.uid);
     const snap = await getDoc(userRef);
