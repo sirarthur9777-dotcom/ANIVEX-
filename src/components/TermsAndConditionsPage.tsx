@@ -14,7 +14,6 @@ export const TermsAndConditionsPage: React.FC<TermsAndConditionsPageProps> = ({ 
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    document.title = "Terms & Conditions | Anivex Solution";
   }, []);
 
   return (

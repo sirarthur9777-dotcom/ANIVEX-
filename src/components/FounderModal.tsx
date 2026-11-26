@@ -10,9 +10,25 @@ interface FounderModalProps {
 
 export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) => {
   const { siteContent, companyInfo, websiteSettings } = useCms();
-  const [modalActivePortrait, setModalActivePortrait] = useState<'executive' | 'field'>('field');
+  const [modalActivePortrait, setModalActivePortrait] = useState<'executive' | 'field'>('executive');
+  const DEFAULT_EXEC_PHOTO = "/images/krishndas-chauhan-founder-anivex-solution.jpeg";
+  const DEFAULT_FIELD_PHOTO = "/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg";
+  const configuredExecPhoto = siteContent.founderImage || DEFAULT_EXEC_PHOTO;
+  const configuredFieldPhoto = siteContent.founderSecondaryImage || DEFAULT_FIELD_PHOTO;
+  const [founderPhoto, setFounderPhoto] = useState(configuredExecPhoto);
+  const [founderFieldPhoto, setFounderFieldPhoto] = useState(configuredFieldPhoto);
   const [execModalImgError, setExecModalImgError] = useState(false);
   const [fieldModalImgError, setFieldModalImgError] = useState(false);
+
+  useEffect(() => {
+    setFounderPhoto(configuredExecPhoto);
+    setExecModalImgError(false);
+  }, [configuredExecPhoto]);
+
+  useEffect(() => {
+    setFounderFieldPhoto(configuredFieldPhoto);
+    setFieldModalImgError(false);
+  }, [configuredFieldPhoto]);
 
   // Close on Escape key
   useEffect(() => {
@@ -36,9 +52,6 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
   const founderOrg = siteContent.founderOrganization || "Anivex Solution";
   const founderAge = siteContent.founderAge || "21";
   const founderQualifications = siteContent.founderQualifications || "MCA";
-
-  const founderPhoto = siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg";
-  const founderFieldPhoto = siteContent.founderSecondaryImage || "/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg";
 
   const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '+91 9119069399';
   const whatsappUrl = formatWhatsAppUrl(
@@ -109,7 +122,13 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
                       className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                       loading="eager"
                       fetchPriority="high"
-                      onError={() => setExecModalImgError(true)}
+                      onError={() => {
+                        if (founderPhoto !== DEFAULT_EXEC_PHOTO) {
+                          setFounderPhoto(DEFAULT_EXEC_PHOTO);
+                        } else {
+                          setExecModalImgError(true);
+                        }
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
@@ -130,7 +149,13 @@ export const FounderModal: React.FC<FounderModalProps> = ({ isOpen, onClose }) =
                       className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                       loading="eager"
                       fetchPriority="high"
-                      onError={() => setFieldModalImgError(true)}
+                      onError={() => {
+                        if (founderFieldPhoto !== DEFAULT_FIELD_PHOTO) {
+                          setFounderFieldPhoto(DEFAULT_FIELD_PHOTO);
+                        } else {
+                          setFieldModalImgError(true);
+                        }
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">

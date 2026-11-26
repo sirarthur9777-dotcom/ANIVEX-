@@ -1,0 +1,20 @@
+{
+  "name": "Anivex Solution — Web & Software Engineering India",
+  "short_name": "Anivex Solution",
+  "description": "Custom websites, web applications, ERP systems, mobile apps, and AI automation built by Anivex Solution in India.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFDF7",
+  "theme_color": "#0B1F3A",
+  "lang": "en-IN",
+  "categories": ["business", "technology", "software", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

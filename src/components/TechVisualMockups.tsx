@@ -210,7 +210,7 @@ export const AboutStudioVisual: React.FC = () => {
             AS
           </div>
           <div>
-            <h4 className="font-heading font-bold text-sm text-white">Anivex Solution</h4>
+            <p className="font-heading font-bold text-sm text-white">Anivex Solution</p>
             <p className="text-[10px] text-slate-400">Software Engineering Studio • India</p>
           </div>
         </div>

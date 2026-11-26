@@ -106,9 +106,9 @@ export const Testimonials: React.FC = () => {
                     {item.customerName.charAt(0)}
                   </div>
                   <div>
-                    <h4 className="font-heading font-bold text-sm text-[#0B1F3A]">
+                    <h3 className="font-heading font-bold text-sm text-[#0B1F3A]">
                       {item.customerName}
-                    </h4>
+                    </h3>
                     <p className="text-xs text-[#0B1F3A]/60">
                       {item.designation}, {item.company}
                     </p>

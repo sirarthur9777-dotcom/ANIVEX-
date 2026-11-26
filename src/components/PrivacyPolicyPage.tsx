@@ -14,7 +14,6 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({ onBackToHo
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    document.title = "Privacy Policy | Anivex Solution";
   }, []);
 
   return (

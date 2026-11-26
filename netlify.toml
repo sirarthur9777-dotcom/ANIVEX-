@@ -26,29 +26,164 @@
   status = 200
 
 [[redirects]]
+  from = "/llms.txt"
+  to = "/llms.txt"
+  status = 200
+
+[[redirects]]
+  from = "/llms-full.txt"
+  to = "/llms-full.txt"
+  status = 200
+
+[[redirects]]
+  from = "/site.webmanifest"
+  to = "/site.webmanifest"
+  status = 200
+
+[[redirects]]
+  from = "/favicon.svg"
+  to = "/favicon.svg"
+  status = 200
+
+[[redirects]]
+  from = "/about-founder"
+  to = "/aboutfounder"
+  status = 301
+
+[[redirects]]
+  from = "/founder"
+  to = "/aboutfounder"
+  status = 301
+
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy-policy"
+  status = 301
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms-and-conditions"
+  status = 301
+
+[[redirects]]
+  from = "/aboutfounder"
+  to = "/aboutfounder.html"
+  status = 200
+
+[[redirects]]
+  from = "/web-development"
+  to = "/web-development.html"
+  status = 200
+
+[[redirects]]
+  from = "/web-design"
+  to = "/web-design.html"
+  status = 200
+
+[[redirects]]
+  from = "/software-development"
+  to = "/software-development.html"
+  status = 200
+
+[[redirects]]
+  from = "/web-application-development"
+  to = "/web-application-development.html"
+  status = 200
+
+[[redirects]]
+  from = "/erp-development"
+  to = "/erp-development.html"
+  status = 200
+
+[[redirects]]
+  from = "/custom-software"
+  to = "/custom-software.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy-policy"
+  to = "/privacy-policy.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms-and-conditions"
+  to = "/terms-and-conditions.html"
+  status = 200
+
+[[redirects]]
   from = "/controlroom"
-  to = "/index.html"
+  to = "/controlroom.html"
   status = 200
 
 [[redirects]]
   from = "/controlroom/*"
-  to = "/index.html"
+  to = "/controlroom.html"
+  status = 200
+
+[[redirects]]
+  from = "/control-room"
+  to = "/controlroom.html"
+  status = 200
+
+[[redirects]]
+  from = "/control-room/*"
+  to = "/controlroom.html"
   status = 200
 
 [[redirects]]
   from = "/admin"
-  to = "/index.html"
+  to = "/admin.html"
   status = 200
 
 [[redirects]]
   from = "/admin/*"
-  to = "/index.html"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/cms"
+  to = "/controlroom.html"
+  status = 200
+
+[[redirects]]
+  from = "/cms/*"
+  to = "/controlroom.html"
+  status = 200
+
+[[redirects]]
+  from = "/portal"
+  to = "/controlroom.html"
+  status = 200
+
+[[redirects]]
+  from = "/portal/*"
+  to = "/controlroom.html"
+  status = 200
+
+[[redirects]]
+  from = "/manage"
+  to = "/controlroom.html"
+  status = 200
+
+[[redirects]]
+  from = "/manage/*"
+  to = "/controlroom.html"
+  status = 200
+
+[[redirects]]
+  from = "/control-panel"
+  to = "/controlroom.html"
+  status = 200
+
+[[redirects]]
+  from = "/control-panel/*"
+  to = "/controlroom.html"
   status = 200
 
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
+  to = "/404.html"
+  status = 404
 
 [[headers]]
   for = "/*"
@@ -56,6 +191,7 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
 [[headers]]
   for = "/assets/*"
@@ -66,3 +202,43 @@
   for = "/images/*"
   [headers.values]
     Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/admin*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/controlroom*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/control-room*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/cms*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/portal*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/manage*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/control-panel*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/404.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

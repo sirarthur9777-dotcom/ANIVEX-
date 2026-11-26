@@ -1,3 +1,12 @@
+/google2cd35dfb90c69002.html /google2cd35dfb90c69002.html 200
+/google2ecd35dfb90c69002.html /google2ecd35dfb90c69002.html 200
+/robots.txt /robots.txt 200
+/sitemap.xml /sitemap.xml 200
+/llms.txt /llms.txt 200
+/llms-full.txt /llms-full.txt 200
+/site.webmanifest /site.webmanifest 200
+/favicon.svg /favicon.svg 200
+
 /about-founder /aboutfounder 301
 /founder /aboutfounder 301
 /privacy /privacy-policy 301
@@ -11,6 +20,7 @@
 /pricing /#pricing 301
 /faq /#faq 301
 /contact /#contact 301
+
 /aboutfounder /aboutfounder.html 200
 /web-development /web-development.html 200
 /web-design /web-design.html 200
@@ -20,8 +30,20 @@
 /custom-software /custom-software.html 200
 /privacy-policy /privacy-policy.html 200
 /terms-and-conditions /terms-and-conditions.html 200
-/admin /index.html 200
-/admin/* /index.html 200
-/controlroom /index.html 200
-/controlroom/* /index.html 200
-/* /index.html 200
+
+/admin /admin.html 200
+/admin/* /admin.html 200
+/controlroom /controlroom.html 200
+/controlroom/* /controlroom.html 200
+/control-room /controlroom.html 200
+/control-room/* /controlroom.html 200
+/cms /controlroom.html 200
+/cms/* /controlroom.html 200
+/portal /controlroom.html 200
+/portal/* /controlroom.html 200
+/manage /controlroom.html 200
+/manage/* /controlroom.html 200
+/control-panel /controlroom.html 200
+/control-panel/* /controlroom.html 200
+
+/* /404.html 404

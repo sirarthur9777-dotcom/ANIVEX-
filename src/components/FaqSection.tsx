@@ -186,9 +186,9 @@ export const FaqSection: React.FC = () => {
         {/* Direct WhatsApp Callout */}
         <div className="mt-12 p-6 rounded-2xl bg-white border border-[#0B1F3A]/8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div>
-            <h4 className="font-heading font-bold text-sm text-[#0B1F3A]">
+            <h3 className="font-heading font-bold text-sm text-[#0B1F3A]">
               Have a specific question about your project?
-            </h4>
+            </h3>
             <p className="text-xs text-[#0B1F3A]/60 mt-0.5">
               Talk directly with Krishndas Chauhan or our engineering team on WhatsApp.
             </p>

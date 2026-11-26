@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, ArrowRight, MessageCircle, ChevronRight } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
+import { emitLocationSync } from '../lib/modalHistoryGuard';
 
 interface NavbarProps {
   onNavigateService?: (path: string) => void;
@@ -99,13 +100,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
       return;
     }
 
-    const performScroll = () => {
+    const performScroll = (shouldPushHistory: boolean) => {
       if (targetId === 'hero') {
         window.scrollTo({
           top: 0,
           behavior: 'smooth',
         });
-        window.history.pushState(null, '', '#hero');
+        if (shouldPushHistory && window.location.hash !== '#hero') {
+          window.history.pushState(null, '', '#hero');
+          emitLocationSync();
+        }
         setActiveSection('hero');
         return;
       }
@@ -126,9 +130,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
           behavior: 'smooth',
         });
 
-        window.history.pushState(null, '', `#${targetId}`);
+        const nextHash = `#${targetId}`;
+        if (shouldPushHistory && window.location.hash !== nextHash) {
+          window.history.pushState(null, '', nextHash);
+          emitLocationSync();
+        }
         setActiveSection(targetId);
-      } else if (window.location.pathname !== '/') {
+      } else if (shouldPushHistory && window.location.pathname !== '/') {
         const targetPath = targetId === 'hero' ? '/' : `/#${targetId}`;
         window.history.pushState({}, '', targetPath);
         window.dispatchEvent(new PopStateEvent('popstate'));
@@ -144,10 +152,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateService }) => {
       }
     };
 
-    // Execute immediately and after drawer height collapse
-    performScroll();
-    setTimeout(performScroll, 80);
-    setTimeout(performScroll, 240);
+    // Push history once, and re-align scroll position after mobile drawer collapses
+    performScroll(true);
+    setTimeout(() => performScroll(false), 80);
+    setTimeout(() => performScroll(false), 240);
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLElement>, href: string) => {

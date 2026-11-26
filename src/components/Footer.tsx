@@ -116,7 +116,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
 
           {/* Quick Links */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Quick Links</h4>
+            <p className="text-xs font-bold text-white uppercase tracking-wider">Quick Links</p>
             <ul className="space-y-2 text-xs">
               <li><a href="#hero" className="hover:text-white transition-colors">Home</a></li>
               <li><a href="#about" className="hover:text-white transition-colors">About Us</a></li>
@@ -145,7 +145,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
 
           {/* Services */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Services</h4>
+            <p className="text-xs font-bold text-white uppercase tracking-wider">Services</p>
             <ul className="space-y-2 text-xs">
               <li><a href="/web-development" onClick={(e) => handleServiceClick(e, '/web-development')} className="hover:text-white transition-colors">Web Development</a></li>
               <li><a href="/web-design" onClick={(e) => handleServiceClick(e, '/web-design')} className="hover:text-white transition-colors">UI/UX Web Design</a></li>
@@ -158,7 +158,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPrivacy, onNavigateT
 
           {/* Company & Admin */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Company & Legal</h4>
+            <p className="text-xs font-bold text-white uppercase tracking-wider">Company & Legal</p>
             <ul className="space-y-2.5 text-xs">
               <li className="flex items-center gap-1.5 text-slate-300/80">
                 <Mail className="w-3.5 h-3.5 text-[#F97316]" />

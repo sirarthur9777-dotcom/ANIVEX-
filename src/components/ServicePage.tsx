@@ -53,6 +53,15 @@ export const ServicePage: React.FC<ServicePageProps> = ({
     '@context': 'https://schema.org',
     '@graph': [
       {
+        '@type': 'WebPage',
+        '@id': `https://anivexsolution.in${service.path}#webpage`,
+        'url': `https://anivexsolution.in${service.path}`,
+        'name': service.metaTitle,
+        'description': service.metaDescription,
+        'inLanguage': 'en-IN',
+        'isPartOf': { '@id': 'https://anivexsolution.in/#website' }
+      },
+      {
         '@type': 'BreadcrumbList',
         'itemListElement': [
           {
@@ -77,17 +86,18 @@ export const ServicePage: React.FC<ServicePageProps> = ({
       },
       {
         '@type': 'Service',
+        '@id': `https://anivexsolution.in${service.path}#service`,
         'name': `${service.title} Services`,
         'serviceType': service.title,
         'description': service.metaDescription,
         'provider': {
           '@type': 'Organization',
+          '@id': 'https://anivexsolution.in/#organization',
           'name': 'Anivex Solution',
           'url': 'https://anivexsolution.in/',
           'telephone': '+91 79056 68826',
           'address': {
             '@type': 'PostalAddress',
-            'streetAddress': 'Lucknow',
             'addressLocality': 'Lucknow',
             'addressRegion': 'Uttar Pradesh',
             'postalCode': '226010',
@@ -99,12 +109,13 @@ export const ServicePage: React.FC<ServicePageProps> = ({
           { '@type': 'State', 'name': 'Uttar Pradesh' },
           { '@type': 'City', 'name': 'Lucknow' },
           { '@type': 'City', 'name': 'Varanasi' },
-          { '@type': 'City', 'name': 'Jaunpur' }
+          { '@type': 'City', 'name': 'Jaunpur' },
+          { '@type': 'City', 'name': 'Machhlishahar' }
         ],
         'offers': {
           '@type': 'Offer',
           'priceCurrency': 'INR',
-          'price': 'Contact for Custom Proposal',
+          'availability': 'https://schema.org/InStock',
           'url': `https://anivexsolution.in${service.path}`
         }
       },
@@ -129,6 +140,7 @@ export const ServicePage: React.FC<ServicePageProps> = ({
         title={service.metaTitle}
         description={service.metaDescription}
         canonicalPath={service.path}
+        keywords={service.keywords}
         schema={serviceSchema}
       />
 
@@ -397,9 +409,9 @@ export const ServicePage: React.FC<ServicePageProps> = ({
 
         {/* Technology Stack */}
         <section className="p-6 rounded-2xl bg-white border border-[#0B1F3A]/10 space-y-4">
-          <h3 className="font-heading font-bold text-base text-[#0B1F3A]">
+          <h2 className="font-heading font-bold text-base text-[#0B1F3A]">
             Technologies & Tools Employed
-          </h3>
+          </h2>
           <div className="flex flex-wrap gap-2">
             {service.techStack.map((tech) => (
               <span
@@ -454,9 +466,9 @@ export const ServicePage: React.FC<ServicePageProps> = ({
 
         {/* Related Services Internal Links */}
         <section className="p-6 rounded-2xl bg-slate-50 border border-[#0B1F3A]/10 space-y-4">
-          <h3 className="font-heading font-bold text-sm uppercase tracking-wider text-[#0B1F3A]/70">
+          <h2 className="font-heading font-bold text-sm uppercase tracking-wider text-[#0B1F3A]/70">
             Explore Related Services
-          </h3>
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {service.relatedServices.map((rel) => (
               <button

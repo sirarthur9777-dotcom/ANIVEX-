@@ -102,10 +102,43 @@ const CmsContext = createContext<CmsContextType | undefined>(undefined);
 const sortByOrder = <T extends { displayOrder?: number }>(items: T[]) =>
   [...items].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
-// Older Firestore documents were seeded with dev-only paths (/src/assets/images/...)
-// which do not exist in a production build. Map them to the files in /public/images.
+const DEFAULT_FOUNDER_EXEC_IMG = '/images/krishndas-chauhan-founder-anivex-solution.jpeg';
+const DEFAULT_FOUNDER_FIELD_IMG = '/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg';
+
+// Repair broken dev-only paths (/src/assets/images/...), /public/ prefixes, raw WhatsApp filenames,
+// and expired 402 imgix.net proxy URLs stored in Firestore so local /images/* assets render reliably.
 const fixAssetPaths = (value: any): any => {
-  if (typeof value === 'string') return value.replace('/src/assets/images/', '/images/');
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (!trimmed) return value;
+
+    if (/imgix\.net/i.test(trimmed)) {
+      if (trimmed.includes('krishndas-chauhan-founder-anivex-solution')) return DEFAULT_FOUNDER_EXEC_IMG;
+      if (trimmed.includes('krishndas-chauhan-field-portrait-anivex-solution')) return DEFAULT_FOUNDER_FIELD_IMG;
+      const publicImagesMatch = trimmed.match(/\/public\/images\/([^/?#]+\.(?:jpe?g|png|webp|svg|gif))/i);
+      if (publicImagesMatch) return `/images/${publicImagesMatch[1]}`;
+    }
+
+    const normalized = trimmed
+      .replace(/^\/?src\/assets\/images\//, '/images/')
+      .replace(/^\/?public\/images\//, '/images/')
+      .replace(/^\/?public\/assets\//, '/assets/');
+
+    if (
+      normalized.includes('WhatsApp_Image_2026-10-30_at_11.11.20') ||
+      normalized.includes('WhatsApp Image 2026-10-30 at 11.11.20')
+    ) {
+      return DEFAULT_FOUNDER_EXEC_IMG;
+    }
+    if (
+      normalized.includes('WhatsApp_Image_2026-10-28_at_21.20.42') ||
+      normalized.includes('WhatsApp Image 2026-10-28 at 21.20.42')
+    ) {
+      return DEFAULT_FOUNDER_FIELD_IMG;
+    }
+
+    return normalized;
+  }
   if (Array.isArray(value)) return value.map(fixAssetPaths);
   if (value && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype) {
     const out: Record<string, any> = {};
@@ -197,7 +230,14 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }));
 
     watchDoc<SocialLinks>('socialLinks', 'main', setSocialLinks, (data) => data as SocialLinks);
-    watchDoc<SiteContent>('siteContent', 'main', setSiteContent, (data) => ({ ...initialSiteContent, ...data }));
+    watchDoc<SiteContent>('siteContent', 'main', setSiteContent, (data) => ({
+      ...initialSiteContent,
+      ...data,
+      founderImage: data?.founderImage?.trim() ? data.founderImage : initialSiteContent.founderImage,
+      founderSecondaryImage: data?.founderSecondaryImage?.trim()
+        ? data.founderSecondaryImage
+        : initialSiteContent.founderSecondaryImage,
+    }));
     watchCollection<ServiceCMS>('services', setServices, (id, data) => ({ ...data, id } as ServiceCMS), sortByOrder);
     watchCollection<ProductCMS>('products', setProducts, (id, data) => ({ ...data, id } as ProductCMS), sortByOrder);
     watchCollection<SolutionCMS>('solutions', setSolutions, (id, data) => ({ ...data, id } as SolutionCMS), sortByOrder);

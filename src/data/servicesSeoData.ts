@@ -4,6 +4,7 @@ export interface ServiceSeoItem {
   title: string;
   metaTitle: string;
   metaDescription: string;
+  keywords: string;
   h1: string;
   subtitle: string;
   badge: string;
@@ -39,11 +40,12 @@ export const SERVICES_SEO_DATA: Record<string, ServiceSeoItem> = {
     path: '/web-development',
     title: 'Web Development',
     metaTitle: 'Web Development Company in India | Anivex Solution',
-    metaDescription: 'Professional web development services in India by Anivex Solution. Fast, responsive, scalable websites engineered for businesses in Uttar Pradesh and nationwide.',
+    metaDescription: 'Professional web development services in India by Anivex Solution. Fast, responsive, scalable websites engineered for businesses in UP and nationwide.',
+    keywords: 'web development company India, website developer Lucknow, website design Jaunpur, web development Machhlishahar, React TypeScript websites, Anivex Solution',
     h1: 'Web Development Services',
     subtitle: 'High-speed, scalable, and conversion-focused web development engineered for Indian businesses and digital enterprises.',
     badge: 'ENGINEERING EXCELLENCE • INDIA',
-    overview: 'Anivex Solution builds modern, lightning-fast websites and web platforms that combine clean code, high security, and exceptional performance. We avoid bloated templates, opting instead for disciplined engineering using modern technologies like React, Next.js, TypeScript, and Tailwind CSS. Whether you are an established enterprise in Lucknow or a growing business in Varanasi or Jaunpur, our web solutions are designed to load under 2 seconds, rank effectively on Google, and convert visitors into active clients.',
+    overview: 'Anivex Solution builds modern, lightning-fast websites and web platforms that combine clean code, high security, and exceptional performance. We avoid bloated templates, opting instead for disciplined engineering using modern technologies like React, Next.js, TypeScript, and Tailwind CSS. Whether you are an established enterprise in Lucknow or a growing business in Varanasi, Jaunpur, or Machhlishahar, our web solutions are designed to load under 2 seconds, rank effectively on Google, and convert visitors into active clients.',
     deliverables: [
       {
         title: 'Custom Corporate Websites',
@@ -98,7 +100,7 @@ export const SERVICES_SEO_DATA: Record<string, ServiceSeoItem> = {
       }
     ],
     techStack: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Firebase'],
-    localContext: 'Anivex Solution serves enterprises and ambitious entrepreneurs across Uttar Pradesh—including key commercial hubs such as Lucknow, Varanasi, and Jaunpur—as well as clients nationwide. Our understanding of local commerce combined with modern engineering standards delivers technology that genuinely works.',
+    localContext: 'Anivex Solution serves enterprises and ambitious entrepreneurs across Uttar Pradesh—including key commercial hubs such as Lucknow, Varanasi, Jaunpur, and Machhlishahar—as well as clients nationwide. Our understanding of local commerce combined with modern engineering standards delivers technology that genuinely works.',
     faqs: [
       {
         question: 'How long does it take to develop a professional business website?',
@@ -126,6 +128,7 @@ export const SERVICES_SEO_DATA: Record<string, ServiceSeoItem> = {
     title: 'Web Design',
     metaTitle: 'UI/UX Web Design Company in India | Anivex Solution',
     metaDescription: 'Human-centered UI/UX and responsive web design services by Anivex Solution. Modern, conversion-driven digital design for businesses in UP and nationwide.',
+    keywords: 'UI UX web design India, responsive website design Uttar Pradesh, custom web designer Lucknow, Figma design systems, Anivex Solution',
     h1: 'Modern Web Design & UI/UX Services',
     subtitle: 'Human-centered user interfaces, intuitive digital experiences, and mathematical layout discipline that turn visitors into loyal clients.',
     badge: 'DESIGN RIGOR • HUMAN-CENTERED',
@@ -210,8 +213,9 @@ export const SERVICES_SEO_DATA: Record<string, ServiceSeoItem> = {
     slug: 'software-development',
     path: '/software-development',
     title: 'Software Development',
-    metaTitle: 'Custom Software Development Company in India | Anivex Solution',
+    metaTitle: 'Software Development Company India | Anivex Solution',
     metaDescription: 'Bespoke software engineering and enterprise applications by Anivex Solution. Scalable, secure, and production-ready software systems across India.',
+    keywords: 'software development company India, custom business software Lucknow, software developer Uttar Pradesh, API integration, Anivex Solution',
     h1: 'Custom Software Development',
     subtitle: 'Robust backend architectures, custom business applications, and resilient digital systems built to solve complex operational challenges.',
     badge: 'ARCHITECTURAL RIGOR • ENTERPRISE READY',
@@ -298,6 +302,7 @@ export const SERVICES_SEO_DATA: Record<string, ServiceSeoItem> = {
     title: 'Web Application Development',
     metaTitle: 'Web Application Development Services | Anivex Solution',
     metaDescription: 'High-performance full-stack web applications by Anivex Solution. Secure portals, SaaS platforms, and enterprise web solutions built for scale across India.',
+    keywords: 'web application development India, full-stack SaaS development, React Firebase web app, client portal development Uttar Pradesh, Anivex Solution',
     h1: 'Web Application Development',
     subtitle: 'Dynamic full-stack web applications, interactive SaaS platforms, and secure multi-user portals engineered for high concurrency and speed.',
     badge: 'FULL-STACK CLOUD • CONCURRENT ARCHITECTURE',
@@ -382,8 +387,9 @@ export const SERVICES_SEO_DATA: Record<string, ServiceSeoItem> = {
     slug: 'erp-development',
     path: '/erp-development',
     title: 'ERP Development',
-    metaTitle: 'ERP Software Development Company in India | Anivex Solution',
+    metaTitle: 'ERP Software Development in India | Anivex Solution',
     metaDescription: 'Custom ERP software, GST billing, and inventory management systems by Anivex Solution for manufacturing, trading, and logistics businesses in UP & India.',
+    keywords: 'ERP software development India, GST billing software Uttar Pradesh, inventory management ERP Lucknow, Jaunpur ERP developer, Anivex Solution',
     h1: 'Custom ERP & Business Management Software',
     subtitle: 'Unified enterprise resource planning systems designed for Indian accounting standards, multi-branch inventory, and automated operational governance.',
     badge: 'GST READY • INDIAN BUSINESS ENGINE',
@@ -442,7 +448,7 @@ export const SERVICES_SEO_DATA: Record<string, ServiceSeoItem> = {
       }
     ],
     techStack: ['React', 'TypeScript', 'Node.js', 'PostgreSQL / MySQL', 'Express', 'Tailwind CSS', 'WhatsApp Business APIs'],
-    localContext: 'We have hands-on experience designing ERP architectures for businesses operating in commercial centers like Lucknow, Varanasi, Jaunpur, Kanpur, and across Uttar Pradesh, adapting to regional trade practices and fast-paced counter transactions.',
+    localContext: 'We have hands-on experience designing ERP architectures for businesses operating in commercial centers like Lucknow, Varanasi, Jaunpur, Machhlishahar, Kanpur, and across Uttar Pradesh, adapting to regional trade practices and fast-paced counter transactions.',
     faqs: [
       {
         question: 'Can the ERP handle multi-branch operations and centralized stock?',
@@ -468,8 +474,9 @@ export const SERVICES_SEO_DATA: Record<string, ServiceSeoItem> = {
     slug: 'custom-software',
     path: '/custom-software',
     title: 'Custom Software Solutions',
-    metaTitle: 'Custom Software Solutions & Automation | Anivex Solution',
+    metaTitle: 'Custom Software Solutions in India | Anivex Solution',
     metaDescription: 'Tailored software solutions designed around unique business workflows. Automate operations, eliminate manual bottlenecks, and scale with Anivex Solution.',
+    keywords: 'custom software solutions India, business workflow automation Uttar Pradesh, bespoke IT solutions Lucknow, Krishndas Chauhan, Anivex Solution',
     h1: 'Custom Software Solutions & Automation',
     subtitle: 'Engineered digital tools, process automation pipelines, and specialized enterprise systems built to scale business operations.',
     badge: 'BUSINESS AUTOMATION • BESPOKE TOOLS',

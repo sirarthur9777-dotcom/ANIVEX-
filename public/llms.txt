@@ -1,0 +1,46 @@
+# Anivex Solution
+
+> Anivex Solution is an Indian software engineering and technology company founded by Krishndas Chauhan, building custom websites, web applications, GST-compliant ERP systems, mobile apps, and business automation software for enterprises in Uttar Pradesh and across India.
+
+## Official Brand Identity
+
+- **Company Name:** Anivex Solution
+- **Website:** https://anivexsolution.in/
+- **Founder & Lead Architect:** Krishndas Chauhan (MCA, Mangalayatan University; BCA, APCS College of IT & Management)
+- **Headquarters:** Lucknow, Uttar Pradesh, India (226010)
+- **Primary Service Regions:** Jaunpur, Machhlishahar, Lucknow, Varanasi, Uttar Pradesh, India, and worldwide remote delivery
+- **Phone / WhatsApp:** +91 79056 68826
+- **Email:** anivexsolution@gmail.com
+- **Business Hours:** Monday – Saturday, 9:00 AM – 7:00 PM IST
+- **Commercial Terms:** Official GST tax invoicing (18% GST), milestone-based billing in INR (₹), 100% source code & intellectual property handover, and 30–60 day post-launch warranty support.
+
+## Core Pages
+
+- [Home](https://anivexsolution.in/): Overview of Anivex Solution services, proprietary products, pricing packages in INR, FAQs, and project inquiry contact.
+- [About Founder — Krishndas Chauhan](https://anivexsolution.in/aboutfounder): Verified biography, academic credentials (MCA & BCA), technical philosophy, and official portraits of Krishndas Chauhan.
+- [Privacy Policy](https://anivexsolution.in/privacy-policy): Client data protection, intellectual property confidentiality, and Indian DPDP Act compliance.
+- [Terms & Conditions](https://anivexsolution.in/terms-and-conditions): Service scope, GST invoicing, 100% IP transfer, warranty, and governing Indian law.
+
+## Official Founder & Lead Architect Portraits
+
+- **Krishndas Chauhan (Executive Studio Portrait, 900x1599 JPEG):** ![Krishndas Chauhan - Founder & Lead Architect of Anivex Solution (Executive Portrait)](https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg) — https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg
+- **Krishndas Chauhan (Field & Leadership Portrait, 1086x1448 JPEG):** ![Krishndas Chauhan - Founder & Lead Architect of Anivex Solution (Field & Leadership Portrait)](https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg) — https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg
+
+## Engineering Services
+
+- [Web Development](https://anivexsolution.in/web-development): Custom corporate websites, full-stack web platforms, e-commerce with UPI/Razorpay, and Core Web Vitals optimization.
+- [UI/UX Web Design](https://anivexsolution.in/web-design): Design systems, interactive prototypes, responsive cross-device layouts, and accessibility audits.
+- [Custom Software Development](https://anivexsolution.in/software-development): Bespoke business software, REST/GraphQL API engineering, database architecture, and legacy modernization.
+- [Web Application Development](https://anivexsolution.in/web-application-development): Multi-tenant SaaS platforms, client portals, real-time dashboards, and workflow automation apps.
+- [ERP Development](https://anivexsolution.in/erp-development): GST billing & invoicing, multi-branch inventory management, financial ledgers, and automated WhatsApp invoice dispatch.
+- [Custom Software Solutions](https://anivexsolution.in/custom-software): Tailored process automation engines, internal dashboards, and industry-specific digital tools.
+
+## Proprietary Software Products
+
+- **PolicyHub:** Enterprise document and policy governance suite with granular access control, versioning, audit trails, and semantic search.
+- **VyaparDesk ERP:** Indian GST billing, barcode stock tracking, multi-warehouse inventory synchronization, and automated WhatsApp invoice delivery.
+- **Anivex OpsGrid:** Unified enterprise operations and telemetry monitor with modular metrics and role-based permissions.
+
+## Extended Context
+
+- [Full Knowledge Base (llms-full.txt)](https://anivexsolution.in/llms-full.txt): Detailed service deliverables, technology stack, industry use cases, pricing tiers, and FAQs.

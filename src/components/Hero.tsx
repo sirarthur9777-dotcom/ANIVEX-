@@ -89,21 +89,21 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }
               <div className="flex items-start gap-2.5">
                 <CheckCircle2 className="w-5 h-5 text-[#15803D] shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-xs font-bold text-[#0B1F3A]">Enterprise Quality</h4>
+                  <p className="text-xs font-bold text-[#0B1F3A]">Enterprise Quality</p>
                   <p className="text-[11px] text-[#0B1F3A]/60 mt-0.5">Production-grade architecture</p>
                 </div>
               </div>
               <div className="flex items-start gap-2.5">
                 <ShieldCheck className="w-5 h-5 text-[#F97316] shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-xs font-bold text-[#0B1F3A]">GST Compliant</h4>
+                  <p className="text-xs font-bold text-[#0B1F3A]">GST Compliant</p>
                   <p className="text-[11px] text-[#0B1F3A]/60 mt-0.5">Official invoices & contracts</p>
                 </div>
               </div>
               <div className="flex items-start gap-2.5 col-span-2 sm:col-span-1">
                 <Globe className="w-5 h-5 text-[#D4A72C] shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-xs font-bold text-[#0B1F3A]">Direct Engineering</h4>
+                  <p className="text-xs font-bold text-[#0B1F3A]">Direct Engineering</p>
                   <p className="text-[11px] text-[#0B1F3A]/60 mt-0.5">Transparent communication</p>
                 </div>
               </div>

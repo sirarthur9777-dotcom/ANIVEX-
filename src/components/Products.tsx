@@ -1,13 +1,47 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, Check, X, Shield, ExternalLink, Sparkles } from 'lucide-react';
+import React from 'react';
+import { ArrowRight, Check } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { ProductCMS } from '../types/cms';
 import { PolicyHubVisual, VyaparDeskVisual, OpsGridVisual } from './TechVisualMockups';
+import { DEFAULT_WEBSITE_SETTINGS, formatWhatsAppUrl } from '../services/websiteSettings';
+
+function buildProductWhatsAppMessage(prod: ProductCMS): string {
+  const lines: string[] = [
+    'Namaste Anivex Solution! I am interested in exploring this product:',
+    '',
+    `*Product:* ${prod.name}`,
+  ];
+
+  if (prod.category || prod.badge) {
+    lines.push(`*Category:* ${prod.category || prod.badge}`);
+  }
+  if (prod.tagline) {
+    lines.push(`*Tagline:* ${prod.tagline}`);
+  }
+  if (prod.status) {
+    lines.push(`*Status:* ${prod.status}`);
+  }
+  if (prod.description) {
+    lines.push(`*Details:* ${prod.description}`);
+  }
+  if (prod.features && prod.features.length > 0) {
+    lines.push(`*Key Features:* ${prod.features.join(', ')}`);
+  }
+  if (prod.technologies && prod.technologies.length > 0) {
+    lines.push(`*Tech Stack:* ${prod.technologies.join(', ')}`);
+  }
+
+  lines.push('', 'Please share demo access, pricing, and more details.');
+  return lines.join('\n');
+}
 
 export const Products: React.FC = () => {
-  const { products } = useCms();
-  const [selectedProduct, setSelectedProduct] = useState<ProductCMS | null>(null);
+  const { products, websiteSettings, companyInfo } = useCms();
+  const whatsappNumber =
+    websiteSettings?.whatsapp?.trim() ||
+    websiteSettings?.phone?.trim() ||
+    companyInfo?.phone?.trim() ||
+    DEFAULT_WEBSITE_SETTINGS.whatsapp;
 
   const fallbackProducts: ProductCMS[] = [
     {
@@ -67,11 +101,6 @@ export const Products: React.FC = () => {
     ? products.filter((p) => p.published !== false && p.id !== 'anivex-ai').sort((a, b) => a.displayOrder - b.displayOrder)
     : fallbackProducts;
 
-  const handleOpenContact = (product: ProductCMS) => {
-    const el = document.getElementById('contact');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section
       id="products"
@@ -101,171 +130,89 @@ export const Products: React.FC = () => {
 
         {/* Product Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {activeProducts.map((prod, index) => (
-            <div
-              key={prod.id}
-              className="card-warm card-warm-hover rounded-2xl overflow-hidden bg-white flex flex-col justify-between shadow-xs hover:shadow-xl transition-all"
-            >
-              <div>
-                {/* Product Cover UI Mockup Preview */}
-                <div className="relative aspect-[16/10] bg-slate-900 overflow-hidden border-b border-[#0B1F3A]/6">
-                  {prod.id === 'policyhub' ? (
-                    <PolicyHubVisual />
-                  ) : prod.id === 'vyapardesk' ? (
-                    <VyaparDeskVisual />
-                  ) : prod.id === 'anivex-ops' ? (
-                    <OpsGridVisual />
-                  ) : prod.image && !prod.image.includes('_') ? (
-                    <img
-                      src={prod.image}
-                      alt={`${prod.name} – ${prod.tagline || 'Software Solution by Anivex Solution'}`}
-                      width={600}
-                      height={375}
-                      className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-300"
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <OpsGridVisual />
-                  )}
+          {activeProducts.map((prod) => {
+            const whatsappUrl = formatWhatsAppUrl(whatsappNumber, buildProductWhatsAppMessage(prod));
 
-                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-[#0B1F3A]/90 backdrop-blur-xs text-white text-[11px] font-semibold">
-                    {prod.category || prod.badge || 'Software'}
-                  </div>
-
-                  <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-white/95 text-[10px] font-bold text-[#15803D] border border-[#15803D]/20">
-                    {prod.status}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  <h3 className="font-heading font-bold text-xl text-[#0B1F3A] mb-1">
-                    {prod.name}
-                  </h3>
-                  <p className="text-xs font-semibold text-[#F97316] mb-3">
-                    {prod.tagline}
-                  </p>
-
-                  <p className="text-xs sm:text-sm text-[#0B1F3A]/70 leading-relaxed mb-5">
-                    {prod.description}
-                  </p>
-
-                  {/* Features */}
-                  {prod.features && prod.features.length > 0 && (
-                    <ul className="space-y-1.5 mb-6 pt-3 border-t border-[#0B1F3A]/6">
-                      {prod.features.slice(0, 3).map((feat, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-xs text-[#0B1F3A]/80">
-                          <Check className="w-3.5 h-3.5 text-[#15803D] shrink-0" />
-                          <span>{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
-
-              {/* Action Button */}
-              <div className="px-6 pb-6 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setSelectedProduct(prod)}
-                  className="w-full py-2.5 px-4 rounded-xl bg-[#0B1F3A] hover:bg-[#0B1F3A]/90 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
-                >
-                  <span>{prod.cta || prod.actionLabel || 'View Product Details'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Modal for In-Depth Product Overview */}
-        <AnimatePresence>
-          {selectedProduct && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1F3A]/60 backdrop-blur-xs">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                className="relative w-full max-w-xl p-6 sm:p-8 rounded-2xl bg-[#FFFDF7] border border-[#0B1F3A]/10 shadow-2xl overflow-hidden"
+            return (
+              <div
+                key={prod.id}
+                className="card-warm card-warm-hover rounded-2xl overflow-hidden bg-white flex flex-col justify-between shadow-xs hover:shadow-xl transition-all"
               >
-                <button
-                  onClick={() => setSelectedProduct(null)}
-                  className="absolute top-4 right-4 p-2 rounded-lg text-[#0B1F3A]/60 hover:text-[#0B1F3A] hover:bg-[#0B1F3A]/5 transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                <div>
+                  {/* Product Cover UI Mockup Preview */}
+                  <div className="relative aspect-[16/10] bg-slate-900 overflow-hidden border-b border-[#0B1F3A]/6">
+                    {prod.id === 'policyhub' ? (
+                      <PolicyHubVisual />
+                    ) : prod.id === 'vyapardesk' ? (
+                      <VyaparDeskVisual />
+                    ) : prod.id === 'anivex-ops' ? (
+                      <OpsGridVisual />
+                    ) : prod.image && !prod.image.includes('_') ? (
+                      <img
+                        src={prod.image}
+                        alt={`${prod.name} – ${prod.tagline || 'Software Solution by Anivex Solution'}`}
+                        width={600}
+                        height={375}
+                        className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-300"
+                        referrerPolicy="no-referrer"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <OpsGridVisual />
+                    )}
 
-                <div className="mb-4">
-                  <span className="text-[11px] font-bold text-[#F97316] uppercase tracking-wider block">
-                    {selectedProduct.category || selectedProduct.badge}
-                  </span>
-                  <h3 className="font-heading font-extrabold text-2xl text-[#0B1F3A] mt-1">
-                    {selectedProduct.name}
-                  </h3>
-                  <p className="text-xs font-semibold text-[#15803D] mt-0.5">
-                    {selectedProduct.tagline}
-                  </p>
-                </div>
+                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-[#0B1F3A]/90 backdrop-blur-xs text-white text-[11px] font-semibold">
+                      {prod.category || prod.badge || 'Software'}
+                    </div>
 
-                <p className="text-sm text-[#0B1F3A]/80 leading-relaxed mb-6">
-                  {selectedProduct.description}
-                </p>
-
-                <div className="mb-6">
-                  <h4 className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider mb-2">
-                    Key Architectural Capabilities
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {selectedProduct.features?.map((f, i) => (
-                      <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-white border border-[#0B1F3A]/8 text-xs text-[#0B1F3A]/80">
-                        <Check className="w-3.5 h-3.5 text-[#15803D] shrink-0" />
-                        <span>{f}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {selectedProduct.technologies && selectedProduct.technologies.length > 0 && (
-                  <div className="mb-6">
-                    <h4 className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider mb-2">
-                      Technology Stack
-                    </h4>
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedProduct.technologies.map((t, i) => (
-                        <span key={i} className="px-2.5 py-1 rounded-md bg-white border border-[#0B1F3A]/8 text-xs font-medium text-[#0B1F3A]">
-                          {t}
-                        </span>
-                      ))}
+                    <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-white/95 text-[10px] font-bold text-[#15803D] border border-[#15803D]/20">
+                      {prod.status}
                     </div>
                   </div>
-                )}
 
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#0B1F3A]/8">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedProduct(null)}
-                    className="px-4 py-2 rounded-lg text-xs font-semibold text-[#0B1F3A]/70 hover:text-[#0B1F3A]"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedProduct(null);
-                      handleOpenContact(selectedProduct);
-                    }}
-                    className="px-5 py-2.5 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold tracking-wide shadow-xs transition-colors"
-                  >
-                    Inquire About Deployment
-                  </button>
+                  {/* Content */}
+                  <div className="p-6">
+                    <h3 className="font-heading font-bold text-xl text-[#0B1F3A] mb-1">
+                      {prod.name}
+                    </h3>
+                    <p className="text-xs font-semibold text-[#F97316] mb-3">
+                      {prod.tagline}
+                    </p>
+
+                    <p className="text-xs sm:text-sm text-[#0B1F3A]/70 leading-relaxed mb-5">
+                      {prod.description}
+                    </p>
+
+                    {/* Features */}
+                    {prod.features && prod.features.length > 0 && (
+                      <ul className="space-y-1.5 mb-6 pt-3 border-t border-[#0B1F3A]/6">
+                        {prod.features.slice(0, 3).map((feat, idx) => (
+                          <li key={idx} className="flex items-center gap-2 text-xs text-[#0B1F3A]/80">
+                            <Check className="w-3.5 h-3.5 text-[#15803D] shrink-0" />
+                            <span>{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
 
+                {/* Action Button - Direct WhatsApp Redirect with Product Details */}
+                <div className="px-6 pb-6 pt-2">
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#0B1F3A] hover:bg-[#0B1F3A]/90 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
+                  >
+                    <span>{prod.cta || prod.actionLabel || 'Inquire on WhatsApp'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

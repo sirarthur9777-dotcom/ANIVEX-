@@ -1,5 +1,25 @@
 import React, { useEffect } from 'react';
 
+export interface SecondaryOgImage {
+  url: string;
+  alt: string;
+  width?: string | number;
+  height?: string | number;
+}
+
+export interface ImageSchemaItem {
+  url: string;
+  contentUrl?: string;
+  name?: string;
+  caption: string;
+  description?: string;
+  encodingFormat?: string;
+  width?: string | number;
+  height?: string | number;
+  representativeOfPage?: boolean;
+  aboutId?: string;
+}
+
 export interface SeoHeadProps {
   title: string;
   description: string;
@@ -9,6 +29,8 @@ export interface SeoHeadProps {
   ogImageAlt?: string;
   ogImageWidth?: string | number;
   ogImageHeight?: string | number;
+  secondaryOgImage?: SecondaryOgImage;
+  imageSchemas?: ImageSchemaItem[];
   twitterImage?: string;
   ogType?: 'website' | 'profile' | 'article' | 'business.business';
   author?: string;
@@ -23,8 +45,10 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
   isNoIndex = false,
   ogImage = '/images/krishndas-chauhan-founder-anivex-solution.jpeg',
   ogImageAlt = 'Krishndas Chauhan - Founder & Lead Architect of Anivex Solution',
-  ogImageWidth = '1080',
-  ogImageHeight = '1350',
+  ogImageWidth = '900',
+  ogImageHeight = '1599',
+  secondaryOgImage,
+  imageSchemas,
   twitterImage,
   ogType = 'website',
   author = 'Krishndas Chauhan',
@@ -32,6 +56,8 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
   schema,
 }) => {
   useEffect(() => {
+    const CANONICAL_ORIGIN = 'https://anivexsolution.in';
+
     // 1. Update Title
     document.title = title;
 
@@ -46,39 +72,69 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
       element.setAttribute('content', content);
     };
 
-    // Helper for absolute URL
-    const toAbsoluteUrl = (path: string) => {
-      if (!path) return '';
-      if (path.startsWith('http://') || path.startsWith('https://')) return path;
-      const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://anivexsolution.in';
-      return `${origin}${path.startsWith('/') ? path : `/${path}`}`;
+    const removeMetaTag = (attributeName: string, attributeValue: string) => {
+      const element = document.querySelector(`meta[${attributeName}="${attributeValue}"]`);
+      if (element) element.remove();
     };
 
-    // 2. Update Meta Description & Author
+    const setLinkTag = (selector: string, attrs: Record<string, string>) => {
+      let link = document.querySelector(selector);
+      if (!link) {
+        link = document.createElement('link');
+        document.head.appendChild(link);
+      }
+      Object.entries(attrs).forEach(([k, v]) => link!.setAttribute(k, v));
+    };
+
+    // Helper for canonical production URL
+    const toCanonicalUrl = (path: string) => {
+      if (!path) return CANONICAL_ORIGIN;
+      if (path.startsWith('http://') || path.startsWith('https://')) return path;
+      return `${CANONICAL_ORIGIN}${path.startsWith('/') ? path : `/${path}`}`;
+    };
+
+    // 2. Update Meta Description, Author & Keywords
     setMetaTag('name', 'description', description);
     setMetaTag('name', 'author', author);
-    if (keywords) {
+    if (keywords && keywords.trim()) {
       setMetaTag('name', 'keywords', keywords);
+    } else {
+      removeMetaTag('name', 'keywords');
     }
 
     // 3. Update Robots Meta with Googlebot & Bingbot rich snippets
     if (isNoIndex) {
       setMetaTag('name', 'robots', 'noindex, nofollow');
+      setMetaTag('name', 'googlebot', 'noindex, nofollow');
+      setMetaTag('name', 'bingbot', 'noindex, nofollow');
     } else {
       setMetaTag('name', 'robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
       setMetaTag('name', 'googlebot', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
       setMetaTag('name', 'bingbot', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     }
 
-    // 4. Update Canonical Link
-    const fullCanonicalUrl = `https://anivexsolution.in${canonicalPath ? (canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`) : '/'}`;
-    let canonicalLink = document.querySelector('link[rel="canonical"]');
-    if (!canonicalLink) {
-      canonicalLink = document.createElement('link');
-      canonicalLink.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonicalLink);
+    // 4. Update Canonical Link & Hreflang
+    const normalizedPath = canonicalPath
+      ? (canonicalPath === '/' ? '/' : (canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`))
+      : '/';
+    const fullCanonicalUrl = `${CANONICAL_ORIGIN}${normalizedPath}`;
+
+    if (isNoIndex) {
+      document.querySelector('link[rel="canonical"]')?.remove();
+      document.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
+    } else {
+      setLinkTag('link[rel="canonical"]', { rel: 'canonical', href: fullCanonicalUrl });
+      setLinkTag('link[rel="alternate"][hreflang="en-IN"]', {
+        rel: 'alternate',
+        hreflang: 'en-IN',
+        href: fullCanonicalUrl,
+      });
+      setLinkTag('link[rel="alternate"][hreflang="x-default"]', {
+        rel: 'alternate',
+        hreflang: 'x-default',
+        href: fullCanonicalUrl,
+      });
     }
-    canonicalLink.setAttribute('href', fullCanonicalUrl);
 
     // 5. Update Open Graph Tags
     setMetaTag('property', 'og:type', ogType);
@@ -87,23 +143,45 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
     setMetaTag('property', 'og:url', fullCanonicalUrl);
     setMetaTag('property', 'og:site_name', 'Anivex Solution');
     setMetaTag('property', 'og:locale', 'en_IN');
+    setMetaTag('property', 'og:locale:alternate', 'hi_IN');
 
-    // OpenGraph Images (Absolute URLs required for Google, WhatsApp, Facebook, LinkedIn, GPT Search)
-    const absoluteOgImage = toAbsoluteUrl(ogImage);
-    const productionOgImage = `https://anivexsolution.in${ogImage.startsWith('/') ? ogImage : `/${ogImage}`}`;
-
-    setMetaTag('property', 'og:image', absoluteOgImage);
+    // Primary OpenGraph Image
+    const productionOgImage = toCanonicalUrl(ogImage);
+    setMetaTag('property', 'og:image', productionOgImage);
     setMetaTag('property', 'og:image:secure_url', productionOgImage);
     setMetaTag('property', 'og:image:type', ogImage.endsWith('.png') ? 'image/png' : 'image/jpeg');
     setMetaTag('property', 'og:image:alt', ogImageAlt);
     if (ogImageWidth) setMetaTag('property', 'og:image:width', String(ogImageWidth));
     if (ogImageHeight) setMetaTag('property', 'og:image:height', String(ogImageHeight));
 
+    // Optional Secondary OpenGraph Image (managed via data-secondary-og attribute)
+    document.querySelectorAll('meta[data-secondary-og="true"]').forEach((el) => el.remove());
+    if (secondaryOgImage?.url && !isNoIndex) {
+      const secUrl = toCanonicalUrl(secondaryOgImage.url);
+      const secEntries: Array<[string, string]> = [
+        ['og:image', secUrl],
+        ['og:image:secure_url', secUrl],
+        ['og:image:type', secUrl.endsWith('.png') ? 'image/png' : 'image/jpeg'],
+        ['og:image:alt', secondaryOgImage.alt],
+      ];
+      if (secondaryOgImage.width) secEntries.push(['og:image:width', String(secondaryOgImage.width)]);
+      if (secondaryOgImage.height) secEntries.push(['og:image:height', String(secondaryOgImage.height)]);
+
+      secEntries.forEach(([prop, val]) => {
+        const meta = document.createElement('meta');
+        meta.setAttribute('property', prop);
+        meta.setAttribute('content', val);
+        meta.setAttribute('data-secondary-og', 'true');
+        document.head.appendChild(meta);
+      });
+    }
+
     // 6. Update Twitter Tags
     setMetaTag('name', 'twitter:card', 'summary_large_image');
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
-    const resolvedTwitterImage = toAbsoluteUrl(twitterImage || ogImage);
+    setMetaTag('name', 'twitter:url', fullCanonicalUrl);
+    const resolvedTwitterImage = toCanonicalUrl(twitterImage || ogImage);
     setMetaTag('name', 'twitter:image', resolvedTwitterImage);
     setMetaTag('name', 'twitter:image:alt', ogImageAlt);
 
@@ -111,7 +189,7 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
     const schemaScriptId = 'dynamic-page-schema';
     let scriptElement = document.getElementById(schemaScriptId) as HTMLScriptElement | null;
 
-    if (schema) {
+    if (schema && !isNoIndex) {
       if (!scriptElement) {
         scriptElement = document.createElement('script');
         scriptElement.id = schemaScriptId;
@@ -123,10 +201,81 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
       scriptElement.remove();
     }
 
-    return () => {
-      // Cleanup if needed
-    };
-  }, [title, description, canonicalPath, isNoIndex, ogImage, ogImageAlt, ogImageWidth, ogImageHeight, twitterImage, ogType, author, keywords, schema]);
+    // 8. Inject or Update Explicit ImageObject JSON-LD Schema (for Google Images & AI Search)
+    const imageSchemaScriptId = 'dynamic-image-schema';
+    let imageScriptElement = document.getElementById(imageSchemaScriptId) as HTMLScriptElement | null;
+
+    const rawImages: ImageSchemaItem[] =
+      imageSchemas && imageSchemas.length > 0
+        ? imageSchemas
+        : [
+            {
+              url: ogImage,
+              contentUrl: ogImage,
+              name: ogImageAlt,
+              caption: ogImageAlt,
+              width: ogImageWidth,
+              height: ogImageHeight,
+              representativeOfPage: true,
+            },
+            ...(secondaryOgImage?.url
+              ? [
+                  {
+                    url: secondaryOgImage.url,
+                    contentUrl: secondaryOgImage.url,
+                    name: secondaryOgImage.alt,
+                    caption: secondaryOgImage.alt,
+                    width: secondaryOgImage.width,
+                    height: secondaryOgImage.height,
+                  },
+                ]
+              : []),
+          ];
+
+    if (!isNoIndex && rawImages.length > 0) {
+      const imageGraph = rawImages.map((img) => {
+        const canonicalImgUrl = toCanonicalUrl(img.url);
+        const canonicalContentUrl = toCanonicalUrl(img.contentUrl || img.url);
+        const inferredMime = canonicalContentUrl.endsWith('.png')
+          ? 'image/png'
+          : canonicalContentUrl.endsWith('.webp')
+            ? 'image/webp'
+            : 'image/jpeg';
+
+        return {
+          '@type': 'ImageObject',
+          '@id': `${canonicalImgUrl}#image`,
+          url: canonicalImgUrl,
+          contentUrl: canonicalContentUrl,
+          name: img.name || img.caption,
+          caption: img.caption,
+          description: img.description || img.caption,
+          encodingFormat: img.encodingFormat || inferredMime,
+          ...(img.width ? { width: Number(img.width) || img.width } : {}),
+          ...(img.height ? { height: Number(img.height) || img.height } : {}),
+          ...(typeof img.representativeOfPage === 'boolean'
+            ? { representativeOfPage: img.representativeOfPage }
+            : {}),
+          ...(img.aboutId ? { about: { '@id': img.aboutId } } : {}),
+          inLanguage: 'en-IN',
+          copyrightHolder: { '@id': `${CANONICAL_ORIGIN}/#organization` },
+        };
+      });
+
+      if (!imageScriptElement) {
+        imageScriptElement = document.createElement('script');
+        imageScriptElement.id = imageSchemaScriptId;
+        imageScriptElement.type = 'application/ld+json';
+        document.head.appendChild(imageScriptElement);
+      }
+      imageScriptElement.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': imageGraph,
+      });
+    } else if (imageScriptElement) {
+      imageScriptElement.remove();
+    }
+  }, [title, description, canonicalPath, isNoIndex, ogImage, ogImageAlt, ogImageWidth, ogImageHeight, secondaryOgImage, imageSchemas, twitterImage, ogType, author, keywords, schema]);
 
   return null;
 };

@@ -46,7 +46,8 @@ export const AboutFounderManager: React.FC = () => {
       siteContent.founderImage ||
       '/images/krishndas-chauhan-founder-anivex-solution.jpeg',
     founderSecondaryImage:
-      siteContent.founderSecondaryImage || '',
+      siteContent.founderSecondaryImage ||
+      '/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg',
     founderEducationDegree1:
       siteContent.founderEducationDegree1 || 'Master of Computer Applications (MCA)',
     founderEducationCollege1:

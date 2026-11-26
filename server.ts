@@ -126,6 +126,30 @@ async function startServer() {
 
   app.use(express.json());
 
+  // Enforce X-Robots-Tag: noindex, nofollow on private admin, CMS, and API routes
+  app.use((req, res, next) => {
+    const p = req.path.toLowerCase();
+    const q = (req.originalUrl || "").toLowerCase();
+    const isPrivateRoute =
+      p.startsWith("/api") ||
+      p.startsWith("/admin") ||
+      p.startsWith("/controlroom") ||
+      p.startsWith("/control-room") ||
+      p.startsWith("/cms") ||
+      p.startsWith("/portal") ||
+      p.startsWith("/manage") ||
+      p.startsWith("/control-panel") ||
+      p.startsWith("/dashboard") ||
+      q.includes("admin=") ||
+      q.includes("controlroom") ||
+      q.includes("cms=");
+
+    if (isPrivateRoute) {
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    }
+    next();
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
     res.json({
@@ -211,9 +235,73 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
+    const routeHtmlMap: Record<string, string> = {
+      "/": "index.html",
+      "/aboutfounder": "aboutfounder.html",
+      "/web-development": "web-development.html",
+      "/web-design": "web-design.html",
+      "/software-development": "software-development.html",
+      "/web-application-development": "web-application-development.html",
+      "/erp-development": "erp-development.html",
+      "/custom-software": "custom-software.html",
+      "/privacy-policy": "privacy-policy.html",
+      "/terms-and-conditions": "terms-and-conditions.html",
+    };
+    const redirectMap: Record<string, string> = {
+      "/about-founder": "/aboutfounder",
+      "/founder": "/aboutfounder",
+      "/privacy": "/privacy-policy",
+      "/terms": "/terms-and-conditions",
+      "/about": "/#about",
+      "/services": "/#services",
+      "/products": "/#products",
+      "/projects": "/#projects",
+      "/why-anivex": "/#why-anivex",
+      "/testimonials": "/#testimonials",
+      "/pricing": "/#pricing",
+      "/faq": "/#faq",
+      "/contact": "/#contact",
+    };
+
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
+      const cleanPath = req.path.replace(/\/$/, "").toLowerCase() || "/";
+
+      if (redirectMap[cleanPath]) {
+        return res.redirect(301, redirectMap[cleanPath]);
+      }
+
+      if (routeHtmlMap[cleanPath]) {
+        const target = path.join(distPath, routeHtmlMap[cleanPath]);
+        if (fs.existsSync(target)) {
+          return res.sendFile(target);
+        }
+      }
+
+      if (cleanPath.startsWith("/admin")) {
+        const adminHtml = path.join(distPath, "admin.html");
+        return res.sendFile(fs.existsSync(adminHtml) ? adminHtml : path.join(distPath, "index.html"));
+      }
+
+      if (
+        cleanPath.startsWith("/controlroom") ||
+        cleanPath.startsWith("/control-room") ||
+        cleanPath.startsWith("/cms") ||
+        cleanPath.startsWith("/portal") ||
+        cleanPath.startsWith("/manage") ||
+        cleanPath.startsWith("/control-panel")
+      ) {
+        const crHtml = path.join(distPath, "controlroom.html");
+        return res.sendFile(fs.existsSync(crHtml) ? crHtml : path.join(distPath, "index.html"));
+      }
+
+      const notFoundHtml = path.join(distPath, "404.html");
+      if (fs.existsSync(notFoundHtml)) {
+        res.setHeader("X-Robots-Tag", "noindex, nofollow");
+        return res.status(404).sendFile(notFoundHtml);
+      }
+
+      return res.status(404).send("Page Not Found");
     });
   }
 

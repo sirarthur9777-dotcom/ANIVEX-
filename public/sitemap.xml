@@ -6,8 +6,8 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>https://anivexsolution.in/</loc>
-    <lastmod>2026-10-31</lastmod>
-    <changefreq>daily</changefreq>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg</image:loc>
@@ -19,12 +19,32 @@
       <image:title>Krishndas Chauhan - Field &amp; Leadership Portrait - Founder of Anivex Solution</image:title>
       <image:caption>Field and on-site engineering leadership portrait of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution.</image:caption>
     </image:image>
+    <image:image>
+      <image:loc>https://anivexsolution.in/images/hero_indian_tech_business_1790750492543.jpg</image:loc>
+      <image:title>Anivex Solution Enterprise Software Engineering in India</image:title>
+      <image:caption>Modern web development, ERP systems, and business automation built for Indian enterprises.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://anivexsolution.in/images/about_indian_tech_office_1790750532643.jpg</image:loc>
+      <image:title>Anivex Solution Software Engineering Studio India</image:title>
+      <image:caption>Collaborative software architecture and full-stack product delivery team at Anivex Solution.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://anivexsolution.in/images/product_policyhub_showcase_1790750505931.jpg</image:loc>
+      <image:title>PolicyHub Enterprise Policy &amp; Compliance Governance Suite</image:title>
+      <image:caption>PolicyHub enterprise document management platform built by Anivex Solution.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://anivexsolution.in/images/project_vyapardesk_erp_1790750520625.jpg</image:loc>
+      <image:title>VyaparDesk GST Billing &amp; Inventory ERP System</image:title>
+      <image:caption>VyaparDesk GST-compliant invoicing and multi-branch warehouse ERP by Anivex Solution.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://anivexsolution.in/aboutfounder</loc>
-    <lastmod>2026-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
     <image:image>
       <image:loc>https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg</image:loc>
       <image:title>Krishndas Chauhan - Founder &amp; Lead Architect of Anivex Solution (Executive Portrait)</image:title>
@@ -33,54 +53,54 @@
     <image:image>
       <image:loc>https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg</image:loc>
       <image:title>Krishndas Chauhan - Field &amp; On-Site Leadership Portrait - Founder of Anivex Solution</image:title>
-      <image:caption>Krishndas Chauhan, Founder of Anivex Solution, outdoor and practical software development portrait.</image:caption>
+      <image:caption>Krishndas Chauhan, Founder of Anivex Solution, field and project execution portrait.</image:caption>
     </image:image>
   </url>
   <url>
     <loc>https://anivexsolution.in/web-development</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://anivexsolution.in/web-design</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://anivexsolution.in/software-development</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://anivexsolution.in/web-application-development</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://anivexsolution.in/erp-development</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://anivexsolution.in/custom-software</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://anivexsolution.in/privacy-policy</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://anivexsolution.in/terms-and-conditions</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

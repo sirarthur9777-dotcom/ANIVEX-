@@ -9,7 +9,15 @@ interface AboutProps {
 
 export const About: React.FC<AboutProps> = ({ onNavigateFounder }) => {
   const { siteContent } = useCms();
+  const DEFAULT_FOUNDER_IMG = "/images/krishndas-chauhan-founder-anivex-solution.jpeg";
+  const configuredFounderImg = siteContent.founderImage || DEFAULT_FOUNDER_IMG;
+  const [founderImgSrc, setFounderImgSrc] = React.useState(configuredFounderImg);
   const [founderImageError, setFounderImageError] = React.useState(false);
+
+  React.useEffect(() => {
+    setFounderImgSrc(configuredFounderImg);
+    setFounderImageError(false);
+  }, [configuredFounderImg]);
 
   const aboutHeading = siteContent.aboutHeading || "Technology With Purpose.";
   const aboutDescription = siteContent.aboutDescription || "Anivex Solution helps businesses transform ideas into reliable digital products and intelligent technology solutions.";
@@ -132,6 +140,7 @@ export const About: React.FC<AboutProps> = ({ onNavigateFounder }) => {
         >
           <meta itemProp="url" content="https://anivexsolution.in/#about" />
           <meta itemProp="worksFor" content="Anivex Solution" />
+          <meta itemProp="image" content="https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg" />
           <link itemProp="sameAs" href="https://www.linkedin.com/in/krishndas-chauhan" />
           <link itemProp="sameAs" href="https://github.com/krishndas-chauhan" />
           <link itemProp="sameAs" href="https://x.com/krishndas_" />
@@ -143,15 +152,21 @@ export const About: React.FC<AboutProps> = ({ onNavigateFounder }) => {
               {!founderImageError ? (
                 <img
                   itemProp="image"
-                  src={siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg"}
-                  alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution"
-                  title="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution"
-                  className="w-full h-full object-cover object-top"
-                  loading="eager"
+                  src={founderImgSrc}
+                  alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Executive Portrait)"
+                  title="Krishndas Chauhan — Founder & Lead Architect, Anivex Solution"
+                  className="ml-[-2px] mr-[-2px] mt-[0px] mb-[-3px] pl-[0px] w-[91.8667px] h-[101.8667px] object-cover object-top"
+                  loading="lazy"
                   decoding="async"
-                  width="80"
-                  height="80"
-                  onError={() => setFounderImageError(true)}
+                  width="900"
+                  height="1599"
+                  onError={() => {
+                    if (founderImgSrc !== DEFAULT_FOUNDER_IMG) {
+                      setFounderImgSrc(DEFAULT_FOUNDER_IMG);
+                    } else {
+                      setFounderImageError(true);
+                    }
+                  }}
                 />
               ) : (
                 <span className="font-heading font-extrabold text-[#F97316] text-lg sm:text-xl">KC</span>

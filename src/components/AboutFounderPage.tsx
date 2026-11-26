@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useCms } from '../context/CmsContext';
 import { formatWhatsAppUrl } from '../services/websiteSettings';
-import { SeoHead } from './SeoHead';
+import { SeoHead, ImageSchemaItem } from './SeoHead';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { FloatingWhatsApp } from './FloatingWhatsApp';
@@ -29,9 +29,45 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
   onNavigateContact,
 }) => {
   const { siteContent, companyInfo, websiteSettings } = useCms();
-  const [activePortrait, setActivePortrait] = useState<'executive' | 'field'>('field');
+  const [activePortrait, setActivePortrait] = useState<'executive' | 'field'>('executive');
+  const DEFAULT_EXEC_PHOTO = "/images/krishndas-chauhan-founder-anivex-solution.jpeg";
+  const DEFAULT_FIELD_PHOTO = "/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg";
+
+  const PUBLIC_IMAGES = new Set([
+    "/images/krishndas-chauhan-founder-anivex-solution.jpeg",
+    "/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg",
+    "/images/about_indian_tech_office_1790750532643.jpg",
+    "/images/hero_indian_tech_business_1790750492543.jpg",
+    "/images/product_policyhub_showcase_1790750505931.jpg",
+    "/images/project_vyapardesk_erp_1790750520625.jpg",
+  ]);
+
+  const resolvePublicImageSrc = (rawSrc: string | undefined, fallback: string) => {
+    if (!rawSrc) return fallback;
+    const normalized = rawSrc
+      .trim()
+      .replace(/^https?:\/\/anivexsolution\.in/i, "")
+      .replace(/^\/?public\/images\//i, "/images/");
+    return PUBLIC_IMAGES.has(normalized) ? normalized : fallback;
+  };
+
+  const configuredExecPhoto = resolvePublicImageSrc(siteContent.founderImage, DEFAULT_EXEC_PHOTO);
+  const configuredFieldPhoto = resolvePublicImageSrc(siteContent.founderSecondaryImage, DEFAULT_FIELD_PHOTO);
+
+  const [founderPhoto, setFounderPhoto] = useState(configuredExecPhoto);
+  const [founderFieldPhoto, setFounderFieldPhoto] = useState(configuredFieldPhoto);
   const [execImgError, setExecImgError] = useState(false);
   const [fieldImgError, setFieldImgError] = useState(false);
+
+  React.useEffect(() => {
+    setFounderPhoto(configuredExecPhoto);
+    setExecImgError(false);
+  }, [configuredExecPhoto]);
+
+  React.useEffect(() => {
+    setFounderFieldPhoto(configuredFieldPhoto);
+    setFieldImgError(false);
+  }, [configuredFieldPhoto]);
 
   const founderName = siteContent.founderName || "Krishndas Chauhan";
   const founderRole = siteContent.founderRole || "Founder & Lead Architect";
@@ -39,36 +75,118 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
   const founderAge = siteContent.founderAge || "21";
   const founderQualifications = siteContent.founderQualifications || "MCA";
 
-  const founderPhoto = siteContent.founderImage || "/images/krishndas-chauhan-founder-anivex-solution.jpeg";
-  const founderFieldPhoto = siteContent.founderSecondaryImage || "/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg";
-
   const phone = websiteSettings?.whatsapp || websiteSettings?.phone || companyInfo?.phone || '+91 9119069399';
   const whatsappUrl = formatWhatsAppUrl(
     phone,
     `Namaste Krishndas Sir, I am visiting your official profile on Anivex Solution (anivexsolution.in/aboutfounder) and would like to discuss a technology project.`
   );
 
+  const toCanonicalImageUrl = (src: string) => {
+    if (!src) return "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg";
+    if (src.startsWith("http://") || src.startsWith("https://")) return src;
+    return `https://anivexsolution.in${src.startsWith("/") ? src : `/${src}`}`;
+  };
+
+  const execCanonicalUrl = toCanonicalImageUrl(founderPhoto);
+  const fieldCanonicalUrl = toCanonicalImageUrl(founderFieldPhoto);
+
+  const founderImageSchemas: ImageSchemaItem[] = [
+    {
+      url: execCanonicalUrl,
+      contentUrl: execCanonicalUrl,
+      name: `${founderName} — ${founderRole} of ${founderOrg} (Executive Portrait)`,
+      caption: `Official Executive Studio Portrait of ${founderName}, ${founderRole} of ${founderOrg} (MCA, Mangalayatan University).`,
+      description: `Official studio portrait of ${founderName}, Founder and Lead Architect of ${founderOrg}, India.`,
+      encodingFormat: "image/jpeg",
+      width: 900,
+      height: 1599,
+      representativeOfPage: true,
+      aboutId: "https://anivexsolution.in/#krishndas-chauhan",
+    },
+    {
+      url: fieldCanonicalUrl,
+      contentUrl: fieldCanonicalUrl,
+      name: `${founderName} — ${founderRole} of ${founderOrg} (Field & Leadership Portrait)`,
+      caption: `Official Field & Technical Leadership Portrait of ${founderName}, ${founderRole} of ${founderOrg}.`,
+      description: `On-site field and engineering leadership portrait of ${founderName}, Founder and Lead Architect of ${founderOrg}.`,
+      encodingFormat: "image/jpeg",
+      width: 1086,
+      height: 1448,
+      representativeOfPage: false,
+      aboutId: "https://anivexsolution.in/#krishndas-chauhan",
+    },
+  ];
+
   const founderSchema = {
     "@context": "https://schema.org",
     "@graph": [
       {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://anivexsolution.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "About Founder",
+            "item": "https://anivexsolution.in/aboutfounder"
+          }
+        ]
+      },
+      {
         "@type": "ProfilePage",
         "@id": "https://anivexsolution.in/aboutfounder#profilepage",
         "url": "https://anivexsolution.in/aboutfounder",
-        "name": `Who is Krishndas Chauhan? | Founder & Lead Architect | Anivex Solution`,
-        "description": `Official profile and verified biography of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution. Learn about his engineering vision, qualifications (MCA), and enterprise software architecture.`,
+        "name": "Who is Krishndas Chauhan? | Founder, Anivex Solution",
+        "description": "Official profile of Krishndas Chauhan (MCA), Founder and Lead Architect at Anivex Solution, engineering custom software, web apps, and ERP platforms in India.",
+        "inLanguage": "en-IN",
+        "isPartOf": {
+          "@id": "https://anivexsolution.in/#website"
+        },
         "mainEntity": {
           "@id": "https://anivexsolution.in/#krishndas-chauhan"
         },
         "primaryImageOfPage": {
           "@type": "ImageObject",
-          "@id": "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
-          "url": "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
-          "caption": "Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Executive Portrait)",
+          "@id": execCanonicalUrl,
+          "url": execCanonicalUrl,
+          "contentUrl": execCanonicalUrl,
+          "name": `${founderName} — ${founderRole} of ${founderOrg} (Executive Portrait)`,
+          "caption": `Official Executive Studio Portrait of ${founderName}, ${founderRole} of ${founderOrg}.`,
+          "encodingFormat": "image/jpeg",
           "representativeOfPage": true,
           "width": 900,
           "height": 1599
-        }
+        },
+        "image": [
+          {
+            "@type": "ImageObject",
+            "@id": execCanonicalUrl,
+            "url": execCanonicalUrl,
+            "contentUrl": execCanonicalUrl,
+            "name": `${founderName} — ${founderRole} of ${founderOrg} (Executive Portrait)`,
+            "caption": `Official Executive Studio Portrait of ${founderName}, ${founderRole} of ${founderOrg}.`,
+            "encodingFormat": "image/jpeg",
+            "representativeOfPage": true,
+            "width": 900,
+            "height": 1599
+          },
+          {
+            "@type": "ImageObject",
+            "@id": fieldCanonicalUrl,
+            "url": fieldCanonicalUrl,
+            "contentUrl": fieldCanonicalUrl,
+            "name": `${founderName} — ${founderRole} of ${founderOrg} (Field Portrait)`,
+            "caption": `Official Field & Technical Leadership Portrait of ${founderName}, ${founderRole} of ${founderOrg}.`,
+            "encodingFormat": "image/jpeg",
+            "width": 1086,
+            "height": 1448
+          }
+        ]
       },
       {
         "@type": "Person",
@@ -101,25 +219,50 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
         "url": "https://anivexsolution.in/aboutfounder",
         "mainEntityOfPage": "https://anivexsolution.in/aboutfounder",
         "image": [
-          "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
-          "https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg"
+          {
+            "@type": "ImageObject",
+            "@id": execCanonicalUrl,
+            "url": execCanonicalUrl,
+            "contentUrl": execCanonicalUrl,
+            "name": "Krishndas Chauhan — Founder & Lead Architect of Anivex Solution (Executive Portrait)",
+            "caption": "Official Executive Studio Portrait of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution",
+            "encodingFormat": "image/jpeg",
+            "width": 900,
+            "height": 1599,
+            "representativeOfPage": true
+          },
+          {
+            "@type": "ImageObject",
+            "@id": fieldCanonicalUrl,
+            "url": fieldCanonicalUrl,
+            "contentUrl": fieldCanonicalUrl,
+            "name": "Krishndas Chauhan — Founder & Lead Architect of Anivex Solution (Field Portrait)",
+            "caption": "Official Field & Technical Leadership Portrait of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution",
+            "encodingFormat": "image/jpeg",
+            "width": 1086,
+            "height": 1448
+          }
         ],
         "subjectOf": [
           {
             "@type": "ImageObject",
-            "@id": "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
-            "contentUrl": "https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg",
+            "@id": execCanonicalUrl,
+            "url": execCanonicalUrl,
+            "contentUrl": execCanonicalUrl,
             "name": "Krishndas Chauhan - Official Executive Portrait",
             "caption": "Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Executive Portrait in Studio)",
+            "encodingFormat": "image/jpeg",
             "width": 900,
             "height": 1599
           },
           {
             "@type": "ImageObject",
-            "@id": "https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg",
-            "contentUrl": "https://anivexsolution.in/images/krishndas-chauhan-field-portrait-anivex-solution.jpeg",
+            "@id": fieldCanonicalUrl,
+            "url": fieldCanonicalUrl,
+            "contentUrl": fieldCanonicalUrl,
             "name": "Krishndas Chauhan - Field & On-Site Leadership Portrait",
             "caption": "Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Field & Project Execution Portrait)",
+            "encodingFormat": "image/jpeg",
             "width": 1086,
             "height": 1448
           }
@@ -216,15 +359,22 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
     <div className="min-h-screen bg-[#FFFDF7] text-[#0B1F3A] flex flex-col selection:bg-[#F97316]/20 selection:text-[#F97316] w-full max-w-full overflow-x-hidden">
       {/* Search Engine Optimization & Knowledge Graph Schema */}
       <SeoHead
-        title="Who is Krishndas Chauhan? | Founder & Lead Architect | Anivex Solution"
-        description="Who is Krishndas Chauhan? Official verified profile of Krishndas Chauhan, Founder and Lead Architect of Anivex Solution. MCA from Mangalayatan University. Enterprise software architecture, web applications, and digital systems."
+        title="Who is Krishndas Chauhan? | Founder, Anivex Solution"
+        description="Official profile of Krishndas Chauhan (MCA), Founder and Lead Architect at Anivex Solution, engineering custom software, web apps, and ERP platforms in India."
         canonicalPath="/aboutfounder"
         ogType="profile"
-        ogImage="/images/krishndas-chauhan-founder-anivex-solution.jpeg"
-        ogImageAlt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution"
+        ogImage={execCanonicalUrl}
+        ogImageAlt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Executive Portrait)"
         ogImageWidth={900}
         ogImageHeight={1599}
-        twitterImage="/images/krishndas-chauhan-founder-anivex-solution.jpeg"
+        secondaryOgImage={{
+          url: fieldCanonicalUrl,
+          alt: 'Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Field & Leadership Portrait)',
+          width: 1086,
+          height: 1448,
+        }}
+        imageSchemas={founderImageSchemas}
+        twitterImage={execCanonicalUrl}
         author="Krishndas Chauhan"
         keywords="who is krishndas chauhan, founder of anivex solution, anivex solution, krishndas chauhan founder, anivex solution founder, krishndas chauhan, krishndas chauhan mca, krishndas chauhan bca, krishndas chauhan age, lead architect anivex solution, anivex solution jaunpur, software development founder india"
         schema={founderSchema}
@@ -244,7 +394,8 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
         <meta itemProp="name" content={founderName} />
         <meta itemProp="jobTitle" content={founderRole} />
         <meta itemProp="worksFor" content={founderOrg} />
-        <meta itemProp="image" content="https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg" />
+        <meta itemProp="image" content={execCanonicalUrl} />
+        <meta itemProp="image" content={fieldCanonicalUrl} />
         <link itemProp="sameAs" href="https://www.linkedin.com/in/krishndas-chauhan" />
         <link itemProp="sameAs" href="https://github.com/krishndas-chauhan" />
         <link itemProp="sameAs" href="https://x.com/krishndas_" />
@@ -292,15 +443,23 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
                 {activePortrait === 'executive' ? (
                   !execImgError ? (
                     <img
+                      itemProp="image"
                       src={founderPhoto}
                       alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Executive Portrait)"
+                      title="Krishndas Chauhan — Founder & Lead Architect of Anivex Solution (Executive Portrait)"
                       className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                       loading="eager"
                       fetchPriority="high"
                       decoding="async"
                       width={900}
                       height={1599}
-                      onError={() => setExecImgError(true)}
+                      onError={() => {
+                        if (founderPhoto !== DEFAULT_EXEC_PHOTO) {
+                          setFounderPhoto(DEFAULT_EXEC_PHOTO);
+                        } else {
+                          setExecImgError(true);
+                        }
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
@@ -314,15 +473,23 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
                 ) : (
                   !fieldImgError ? (
                     <img
+                      itemProp="image"
                       src={founderFieldPhoto}
                       alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (On-Site & Field Leadership Portrait)"
+                      title="Krishndas Chauhan — Founder & Lead Architect of Anivex Solution (Field & Leadership Portrait)"
                       className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                       loading="eager"
                       fetchPriority="high"
                       decoding="async"
                       width={1086}
                       height={1448}
-                      onError={() => setFieldImgError(true)}
+                      onError={() => {
+                        if (founderFieldPhoto !== DEFAULT_FIELD_PHOTO) {
+                          setFounderFieldPhoto(DEFAULT_FIELD_PHOTO);
+                        } else {
+                          setFieldImgError(true);
+                        }
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0B1F3A] via-[#122A4E] to-[#0B1F3A] text-white p-6 text-center">
@@ -340,9 +507,9 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
                   <span className="text-xs uppercase font-extrabold tracking-wider text-[#D4A72C]">
                     {activePortrait === 'executive' ? 'Official Executive Portrait' : 'Field & Leadership Portrait'}
                   </span>
-                  <h3 className="text-sm font-bold text-white mt-0.5 truncate">
+                  <p className="text-sm font-bold text-white mt-0.5 truncate">
                     Krishndas Chauhan {activePortrait === 'field' ? '• Tech Leadership' : ''}
-                  </h3>
+                  </p>
                   <p className="text-[11px] text-white/80 line-clamp-2 mt-1">
                     {activePortrait === 'executive'
                       ? 'Founder and Lead Architect of Anivex Solution • MCA Graduate & Enterprise Systems Architect'
@@ -367,11 +534,18 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
                 >
                   <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#0B1F3A]/20 shrink-0 border border-current/20">
                     <img
+                      itemProp="image"
                       src={founderPhoto}
-                      alt="Krishndas Chauhan Executive Portrait preview"
-                      className="w-full h-full object-cover object-top"
-                      width={40}
-                      height={40}
+                      alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Executive Portrait preview)"
+                      title="Krishndas Chauhan — Executive Portrait"
+                      className="w-[37.8667px] h-[42.8667px] ml-[1px] mr-[0px] mb-[0px] mt-[-4px] object-cover object-top"
+                      width={900}
+                      height={1599}
+                      onError={() => {
+                        if (founderPhoto !== DEFAULT_EXEC_PHOTO) {
+                          setFounderPhoto(DEFAULT_EXEC_PHOTO);
+                        }
+                      }}
                     />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -401,11 +575,18 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
                 >
                   <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#0B1F3A]/20 shrink-0 border border-current/20">
                     <img
+                      itemProp="image"
                       src={founderFieldPhoto}
-                      alt="Krishndas Chauhan Field Portrait preview"
+                      alt="Krishndas Chauhan, Founder and Lead Architect of Anivex Solution (Field Portrait preview)"
+                      title="Krishndas Chauhan — Field & Leadership Portrait"
                       className="w-full h-full object-cover object-top"
-                      width={40}
-                      height={40}
+                      width={1086}
+                      height={1448}
+                      onError={() => {
+                        if (founderFieldPhoto !== DEFAULT_FIELD_PHOTO) {
+                          setFounderFieldPhoto(DEFAULT_FIELD_PHOTO);
+                        }
+                      }}
                     />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -616,7 +797,7 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
                   <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6 min-w-0">
                     <CheckCircle2 className="w-4 h-4 text-[#15803D] shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-[#0B1F3A] break-words">Zero Technical Bloat</h4>
+                      <h3 className="text-xs font-bold text-[#0B1F3A] break-words">Zero Technical Bloat</h3>
                       <p className="text-[11px] text-[#0B1F3A]/70 mt-0.5 break-words">Focusing on high-speed execution, ultra-low latency, and resilient modular codebases.</p>
                     </div>
                   </div>
@@ -624,7 +805,7 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
                   <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6 min-w-0">
                     <CheckCircle2 className="w-4 h-4 text-[#15803D] shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-[#0B1F3A] break-words">Business-Centric Architecture</h4>
+                      <h3 className="text-xs font-bold text-[#0B1F3A] break-words">Business-Centric Architecture</h3>
                       <p className="text-[11px] text-[#0B1F3A]/70 mt-0.5 break-words">Every system is designed to generate measurable business ROI, customer trust, and long-term durability.</p>
                     </div>
                   </div>
@@ -632,7 +813,7 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
                   <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6 min-w-0">
                     <CheckCircle2 className="w-4 h-4 text-[#15803D] shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-[#0B1F3A] break-words">Indian & Global Readiness</h4>
+                      <h3 className="text-xs font-bold text-[#0B1F3A] break-words">Indian & Global Readiness</h3>
                       <p className="text-[11px] text-[#0B1F3A]/70 mt-0.5 break-words">Crafted with deep empathy for Indian operational workflows while meeting strict international security benchmarks.</p>
                     </div>
                   </div>
@@ -640,7 +821,7 @@ export const AboutFounderPage: React.FC<AboutFounderPageProps> = ({
                   <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#FFFDF7] border border-[#0B1F3A]/6 min-w-0">
                     <CheckCircle2 className="w-4 h-4 text-[#15803D] shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-[#0B1F3A] break-words">Transparent Engineering</h4>
+                      <h3 className="text-xs font-bold text-[#0B1F3A] break-words">Transparent Engineering</h3>
                       <p className="text-[11px] text-[#0B1F3A]/70 mt-0.5 break-words">Full intellectual property ownership, milestone-based deliveries, and clear technical roadmaps.</p>
                     </div>
                   </div>

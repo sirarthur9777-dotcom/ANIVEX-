@@ -332,9 +332,9 @@ export const Contact: React.FC<ContactProps> = ({ preselectedProjectType, presel
                 </span>
                 <span className="text-[11px] font-bold text-[#0B1F3A]">100% In ₹</span>
               </div>
-              <h4 className="font-heading font-bold text-sm text-[#0B1F3A] mb-2">
+              <h3 className="font-heading font-bold text-sm text-[#0B1F3A] mb-2">
                 Official Invoicing & Milestone Delivery
-              </h4>
+              </h3>
               <p className="text-xs text-[#0B1F3A]/70 leading-relaxed mb-3">
                 Every project is backed by a formal contract, defined sprint milestones, GST tax invoices, and full intellectual property handover.
               </p>

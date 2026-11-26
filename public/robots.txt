@@ -1,69 +1,153 @@
 # robots.txt for Anivex Solution
 # Primary domain: https://anivexsolution.in/
+# Robots directives guide crawlers; private endpoints enforce server-side authentication.
 
 User-agent: *
 Allow: /
 Allow: /aboutfounder
+Allow: /web-development
+Allow: /web-design
+Allow: /software-development
+Allow: /web-application-development
+Allow: /erp-development
+Allow: /custom-software
+Allow: /privacy-policy
+Allow: /terms-and-conditions
+Allow: /images/
+Allow: /assets/
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /site.webmanifest
+Allow: /favicon.svg
+Disallow: /admin
+Disallow: /admin/
+Disallow: /controlroom
+Disallow: /controlroom/
+Disallow: /control-room
+Disallow: /control-room/
+Disallow: /cms
+Disallow: /cms/
+Disallow: /portal
+Disallow: /portal/
+Disallow: /manage
+Disallow: /manage/
+Disallow: /control-panel
+Disallow: /control-panel/
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /*?*admin=
+Disallow: /*?*controlroom
+Disallow: /*?*cms=
+
+User-agent: Googlebot
+Allow: /
 Allow: /images/
 Allow: /assets/
 Disallow: /admin
 Disallow: /admin/
+Disallow: /controlroom
+Disallow: /control-room
+Disallow: /cms
+Disallow: /portal
+Disallow: /manage
+Disallow: /control-panel
+Disallow: /dashboard/
 Disallow: /api/
-
-# Explicit permissions for AI Search Engines & Bots (ChatGPT Search, Perplexity, Google Gemini, Claude, Bing)
-User-agent: Googlebot
-Allow: /
-Allow: /aboutfounder
-Allow: /images/
 
 User-agent: Googlebot-Image
 Allow: /
 Allow: /images/
 Allow: /assets/
+Disallow: /admin
+Disallow: /api/
 
 User-agent: Bingbot
 Allow: /
-Allow: /aboutfounder
 Allow: /images/
-
-User-agent: GPTBot
-Allow: /
-Allow: /aboutfounder
-Allow: /images/
-
-User-agent: ChatGPT-User
-Allow: /
-Allow: /aboutfounder
-Allow: /images/
-
-User-agent: OAI-SearchBot
-Allow: /
-Allow: /aboutfounder
-Allow: /images/
-
-User-agent: PerplexityBot
-Allow: /
-Allow: /aboutfounder
-Allow: /images/
-
-User-agent: Claude-Web
-Allow: /
-Allow: /aboutfounder
-Allow: /images/
-
-User-agent: anthropic-ai
-Allow: /
-Allow: /aboutfounder
-Allow: /images/
+Allow: /assets/
+Disallow: /admin
+Disallow: /admin/
+Disallow: /controlroom
+Disallow: /control-room
+Disallow: /cms
+Disallow: /portal
+Disallow: /manage
+Disallow: /control-panel
+Disallow: /dashboard/
+Disallow: /api/
 
 User-agent: Applebot
 Allow: /
-Allow: /aboutfounder
 Allow: /images/
+Disallow: /admin
+Disallow: /controlroom
+Disallow: /api/
 
-# Host
-Host: https://anivexsolution.in
+# AI Search Crawlers (ChatGPT Search, Perplexity, Claude, Gemini)
+User-agent: OAI-SearchBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /images/
+Disallow: /admin
+Disallow: /controlroom
+Disallow: /api/
 
-# Sitemap reference
+User-agent: ChatGPT-User
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /controlroom
+Disallow: /api/
+
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /controlroom
+Disallow: /api/
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /controlroom
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /controlroom
+Disallow: /api/
+
+User-agent: Claude-Web
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /controlroom
+Disallow: /api/
+
+User-agent: anthropic-ai
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /controlroom
+Disallow: /api/
+
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /admin
+Disallow: /controlroom
+Disallow: /api/
+
 Sitemap: https://anivexsolution.in/sitemap.xml
-
