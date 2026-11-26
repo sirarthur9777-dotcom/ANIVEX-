@@ -41,8 +41,43 @@
   status = 200
 
 [[redirects]]
+  from = "/favicon.ico"
+  to = "/favicon.ico"
+  status = 200
+
+[[redirects]]
   from = "/favicon.svg"
   to = "/favicon.svg"
+  status = 200
+
+[[redirects]]
+  from = "/favicon-48x48.png"
+  to = "/favicon-48x48.png"
+  status = 200
+
+[[redirects]]
+  from = "/favicon-96x96.png"
+  to = "/favicon-96x96.png"
+  status = 200
+
+[[redirects]]
+  from = "/favicon-192x192.png"
+  to = "/favicon-192x192.png"
+  status = 200
+
+[[redirects]]
+  from = "/favicon-512x512.png"
+  to = "/favicon-512x512.png"
+  status = 200
+
+[[redirects]]
+  from = "/favicon-maskable-512x512.png"
+  to = "/favicon-maskable-512x512.png"
+  status = 200
+
+[[redirects]]
+  from = "/apple-touch-icon.png"
+  to = "/apple-touch-icon.png"
   status = 200
 
 [[redirects]]
@@ -201,6 +236,36 @@
 [[headers]]
   for = "/images/*"
   [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Content-Type = "image/x-icon"
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/favicon.svg"
+  [headers.values]
+    Content-Type = "image/svg+xml; charset=utf-8"
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/favicon-*.png"
+  [headers.values]
+    Content-Type = "image/png"
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/apple-touch-icon.png"
+  [headers.values]
+    Content-Type = "image/png"
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/site.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json; charset=utf-8"
     Cache-Control = "public, max-age=86400"
 
 [[headers]]

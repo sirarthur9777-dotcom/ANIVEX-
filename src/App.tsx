@@ -54,9 +54,10 @@ const HOME_SCHEMA = {
       'telephone': '+91 79056 68826',
       'logo': {
         '@type': 'ImageObject',
-        'url': 'https://anivexsolution.in/images/krishndas-chauhan-founder-anivex-solution.jpeg',
-        'width': 900,
-        'height': 1599,
+        'url': 'https://anivexsolution.in/images/anivex-solution-logo.png',
+        'contentUrl': 'https://anivexsolution.in/images/anivex-solution-logo.png',
+        'width': 512,
+        'height': 512,
       },
       'founder': { '@id': 'https://anivexsolution.in/#krishndas-chauhan' },
       'address': {

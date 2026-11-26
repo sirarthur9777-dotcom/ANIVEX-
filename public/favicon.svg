@@ -1,4 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#0B1F3A"/>
-  <path d="M32 14 14 50h9l3.5-8h11L41 50h9z M29 35l3-7 3 7z" fill="#F97316"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Anivex Solution Logo">
+  <defs>
+    <clipPath id="anivex-squircle">
+      <rect x="16" y="16" width="480" height="480" rx="112" ry="112" />
+    </clipPath>
+    <mask id="anivex-a-cutout">
+      <rect width="512" height="512" fill="#FFFFFF" />
+      <!-- Crisp separation gap where the orange orbital swoosh sweeps across the 'A' -->
+      <path
+        d="M 56 374 C 176 344 316 268 368 206 C 392 178 378 148 318 142 C 390 142 432 174 408 224 C 370 294 216 354 56 374 Z"
+        fill="#000000"
+        stroke="#000000"
+        stroke-width="20"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+      />
+    </mask>
+  </defs>
+
+  <!-- Squircle Card Base -->
+  <rect x="16" y="16" width="480" height="480" rx="112" ry="112" fill="#FEFBF9" />
+
+  <!-- Clipped Interior Artwork -->
+  <g clip-path="url(#anivex-squircle)">
+    <!-- Bottom Left & Right Dark Navy Wave -->
+    <path
+      d="M 0 418 Q 138 468 272 456 Q 388 420 512 412 L 512 512 L 0 512 Z"
+      fill="#041B38"
+    />
+    <!-- Sweeping Bottom Orange Ribbon Wave -->
+    <path
+      d="M 116 498 Q 222 472 308 424 Q 402 372 512 372 L 512 418 Q 406 420 310 470 Q 224 504 116 498 Z"
+      fill="#F9870A"
+    />
+
+    <!-- Bold Navy 'A' Monogram with Swoosh Knockout -->
+    <g mask="url(#anivex-a-cutout)">
+      <path
+        d="M 234 94 C 244 76 268 76 278 94 L 418 368 L 336 368 L 256 172 L 152 326 L 96 348 Z"
+        fill="#041B38"
+      />
+    </g>
+
+    <!-- Orange Orbital Swoosh -->
+    <path
+      d="M 56 374 C 176 344 316 268 368 206 C 392 178 378 148 318 142 C 390 142 432 174 408 224 C 370 294 216 354 56 374 Z"
+      fill="#F9870A"
+    />
+  </g>
+
+  <!-- Crisp Orange Border -->
+  <rect
+    x="16"
+    y="16"
+    width="480"
+    height="480"
+    rx="112"
+    ry="112"
+    fill="none"
+    stroke="#F9870A"
+    stroke-width="16"
+  />
 </svg>
